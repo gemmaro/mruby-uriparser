@@ -14,6 +14,11 @@ rake --directory /path/to/mruby all test MRUBY_CONFIG=$PWD/build_config.rb
 
 to run tests.
 
+## Prior works
+
+There is [mruby-uri-parser](https://github.com/Asmod4n/mruby-uri-parser "GitHub"),
+which is based on the NGINX's implementation.
+
 ## License
 
 Copyright (C) 2025  gemmaro
