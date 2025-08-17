@@ -27,6 +27,11 @@ assert("URIParser.parse") do
   assert_equal(1965, uri.port)
   assert_equal(nil, uri.path)
 
+  uri = URIParser.parse("http://u:p@example.com?q#f")
+  assert_equal("u:p", uri.userinfo)
+  assert_equal("q", uri.query)
+  assert_equal("f", uri.fragment)
+
   assert_raise_with_message(URIParser::Error, "URI parse failed at: ` bar'") do
     URIParser.parse("foo bar")
   end
