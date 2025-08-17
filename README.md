@@ -8,6 +8,22 @@ conf.linker.libraries << 'uriparser'
 
 in `build_config.rb`.
 
+Here is an example.
+Use constant alias (e.g. `URI = URIParser::URI`) as you like.
+
+```ruby
+str = "http://user:pass@example.com:8000/some-path?some-query#some-fragment"
+uri = URIParser.parse(str)
+uri.class    #=> URIParser::URI
+uri.scheme   #=> "http"
+uri.userinfo #=> "user:pass"
+uri.host     #=> "example.com"
+uri.port     #=> 8000
+uri.path     #=> "/some-path"
+uri.query    #=> "some-query"
+uri.fragment #=> "some-fragment"
+```
+
 ``` shell
 rake --directory /path/to/mruby all test MRUBY_CONFIG=$PWD/build_config.rb
 ```
