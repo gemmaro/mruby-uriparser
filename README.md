@@ -18,7 +18,6 @@ uri.scheme           #=> "http"
 uri.userinfo         #=> "user:pass"
 uri.host             #=> "example.com"
 uri.port             #=> 8000
-uri.path             #=> "/some-path"
 uri.query            #=> "some-query"
 uri.fragment         #=> "some-fragment"
 uri.to_s             #=> same as str

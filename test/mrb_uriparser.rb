@@ -19,13 +19,11 @@ assert("URIParser.parse") do
   assert_equal("gemini", uri.scheme)
   assert_equal("geminiprotocol.net", uri.host)
   assert_equal(nil, uri.port)
-  assert_equal("docs/ja/protocol-specification.gmi", uri.path)
   assert_nil(uri.query)
   assert_nil(uri.fragment)
 
   uri = URIParser.parse("gemini://example.com:1965")
   assert_equal(1965, uri.port)
-  assert_equal(nil, uri.path)
 
   uri = URIParser.parse("http://u:p@example.com?q#f")
   assert_equal("u:p", uri.userinfo)
@@ -42,17 +40,6 @@ assert("URIParser::URI.parse") do
   assert_kind_of(URIParser::URI, uri)
 end
 
-assert("URIParser::URI#path") do
-  uri = URIParser.parse("/abs")
-  assert_equal("abs", uri.path)
-
-  uri = URIParser.parse("./rel")
-  assert_equal("./rel", uri.path)
-
-  uri = URIParser.parse("rel")
-  assert_equal("rel", uri.path)
-end
-
 assert("URIParser::URI#to_s") do
   uri = URIParser.parse("s://u:p@h:0/p?q#f")
   assert_equal("s://u:p@h:0/p?q#f", uri.to_s)
@@ -63,10 +50,9 @@ assert("URIParser::URI#merge!") do
   rel = URIParser.parse("../TWO")
   resolved = uri.merge!(rel)
   assert_kind_of(URIParser::URI, resolved)
-  assert_equal("file", resolved.scheme)
-  assert_equal("one/TWO", resolved.path)
-  assert_equal("one/TWO", uri.path)
-  assert_equal("../TWO", rel.path)
+  assert_equal("file:///one/TWO", resolved.to_s)
+  assert_equal("file:///one/TWO", uri.to_s)
+  assert_equal("../TWO", rel.to_s)
 end
 
 assert("URIParser::URI#merge") do
@@ -74,14 +60,14 @@ assert("URIParser::URI#merge") do
   rel = URIParser.parse("../TWO")
   resolved = uri.merge(rel)
   assert_kind_of(URIParser::URI, resolved)
-  assert_equal("one/TWO", resolved.path)
-  assert_equal("one/two/three", uri.path)
-  assert_equal("../TWO", rel.path)
+  assert_equal("file:///one/TWO", resolved.to_s)
+  assert_equal("file:///one/two/three", uri.to_s)
+  assert_equal("../TWO", rel.to_s)
 
   resolved = uri + rel
   assert_kind_of(URIParser::URI, resolved)
-  assert_equal("one/TWO", resolved.path)
-  assert_equal("one/two/three", uri.path)
+  assert_equal("file:///one/TWO", resolved.to_s)
+  assert_equal("file:///one/two/three", uri.to_s)
 end
 
 assert("URIParser::URI#route_from") do
@@ -89,8 +75,8 @@ assert("URIParser::URI#route_from") do
   base = URIParser.parse("file:///one/two/three")
   dest = uri.route_from(base)
   assert_kind_of(URIParser::URI, dest)
-  assert_equal("../TWO", dest.path)
+  assert_equal("../TWO", dest.to_s)
 
   dest = uri.route_from(base, domain_root: true)
-  assert_equal("one/TWO", dest.path)
+  assert_equal("/one/TWO", dest.to_s)
 end

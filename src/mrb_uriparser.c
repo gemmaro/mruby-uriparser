@@ -100,41 +100,6 @@ static mrb_value mrb_uriparser_int_in_range(mrb_state *const mrb,
   return val;
 }
 
-static mrb_value mrb_uriparser_path_from_list(mrb_state *const mrb,
-                                              const UriPathSegmentA *segment) {
-  if (segment == NULL)
-    return mrb_nil_value();
-  char *str = mrb_uriparser_cstr_in_range(mrb, segment->text);
-  if (str == NULL)
-    return mrb_nil_value();
-  segment = segment->next;
-  size_t len = strlen(str);
-  while (segment != NULL) {
-    char *const add = mrb_uriparser_cstr_in_range(mrb, segment->text);
-    if (add == NULL)
-      return mrb_nil_value();
-    const size_t add_len = strlen(add);
-    char *const new = realloc(str, len + 1 /* separator */ + add_len);
-    if (new == NULL) {
-      free(add);
-      MRB_URIPARSER_RAISE_NOMEM(mrb, "no space for additional path segment");
-    }
-    str = new;
-    str[len] = '/';
-    strcpy(str + len + 1, add);
-    free(add);
-    len += add_len + 1 /* separator */;
-    segment = segment->next;
-  }
-  if (len == 0) {
-    free(str);
-    return mrb_nil_value();
-  }
-  const mrb_value path = mrb_str_new(mrb, str, len);
-  free(str);
-  return path;
-}
-
 static mrb_value mrb_uriparser_new(mrb_state *const mrb, UriUriA *uri) {
   const mrb_value value = mrb_obj_new(mrb, MRB_URIPARSER_URI(mrb), 0, NULL);
   DATA_TYPE(value) = &mrb_uriparser_data_type;
@@ -238,21 +203,6 @@ static mrb_value mrb_uriparser_port(mrb_state *const mrb,
                                     const mrb_value self) {
   return mrb_uriparser_int_in_range(
       mrb, ((mrb_uriparser_data *)DATA_PTR(self))->uri->portText);
-}
-
-/**
- * @brief Get path string
- *
- * ```ruby
- * uri.path
- * ```
- *
- * where `uri` is `URIParser::URI`.
- */
-static mrb_value mrb_uriparser_path(mrb_state *const mrb,
-                                    const mrb_value self) {
-  return mrb_uriparser_path_from_list(
-      mrb, ((mrb_uriparser_data *)DATA_PTR(self))->uri->pathHead);
 }
 
 /**
@@ -441,7 +391,6 @@ void mrb_mruby_uriparser_gem_init(mrb_state *const mrb) {
                     MRB_ARGS_NONE());
   mrb_define_method(mrb, uri, "host", mrb_uriparser_host, MRB_ARGS_NONE());
   mrb_define_method(mrb, uri, "port", mrb_uriparser_port, MRB_ARGS_NONE());
-  mrb_define_method(mrb, uri, "path", mrb_uriparser_path, MRB_ARGS_NONE());
   mrb_define_method(mrb, uri, "query", mrb_uriparser_query, MRB_ARGS_NONE());
   mrb_define_method(mrb, uri, "fragment", mrb_uriparser_fragment,
                     MRB_ARGS_NONE());
