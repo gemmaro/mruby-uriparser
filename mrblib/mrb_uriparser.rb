@@ -17,15 +17,11 @@ module URIParser
   Error = Class.new(StandardError)
 
   class URI
-    attr_reader :scheme, :userinfo, :host, :port, :path, :query, :fragment
-    def initialize(scheme, userinfo, host, port, path, query, fragment)
-      @scheme = scheme
-      @userinfo = userinfo
-      @host = host
-      @port = port
-      @path = path
-      @query = query
-      @fragment = fragment
+    alias + merge
+    alias - route_from
+
+    def route_to(dest, domain_root: false)
+      dest.route_from(self, domain_root:)
     end
   end
 end

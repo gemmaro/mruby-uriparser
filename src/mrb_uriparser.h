@@ -17,9 +17,6 @@
 #ifndef MRB_URIPARSER_H
 #define MRB_URIPARSER_H
 
-/* https://uriparser.github.io/doc/api/latest/ */
-#include <uriparser/Uri.h>
-
 #include <mruby.h>
 
 void mrb_uriparser_gem_init(mrb_state *mrb);
