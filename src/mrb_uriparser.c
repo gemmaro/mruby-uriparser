@@ -236,6 +236,21 @@ static mrb_value mrb_uriparser_fragment(mrb_state *const mrb,
 }
 
 /**
+ * @brief Check if absolute path
+ *
+ * ```ruby
+ * uri.absolute_path?
+ * ```
+ *
+ * where `uri` is `URIParser::URI`.
+ */
+static mrb_value mrb_uriparser_absolute_path(mrb_state *const mrb,
+                                             const mrb_value self) {
+  return mrb_bool_value(
+      ((mrb_uriparser_data *)DATA_PTR(self))->uri->absolutePath);
+}
+
+/**
  * @brief Recomposing URI
  *
  * Recomposing means serializing.
@@ -393,6 +408,8 @@ void mrb_mruby_uriparser_gem_init(mrb_state *const mrb) {
   mrb_define_method(mrb, uri, "port", mrb_uriparser_port, MRB_ARGS_NONE());
   mrb_define_method(mrb, uri, "query", mrb_uriparser_query, MRB_ARGS_NONE());
   mrb_define_method(mrb, uri, "fragment", mrb_uriparser_fragment,
+                    MRB_ARGS_NONE());
+  mrb_define_method(mrb, uri, "absolute_path?", mrb_uriparser_absolute_path,
                     MRB_ARGS_NONE());
   mrb_define_method(mrb, uri, "to_s", mrb_uriparser_recompose, MRB_ARGS_NONE());
   mrb_define_method(mrb, uri, "merge!", mrb_uriparser_merge_mutably,

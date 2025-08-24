@@ -40,6 +40,14 @@ assert("URIParser::URI.parse") do
   assert_kind_of(URIParser::URI, uri)
 end
 
+assert("URIParser::URI#absolute_path?") do
+  uri = URIParser.parse("/abs")
+  assert_equal(true, uri.absolute_path?)
+
+  uri = URIParser.parse("rel")
+  assert_equal(false, uri.absolute_path?)
+end
+
 assert("URIParser::URI#to_s") do
   uri = URIParser.parse("s://u:p@h:0/p?q#f")
   assert_equal("s://u:p@h:0/p?q#f", uri.to_s)
