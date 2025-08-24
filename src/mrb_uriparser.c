@@ -20,6 +20,7 @@
 
 #include "mrb_uriparser.h"
 
+#include <mruby/array.h>
 #include <mruby/boxing_word.h>
 #include <mruby/data.h>
 #include <mruby/value.h>
@@ -203,6 +204,27 @@ static mrb_value mrb_uriparser_port(mrb_state *const mrb,
                                     const mrb_value self) {
   return mrb_uriparser_int_in_range(
       mrb, ((mrb_uriparser_data *)DATA_PTR(self))->uri->portText);
+}
+
+/**
+ * @brief Get path segments as array of strings
+ *
+ * ```ruby
+ * uri.path_segments
+ * ```
+ *
+ * where `uri` is `URIParser::URI`.
+ */
+static mrb_value mrb_uriparser_path_segments(mrb_state *const mrb,
+                                             const mrb_value self) {
+  UriPathSegmentA *segment =
+      ((mrb_uriparser_data *)DATA_PTR(self))->uri->pathHead;
+  mrb_value ary = mrb_ary_new(mrb);
+  while (segment != NULL) {
+    mrb_ary_push(mrb, ary, mrb_uriparser_str_in_range(mrb, segment->text));
+    segment = segment->next;
+  }
+  return ary;
 }
 
 /**
@@ -406,6 +428,8 @@ void mrb_mruby_uriparser_gem_init(mrb_state *const mrb) {
                     MRB_ARGS_NONE());
   mrb_define_method(mrb, uri, "host", mrb_uriparser_host, MRB_ARGS_NONE());
   mrb_define_method(mrb, uri, "port", mrb_uriparser_port, MRB_ARGS_NONE());
+  mrb_define_method(mrb, uri, "path_segments", mrb_uriparser_path_segments,
+                    MRB_ARGS_NONE());
   mrb_define_method(mrb, uri, "query", mrb_uriparser_query, MRB_ARGS_NONE());
   mrb_define_method(mrb, uri, "fragment", mrb_uriparser_fragment,
                     MRB_ARGS_NONE());

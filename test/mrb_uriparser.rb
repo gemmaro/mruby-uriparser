@@ -40,6 +40,17 @@ assert("URIParser::URI.parse") do
   assert_kind_of(URIParser::URI, uri)
 end
 
+assert("URIParser::URI#path_segments") do
+  uri = URIParser::URI.parse("/a/b")
+  assert_equal(["a", "b"], uri.path_segments)
+
+  uri = URIParser::URI.parse("a/b")
+  assert_equal(["a", "b"], uri.path_segments)
+
+  uri = URIParser::URI.parse("/")
+  assert_equal([], uri.path_segments)
+end
+
 assert("URIParser::URI#absolute_path?") do
   uri = URIParser.parse("/abs")
   assert_equal(true, uri.absolute_path?)
