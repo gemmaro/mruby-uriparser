@@ -1,0 +1,5 @@
+#!/bin/sh
+set -eu
+./test/run
+doxygen
+rsync -av doc/ pi:/srv/www/mruby-uriparser/
