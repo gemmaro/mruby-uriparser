@@ -2,33 +2,35 @@
 
 The uriparser binding for mruby.
 
-``` ruby
+```ruby
 conf.linker.libraries << 'uriparser'
 ```
 
 in `build_config.rb`.
 
-Here is an example.
-Use constant alias (e.g. `URI = URIParser::URI`) as you like.
+Here is an example.  Please refer to the API documentation for more details.
 
 ```ruby
 str = "http://user:pass@example.com:8000/some-path?some-query#some-fragment"
-uri = URIParser.parse(str)
-uri.class    #=> URIParser::URI
-uri.scheme   #=> "http"
-uri.userinfo #=> "user:pass"
-uri.host     #=> "example.com"
-uri.port     #=> 8000
-uri.path     #=> "/some-path"
-uri.query    #=> "some-query"
-uri.fragment #=> "some-fragment"
+uri = URIParser.parse(str) # or URIParser::URI.parse(str)
+uri.class            #=> URIParser::URI
+uri.scheme           #=> "http"
+uri.userinfo         #=> "user:pass"
+uri.host             #=> "example.com"
+uri.port             #=> 8000
+uri.path             #=> "/some-path"
+uri.query            #=> "some-query"
+uri.fragment         #=> "some-fragment"
+uri.to_s             #=> same as str
 ```
 
-``` shell
+Use constant alias (e.g. `URI = URIParser::URI`) as you like.
+
+```shell
 rake --directory /path/to/mruby all test MRUBY_CONFIG=$PWD/build_config.rb
 ```
 
-to run tests.
+to run tests.  You can also use `test/run` script with `MRUBY_SRC` env var in `.env` file.
 
 ## Prior works
 
