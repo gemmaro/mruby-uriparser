@@ -16,13 +16,13 @@
 module URIParser
   Error = Class.new(StandardError)
 
-  def self.from_filename(filename)
-    parse(filename_to_uri_string(filename))
-  end
-
   class URI
     def self.parse(str)
       URIParser.parse(str)
+    end
+
+    def self.from_filename(filename, windows: false)
+      parse(URIParser.filename_to_uri_string(filename, windows:))
     end
 
     alias + merge
@@ -30,6 +30,10 @@ module URIParser
 
     def route_to(dest, domain_root: false)
       dest.route_from(self, domain_root:)
+    end
+
+    def to_filename(windows: false)
+      URIParser.uri_string_to_filename(to_s, windows:)
     end
   end
 end
