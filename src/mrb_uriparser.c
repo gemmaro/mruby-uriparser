@@ -146,6 +146,37 @@ static mrb_value mrb_uriparser_parse(mrb_state *const mrb,
   return mrb_uriparser_new(mrb, uri);
 }
 
+static mrb_value mrb_uriparser_filename_to_uri_string(mrb_state *const mrb,
+                                                      const mrb_value self) {
+  const char *abs_filename = NULL;
+  const mrb_int kw_num = 1;
+  const mrb_sym windows_key = mrb_intern_lit(mrb, "windows");
+  const mrb_sym *const kw_table = {&windows_key};
+  mrb_value kw_values[kw_num];
+  const mrb_kwargs kwargs = {.num = kw_num,
+                             .required = 0,
+                             .rest = NULL,
+                             .table = kw_table,
+                             .values = kw_values};
+  mrb_get_args(mrb, "z:", &abs_filename, &kwargs);
+  if (mrb_undef_p(kw_values[0]))
+    kw_values[0] = mrb_false_value();
+  const mrb_value windows_value = kw_values[0];
+  const mrb_bool windows = mrb_test(windows_value);
+  const int bytes_needed =
+      (windows ? 8 : 7 /* Unix */) + 3 * strlen(abs_filename) + 1;
+  char *const abs_uri = malloc(bytes_needed * sizeof(char));
+  if ((windows ? uriWindowsFilenameToUriStringA(abs_filename, abs_uri)
+               : uriUnixFilenameToUriStringA(abs_filename, abs_uri)) !=
+      URI_SUCCESS) {
+    free(abs_uri);
+    MRB_URIPARSER_RAISE(mrb, "failed to convert to URI");
+  }
+  const mrb_value uri = mrb_str_new_cstr(mrb, abs_uri);
+  free(abs_uri);
+  return uri;
+}
+
 /**
  * @brief Get scheme string
  *
@@ -419,6 +450,9 @@ void mrb_mruby_uriparser_gem_init(mrb_state *const mrb) {
       mrb_define_module(mrb, MRB_URIPARSER_MODULE_NAME);
   mrb_define_module_function(mrb, uriparser, "parse", mrb_uriparser_parse,
                              MRB_ARGS_REQ(1));
+  mrb_define_module_function(mrb, uriparser, "filename_to_uri_string",
+                             mrb_uriparser_filename_to_uri_string,
+                             MRB_ARGS_ANY());
   struct RClass *const uri = mrb_define_class_under(
       mrb, uriparser, MRB_URIPARSER_URI_MODULE_NAME, mrb->object_class);
   mrb_define_class_method(mrb, uri, "parse", mrb_uriparser_parse,
