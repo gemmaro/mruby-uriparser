@@ -455,8 +455,6 @@ void mrb_mruby_uriparser_gem_init(mrb_state *const mrb) {
                              MRB_ARGS_ANY());
   struct RClass *const uri = mrb_define_class_under(
       mrb, uriparser, MRB_URIPARSER_URI_MODULE_NAME, mrb->object_class);
-  mrb_define_class_method(mrb, uri, "parse", mrb_uriparser_parse,
-                          MRB_ARGS_REQ(1));
   mrb_define_method(mrb, uri, "scheme", mrb_uriparser_scheme, MRB_ARGS_NONE());
   mrb_define_method(mrb, uri, "userinfo", mrb_uriparser_userinfo,
                     MRB_ARGS_NONE());
