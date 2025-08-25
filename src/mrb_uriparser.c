@@ -177,6 +177,36 @@ static mrb_value mrb_uriparser_filename_to_uri_string(mrb_state *const mrb,
   return uri;
 }
 
+static mrb_value mrb_uriparser_uri_string_to_filename(mrb_state *const mrb,
+                                                      const mrb_value self) {
+  const char *abs_uri = NULL;
+  const mrb_int kw_num = 1;
+  const mrb_sym windows_key = mrb_intern_lit(mrb, "windows");
+  const mrb_sym *const kw_table = {&windows_key};
+  mrb_value kw_values[kw_num];
+  const mrb_kwargs kwargs = {.num = kw_num,
+                             .required = 0,
+                             .rest = NULL,
+                             .table = kw_table,
+                             .values = kw_values};
+  mrb_get_args(mrb, "z:", &abs_uri, &kwargs);
+  if (mrb_undef_p(kw_values[0]))
+    kw_values[0] = mrb_false_value();
+  const mrb_value windows_value = kw_values[0];
+  const mrb_bool windows = mrb_test(windows_value);
+  const int bytes_needed = strlen(abs_uri) + 1 - (windows ? 8 : 7 /* Unix */);
+  char *const abs_filename = malloc(bytes_needed * sizeof(char));
+  if ((windows ? uriUriStringToWindowsFilenameA(abs_uri, abs_filename)
+               : uriUriStringToUnixFilenameA(abs_uri, abs_filename)) !=
+      URI_SUCCESS) {
+    free(abs_filename);
+    MRB_URIPARSER_RAISE(mrb, "failed to convert to filename");
+  }
+  const mrb_value filename = mrb_str_new_cstr(mrb, abs_filename);
+  free(abs_filename);
+  return filename;
+}
+
 /**
  * @brief Get scheme string
  *
@@ -452,6 +482,9 @@ void mrb_mruby_uriparser_gem_init(mrb_state *const mrb) {
                              MRB_ARGS_REQ(1));
   mrb_define_module_function(mrb, uriparser, "filename_to_uri_string",
                              mrb_uriparser_filename_to_uri_string,
+                             MRB_ARGS_ANY());
+  mrb_define_module_function(mrb, uriparser, "uri_string_to_filename",
+                             mrb_uriparser_uri_string_to_filename,
                              MRB_ARGS_ANY());
   struct RClass *const uri = mrb_define_class_under(
       mrb, uriparser, MRB_URIPARSER_URI_MODULE_NAME, mrb->object_class);

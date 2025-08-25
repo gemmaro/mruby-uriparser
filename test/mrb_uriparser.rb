@@ -49,6 +49,15 @@ assert("URIParser.filename_to_uri_string") do
   assert_equal("file:///usr/bin/env", uri_str)
 end
 
+assert("URIParser.uri_string_to_filename") do
+  uri_str = URIParser.uri_string_to_filename("file:///E://Documents%20and%20Settings",
+                                             windows: true)
+  assert_equal("E:\\\\Documents and Settings", uri_str)
+
+  uri_str = URIParser.uri_string_to_filename("file:///usr/bin/env")
+  assert_equal("/usr/bin/env", uri_str)
+end
+
 assert("URIParser::URI#path_segments") do
   uri = URIParser::URI.parse("/a/b")
   assert_equal(["a", "b"], uri.path_segments)
