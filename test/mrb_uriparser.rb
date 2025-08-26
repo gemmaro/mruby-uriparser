@@ -117,3 +117,17 @@ assert("URIParser::URI#route_from") do
   dest = uri.route_from(base, domain_root: true)
   assert_equal("/one/TWO", dest.to_s)
 end
+
+assert("URIParser::URI#normalize!") do
+  uri = URIParser.parse("http://example.org/one/two/../../one")
+  uri.normalize!
+  assert_equal "http://example.org/one", uri.to_s
+
+  uri = URIParser.parse("http://example.org/one/two/../../one")
+  uri.normalize!(path: false)
+  assert_equal "http://example.org/one/two/../../one", uri.to_s
+
+  uri = URIParser.parse("http://EXAMPLE.ORG")
+  uri.normalize!(scheme: false, userinfo: false, path: false, query: false, fragment: false)
+  assert_equal "http://example.org", uri.to_s
+end

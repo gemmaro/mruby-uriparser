@@ -26,6 +26,7 @@
 #include <mruby/value.h>
 #include <mruby/variable.h>
 
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -474,6 +475,39 @@ static mrb_value mrb_uriparser_create_reference(mrb_state *const mrb,
   return mrb_uriparser_new(mrb, dest);
 }
 
+static mrb_value mrb_uriparser_normalize(mrb_state *const mrb,
+                                         const mrb_value self) {
+  const mrb_int kw_num = 6;
+  const mrb_sym kw_table[] = {
+      mrb_intern_lit(mrb, "scheme"), mrb_intern_lit(mrb, "userinfo"),
+      mrb_intern_lit(mrb, "host"),   mrb_intern_lit(mrb, "path"),
+      mrb_intern_lit(mrb, "query"),  mrb_intern_lit(mrb, "fragment")};
+  mrb_value kw_values[kw_num];
+  const mrb_kwargs kwargs = {.num = kw_num,
+                             .required = 0,
+                             .rest = NULL,
+                             .table = kw_table,
+                             .values = kw_values};
+  mrb_get_args(mrb, ":", &kwargs);
+  unsigned int mask = URI_NORMALIZED;
+  if (mrb_undef_p(kw_values[0]) || mrb_test(kw_values[0]))
+    mask |= URI_NORMALIZE_SCHEME;
+  if (mrb_undef_p(kw_values[1]) || mrb_test(kw_values[1]))
+    mask |= URI_NORMALIZE_USER_INFO;
+  if (mrb_undef_p(kw_values[2]) || mrb_test(kw_values[2]))
+    mask |= URI_NORMALIZE_HOST;
+  if (mrb_undef_p(kw_values[3]) || mrb_test(kw_values[3]))
+    mask |= URI_NORMALIZE_PATH;
+  if (mrb_undef_p(kw_values[4]) || mrb_test(kw_values[4]))
+    mask |= URI_NORMALIZE_QUERY;
+  if (mrb_undef_p(kw_values[5]) || mrb_test(kw_values[5]))
+    mask |= URI_NORMALIZE_FRAGMENT;
+  const mrb_uriparser_data *const data = DATA_PTR(self);
+  if (uriNormalizeSyntaxExA(data->uri, mask) != URI_SUCCESS)
+    MRB_URIPARSER_RAISE(mrb, "failed to normalize");
+  return self;
+}
+
 void mrb_mruby_uriparser_gem_init(mrb_state *const mrb) {
   /* C have to define classes here before Ruby does. */
   struct RClass *const uriparser =
@@ -506,6 +540,8 @@ void mrb_mruby_uriparser_gem_init(mrb_state *const mrb) {
   mrb_define_method(mrb, uri, "merge", mrb_uriparser_merge, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, uri, "route_from", mrb_uriparser_create_reference,
                     MRB_ARGS_REQ(1));
+  mrb_define_method(mrb, uri, "normalize!", mrb_uriparser_normalize,
+                    MRB_ARGS_KEY(6, 0));
   DONE;
 }
 
