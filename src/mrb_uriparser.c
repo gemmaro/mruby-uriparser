@@ -23,6 +23,7 @@
 #include <mruby/array.h>
 #include <mruby/boxing_word.h>
 #include <mruby/data.h>
+#include <mruby/hash.h>
 #include <mruby/value.h>
 #include <mruby/variable.h>
 
@@ -508,6 +509,32 @@ static mrb_value mrb_uriparser_normalize(mrb_state *const mrb,
   return self;
 }
 
+static mrb_value mrb_uriparser_dissect_query(mrb_state *const mrb,
+                                             const mrb_value self) {
+  const mrb_uriparser_data *const data = DATA_PTR(self);
+  UriQueryListA *query_list;
+  int item_count;
+  if (uriDissectQueryMallocA(&query_list, &item_count, data->uri->query.first,
+                             data->uri->query.afterLast) != URI_SUCCESS)
+    MRB_URIPARSER_RAISE(mrb, "failed to dissect query");
+  mrb_value ary = mrb_ary_new(mrb);
+  while (query_list != NULL) {
+    mrb_value entry = mrb_ary_new(mrb);
+    mrb_ary_push(mrb, entry,
+                 query_list->key == NULL
+                     ? mrb_nil_value()
+                     : mrb_str_new_cstr(mrb, query_list->key));
+    mrb_ary_push(mrb, entry,
+                 query_list->value == NULL
+                     ? mrb_nil_value()
+                     : mrb_str_new_cstr(mrb, query_list->value));
+    mrb_ary_push(mrb, ary, entry);
+    query_list = query_list->next;
+  }
+  uriFreeQueryListA(query_list);
+  return ary;
+}
+
 void mrb_mruby_uriparser_gem_init(mrb_state *const mrb) {
   /* C have to define classes here before Ruby does. */
   struct RClass *const uriparser =
@@ -542,6 +569,8 @@ void mrb_mruby_uriparser_gem_init(mrb_state *const mrb) {
                     MRB_ARGS_REQ(1));
   mrb_define_method(mrb, uri, "normalize!", mrb_uriparser_normalize,
                     MRB_ARGS_KEY(6, 0));
+  mrb_define_method(mrb, uri, "decode_www_form", mrb_uriparser_dissect_query,
+                    MRB_ARGS_NONE());
   DONE;
 }
 

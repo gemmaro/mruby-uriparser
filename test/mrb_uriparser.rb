@@ -128,6 +128,16 @@ assert("URIParser::URI#normalize!") do
   assert_equal "http://example.org/one/two/../../one", uri.to_s
 
   uri = URIParser.parse("http://EXAMPLE.ORG")
-  uri.normalize!(scheme: false, userinfo: false, path: false, query: false, fragment: false)
+  uri.normalize!(scheme: false,
+                 userinfo: false,
+                 path: false,
+                 query: false,
+                 fragment: false)
   assert_equal "http://example.org", uri.to_s
+end
+
+assert("URIParser::URI#decode_www_form") do
+  uri = URIParser.parse("http://example.com?a=1&a=2&b=&c")
+  assert_equal [['a', '1'], ['a', '2'], ['b', ''], ['c', nil]],
+               uri.decode_www_form
 end
