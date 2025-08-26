@@ -58,6 +58,13 @@ assert("URIParser.uri_string_to_filename") do
   assert_equal("/usr/bin/env", uri_str)
 end
 
+assert("URIParser.encode_www_form") do
+  assert_equal "a=1&b=2&c=x+yz",
+               URIParser.encode_www_form([["a", "1"], ["b", "2"], ["c", "x yz"]])
+  assert_equal "a=&b",
+               URIParser.encode_www_form([["a", ""], ["b", nil]])
+end
+
 assert("URIParser::URI#path_segments") do
   uri = URIParser::URI.parse("/a/b")
   assert_equal(["a", "b"], uri.path_segments)

@@ -24,6 +24,7 @@
 #include <mruby/boxing_word.h>
 #include <mruby/data.h>
 #include <mruby/hash.h>
+#include <mruby/string.h>
 #include <mruby/value.h>
 #include <mruby/variable.h>
 
@@ -207,6 +208,39 @@ static mrb_value mrb_uriparser_uri_string_to_filename(mrb_state *const mrb,
   const mrb_value filename = mrb_str_new_cstr(mrb, abs_filename);
   free(abs_filename);
   return filename;
+}
+
+static mrb_value mrb_uriparser_compose_query(mrb_state *const mrb,
+                                             const mrb_value self) {
+  UriQueryListA *query_list = NULL;
+  mrb_value ary;
+  mrb_get_args(mrb, "A", &ary);
+  for (mrb_int index = RARRAY_LEN(ary) - 1; index >= 0; index--) {
+    UriQueryListA *current = malloc(sizeof(UriQueryListA));
+    current->next = query_list;
+    mrb_value entry = mrb_ary_ref(mrb, ary, index);
+    current->key = mrb_str_to_cstr(mrb, mrb_ary_ref(mrb, entry, 0));
+
+    mrb_value value = mrb_ary_ref(mrb, entry, 1);
+    current->value = mrb_nil_p(value) ? NULL : mrb_str_to_cstr(mrb, value);
+
+    query_list = current;
+  }
+  int chars_required;
+  int chars_written;
+  char *query_string;
+  if (uriComposeQueryCharsRequiredA(query_list, &chars_required) != URI_SUCCESS)
+    MRB_URIPARSER_RAISE(
+        mrb, "failed to calculate characters required to compose query");
+  query_string = malloc((chars_required + 1) * sizeof(char));
+  if (query_string == NULL)
+    MRB_URIPARSER_RAISE_NOMEM(mrb, "no space for query string");
+  if (uriComposeQueryA(query_string, query_list, chars_required + 1,
+                       &chars_written) != URI_SUCCESS)
+    MRB_URIPARSER_RAISE(mrb, "failed to compose query");
+  mrb_value str = mrb_str_new_cstr(mrb, query_string);
+  free(query_string);
+  return str;
 }
 
 /**
@@ -547,6 +581,8 @@ void mrb_mruby_uriparser_gem_init(mrb_state *const mrb) {
   mrb_define_module_function(mrb, uriparser, "uri_string_to_filename",
                              mrb_uriparser_uri_string_to_filename,
                              MRB_ARGS_ANY());
+  mrb_define_module_function(mrb, uriparser, "encode_www_form",
+                             mrb_uriparser_compose_query, MRB_ARGS_REQ(1));
   struct RClass *const uri = mrb_define_class_under(
       mrb, uriparser, MRB_URIPARSER_URI_MODULE_NAME, mrb->object_class);
   mrb_define_method(mrb, uri, "scheme", mrb_uriparser_scheme, MRB_ARGS_NONE());
