@@ -1,6 +1,6 @@
 # mruby uriparser
 
-The uriparser binding for mruby.
+The [uriparser](https://uriparser.github.io/) binding for mruby.
 
 ```ruby
 conf.linker.libraries << 'uriparser'
