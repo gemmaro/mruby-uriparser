@@ -149,6 +149,17 @@ static mrb_value mrb_uriparser_parse(mrb_state *const mrb,
   return mrb_uriparser_new(mrb, uri);
 }
 
+/**
+ * @brief Filename to URI string
+ *
+ * ```ruby
+ * URIParser.filename_to_uri_string(filename, windows: false)
+ * ```
+ *
+ * returns string.
+ *
+ * @sa mrb_uriparser_uri_string_to_filename
+ */
 static mrb_value mrb_uriparser_filename_to_uri_string(mrb_state *const mrb,
                                                       const mrb_value self) {
   const char *abs_filename = NULL;
@@ -180,6 +191,17 @@ static mrb_value mrb_uriparser_filename_to_uri_string(mrb_state *const mrb,
   return uri;
 }
 
+/**
+ * @brief URI string to filename
+ *
+ * ```ruby
+ * URIParser.uri_string_filename(uri, windows: false)
+ * ```
+ *
+ * returns string.
+ *
+ * @sa mrb_uriparser_filename_to_uri_string
+ */
 static mrb_value mrb_uriparser_uri_string_to_filename(mrb_state *const mrb,
                                                       const mrb_value self) {
   const char *abs_uri = NULL;
@@ -210,6 +232,18 @@ static mrb_value mrb_uriparser_uri_string_to_filename(mrb_state *const mrb,
   return filename;
 }
 
+/**
+ * @brief Encode WWW form
+ *
+ * ```ruby
+ * URIParser.encode_www_form(query_list)
+ * ```
+ *
+ * where `query_list` is array.  Each entry has string and value.  Value is
+ * nil or string.
+ *
+ * @sa mrb_uriparser_dissect_query
+ */
 static mrb_value mrb_uriparser_compose_query(mrb_state *const mrb,
                                              const mrb_value self) {
   UriQueryListA *query_list = NULL;
@@ -510,6 +544,18 @@ static mrb_value mrb_uriparser_create_reference(mrb_state *const mrb,
   return mrb_uriparser_new(mrb, dest);
 }
 
+/**
+ * @brief Normalize URI
+ *
+ * ```ruby
+ * uri.normalize!(scheme: true, userinfo: true,
+ *                host: true, path: true,
+ *                query: true, fragment: true)
+ * ```
+ *
+ * where `uri` is kind of `URIParser::URI`.  The components enabled is
+ * normalized.  By default all parts are normalized.
+ */
 static mrb_value mrb_uriparser_normalize(mrb_state *const mrb,
                                          const mrb_value self) {
   const mrb_int kw_num = 6;
@@ -543,6 +589,17 @@ static mrb_value mrb_uriparser_normalize(mrb_state *const mrb,
   return self;
 }
 
+/**
+ * @brief Decode WWW form
+ *
+ * ```ruby
+ * uri.decode_www_form #=> string
+ * ```
+ *
+ * where `uri` is kind of `URIParser::URI`.
+ *
+ * @sa mrb_uriparser_compose_query
+ */
 static mrb_value mrb_uriparser_dissect_query(mrb_state *const mrb,
                                              const mrb_value self) {
   const mrb_uriparser_data *const data = DATA_PTR(self);
