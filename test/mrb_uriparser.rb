@@ -41,9 +41,9 @@ assert("URIParser::URI.parse") do
 end
 
 assert("URIParser.filename_to_uri_string") do
-  uri_str = URIParser.filename_to_uri_string("E:\\\\Documents and Settings",
+  uri_str = URIParser.filename_to_uri_string("E:\\Documents and Settings",
                                              windows: true)
-  assert_equal("file:///E://Documents%20and%20Settings", uri_str)
+  assert_equal("file:///E:/Documents%20and%20Settings", uri_str)
 
   uri_str = URIParser.filename_to_uri_string("/usr/bin/env")
   assert_equal("file:///usr/bin/env", uri_str)
