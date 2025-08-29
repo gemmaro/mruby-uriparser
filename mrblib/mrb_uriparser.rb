@@ -18,6 +18,7 @@ module URIParser
 
   module ClassMethods
     def join(uri_str, *path)
+      # TODO: Remove parsing each path after implement accepting URI by merge methods.
       path.reduce(URIParser.parse(uri_str)) { |memo, pat| memo.merge!(URIParser.parse(pat)) }
     end
 
@@ -48,6 +49,7 @@ module URIParser
 
     alias + merge
     alias - route_from
+    alias absolute absolute?
 
     def route_to(dest, domain_root: false)
       dest.route_from(self, domain_root:)

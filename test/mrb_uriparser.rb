@@ -89,12 +89,12 @@ assert("URIParser::URI#path_segments") do
   assert_equal([], uri.path_segments)
 end
 
-assert("URIParser::URI#absolute_path?") do
+assert("URIParser::URI#absolute?") do
   uri = URIParser.parse("/abs")
-  assert_equal(true, uri.absolute_path?)
+  assert_equal(true, uri.absolute?)
 
   uri = URIParser.parse("rel")
-  assert_equal(false, uri.absolute_path?)
+  assert_equal(false, uri.absolute?)
 end
 
 assert("URIParser::URI#to_s") do
