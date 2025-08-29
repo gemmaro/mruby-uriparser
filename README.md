@@ -28,65 +28,65 @@ The below is the supported features list.
 There might be diffent even if it has same name.
 Please check API document for details.
 
-| this gem                                                | CRuby's URI gem                                     |
-|---------------------------------------------------------|-----------------------------------------------------|
-| `URIParser::URI#decode_www_form`[^1]                    | `URI.decode_www_form`                               |
-| -                                                       | `URI.decode_www_form_component`                     |
-| `URIParser.encode_www_form`[^2]                         | `URI.encode_www_form`                               |
-| -                                                       | `URI.encode_www_form_component`                     |
-| -                                                       | `URI.extract`[^4]                                   |
-| `URIParser.join`, `URIParser::URI.join`                 | `URI.join`                                          |
-| `URIParser.parse`, `URIParser::URI.parse`               | `URI.parse`                                         |
-| -                                                       | `URI.regexp`[^3]                                    |
-| -                                                       | `URI.split`                                         |
-| -                                                       | `URI::UNSAFE`                                       |
-| -                                                       | `URI::Generic.build`                                |
-| -                                                       | `URI::Generic.build2`                               |
-| -                                                       | `URI::Generic.component`                            |
-| -                                                       | `URI::Generic.default_port`                         |
-| -                                                       | `URI::Generic.new`                                  |
-| -                                                       | `URI::Generic.use_registry`                         |
-| `URIParser::URI#merge`, `URIParser::URI#@+`[^5]         | `URI::Generic#merge`, `URI::Generic#@+`             |
-| `URIParser::URI#route_from`, `URIParser::URI#@-`        | `URI::Generic#route_from`, `URI::Generic#@-`        |
-| -                                                       | `URI::Generic#==`                                   |
-| `URIParser::URI#absolute`, `URIParser::URI#absolute?`   | `URI::Generic#absolute`, `URI::Generic#absolute?`   |
-| -                                                       | `URI::Generic#coerce`                               |
-| -                                                       | `URI::Generic#component`                            |
-| -                                                       | `URI::Generic#find_proxy`                           |
-| `URIParser::URI#fragment`                               | `URI::Generic#fragment`                             |
-| -                                                       | `URI::Generic#fragment=`                            |
-| `URIParser::URI#hierarchical?`                          | `URI::Generic#hierarchical?`                        |
-| -                                                       | `URI::Generic#host`                                 |
-| -                                                       | `URI::Generic#host=`                                |
-| `URIParser::URI#hostname`                               | `URI::Generic#hostname`                             |
-| -                                                       | `URI::Generic#hostname=`                            |
-| `URIParser::URI#merge!`                                 | `URI::Generic#merge!`                               |
-| `URIParser::URI#normalize`, `URIParser::URI#normalize!` | `URI::Generic#normalize`, `URI::Generic#normalize!` |
-| -                                                       | `URI::Generic#opaque`                               |
-| -                                                       | `URI::Generic#opaque=`                              |
-| -                                                       | `URI::Generic#parser`                               |
-| -                                                       | `URI::Generic#password`                             |
-| -                                                       | `URI::Generic#password=`                            |
-| -                                                       | `URI::Generic#path`                                 |
-| -                                                       | `URI::Generic#path=`                                |
-| -                                                       | `URI::Generic#port`                                 |
-| -                                                       | `URI::Generic#port=`                                |
-| `URIParser::URI#query`                                  | `URI::Generic#query`                                |
-| -                                                       | `URI::Generic#query=`                               |
-| -                                                       | `URI::Generic#registry`                             |
-| -                                                       | `URI::Generic#registry=`                            |
-| `URIParser::URI#relative?`                              | `URI::Generic#relative?`                            |
-| `URIParser::URI#route_to`                               | `URI::Generic#route_to`                             |
-| `URIParser::URI#scheme`                                 | `URI::Generic#scheme`                               |
-| -                                                       | `URI::Generic#scheme=`                              |
-| -                                                       | `URI::Generic#select`                               |
-| `URIParser::URI#to_s`                                   | `URI::Generic#to_s`                                 |
-| -                                                       | `URI::Generic#user`                                 |
-| -                                                       | `URI::Generic#user=`                                |
-| `URIParser::URI#userinfo`                               | `URI::Generic#userinfo`                             |
-| -                                                       | `URI::Generic#userinfo=`                            |
-| -                                                       | `URI::Generic::COMPONENT`                           |
-| -                                                       | `URI::Generic::DEFAULT_PORT`                        |
+| this gem                                              | CRuby's URI gem                                     |
+|-------------------------------------------------------|-----------------------------------------------------|
+| `URIParser::URI#decode_www_form`[^1]                  | `URI.decode_www_form`                               |
+| -                                                     | `URI.decode_www_form_component`                     |
+| `URIParser.encode_www_form`[^2]                       | `URI.encode_www_form`                               |
+| -                                                     | `URI.encode_www_form_component`                     |
+| -                                                     | `URI.extract`[^4]                                   |
+| `URIParser.join`, `URIParser::URI.join`               | `URI.join`                                          |
+| `URIParser.parse`, `URIParser::URI.parse`             | `URI.parse`                                         |
+| -                                                     | `URI.regexp`[^3]                                    |
+| -                                                     | `URI.split`                                         |
+| -                                                     | `URI::UNSAFE`                                       |
+| -                                                     | `URI::Generic.build`                                |
+| -                                                     | `URI::Generic.build2`                               |
+| -                                                     | `URI::Generic.component`                            |
+| -                                                     | `URI::Generic.default_port`                         |
+| -                                                     | `URI::Generic.new`                                  |
+| -                                                     | `URI::Generic.use_registry`                         |
+| `URIParser::URI#merge`, `URIParser::URI#@+`[^5]       | `URI::Generic#merge`, `URI::Generic#@+`             |
+| `URIParser::URI#route_from`, `URIParser::URI#@-`      | `URI::Generic#route_from`, `URI::Generic#@-`        |
+| -                                                     | `URI::Generic#==`                                   |
+| `URIParser::URI#absolute`, `URIParser::URI#absolute?` | `URI::Generic#absolute`, `URI::Generic#absolute?`   |
+| -                                                     | `URI::Generic#coerce`                               |
+| -                                                     | `URI::Generic#component`                            |
+| -                                                     | `URI::Generic#find_proxy`                           |
+| `URIParser::URI#fragment`                             | `URI::Generic#fragment`                             |
+| -                                                     | `URI::Generic#fragment=`                            |
+| `URIParser::URI#hierarchical?`                        | `URI::Generic#hierarchical?`                        |
+| -                                                     | `URI::Generic#host`                                 |
+| -                                                     | `URI::Generic#host=`                                |
+| `URIParser::URI#hostname`                             | `URI::Generic#hostname`                             |
+| -                                                     | `URI::Generic#hostname=`                            |
+| `URIParser::URI#merge!`                               | `URI::Generic#merge!`                               |
+| `URIParser::URI#normalize!`                           | `URI::Generic#normalize`, `URI::Generic#normalize!` |
+| -                                                     | `URI::Generic#opaque`                               |
+| -                                                     | `URI::Generic#opaque=`                              |
+| -                                                     | `URI::Generic#parser`                               |
+| -                                                     | `URI::Generic#password`                             |
+| -                                                     | `URI::Generic#password=`                            |
+| -                                                     | `URI::Generic#path`                                 |
+| -                                                     | `URI::Generic#path=`                                |
+| -                                                     | `URI::Generic#port`                                 |
+| -                                                     | `URI::Generic#port=`                                |
+| `URIParser::URI#query`                                | `URI::Generic#query`                                |
+| -                                                     | `URI::Generic#query=`                               |
+| -                                                     | `URI::Generic#registry`                             |
+| -                                                     | `URI::Generic#registry=`                            |
+| `URIParser::URI#relative?`                            | `URI::Generic#relative?`                            |
+| `URIParser::URI#route_to`                             | `URI::Generic#route_to`                             |
+| `URIParser::URI#scheme`                               | `URI::Generic#scheme`                               |
+| -                                                     | `URI::Generic#scheme=`                              |
+| -                                                     | `URI::Generic#select`                               |
+| `URIParser::URI#to_s`                                 | `URI::Generic#to_s`                                 |
+| -                                                     | `URI::Generic#user`                                 |
+| -                                                     | `URI::Generic#user=`                                |
+| `URIParser::URI#userinfo`                             | `URI::Generic#userinfo`                             |
+| -                                                     | `URI::Generic#userinfo=`                            |
+| -                                                     | `URI::Generic::COMPONENT`                           |
+| -                                                     | `URI::Generic::DEFAULT_PORT`                        |
 
 [^1]: No `enc=Encoding::UTF_8` parameter as CRuby's URI gem.  TODO: Move to API document.
 

@@ -546,7 +546,9 @@ static mrb_value mrb_uriparser_create_reference(mrb_state *const mrb,
  * ```
  *
  * where `uri` is kind of `URIParser::URI`.  The components enabled is
- * normalized.  By default all parts are normalized.
+ * normalized.  By default all parts are normalized.  If path is empty, this
+ * doen't set `/`, which is the difference against CRuby's URI gem's
+ * `URI::Generic#normalize!` method.
  */
 static mrb_value mrb_uriparser_normalize(mrb_state *const mrb,
                                          const mrb_value self) {

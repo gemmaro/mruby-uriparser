@@ -176,6 +176,13 @@ assert("URIParser::URI#normalize!") do
                  query: false,
                  fragment: false)
   assert_equal "http://example.org", uri.to_s
+
+  uri = URIParser.parse("http://Example.Com")
+  assert_equal('http://Example.Com', uri.to_s)
+  uri.normalize!
+
+  # Note that it doen't set slash path for empty.
+  assert_equal('http://example.com', uri.to_s)
 end
 
 assert("URIParser::URI#decode_www_form") do
