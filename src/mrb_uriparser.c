@@ -642,7 +642,7 @@ void mrb_mruby_uriparser_gem_init(mrb_state *const mrb) {
   mrb_define_method(mrb, uri, "query", mrb_uriparser_query, MRB_ARGS_NONE());
   mrb_define_method(mrb, uri, "fragment", mrb_uriparser_fragment,
                     MRB_ARGS_NONE());
-  mrb_define_method(mrb, uri, "absolute?", mrb_uriparser_absolute_path,
+  mrb_define_method(mrb, uri, "absolute_path?", mrb_uriparser_absolute_path,
                     MRB_ARGS_NONE());
   mrb_define_method(mrb, uri, "to_s", mrb_uriparser_recompose, MRB_ARGS_NONE());
   mrb_define_method(mrb, uri, "merge!", mrb_uriparser_merge_mutably,

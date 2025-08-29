@@ -54,6 +54,10 @@ module URIParser
       include ClassMethods
     end
 
+    def absolute?
+      scheme ? true : false
+    end
+
     alias + merge
     alias - route_from
     alias absolute absolute?
@@ -72,7 +76,7 @@ module URIParser
     end
 
     def relative?
-      scheme ? true : false
+      !absolute?
     end
   end
 end

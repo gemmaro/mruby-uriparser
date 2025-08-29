@@ -99,12 +99,12 @@ assert("URIParser::URI#path_segments") do
   assert_equal([], uri.path_segments)
 end
 
-assert("URIParser::URI#absolute?") do
+assert("URIParser::URI#absolute_path?") do
   uri = URIParser.parse("/abs")
-  assert_equal(true, uri.absolute?)
+  assert_equal(true, uri.absolute_path?)
 
   uri = URIParser.parse("rel")
-  assert_equal(false, uri.absolute?)
+  assert_equal(false, uri.absolute_path?)
 end
 
 assert("URIParser::URI#to_s") do
@@ -156,6 +156,8 @@ assert("URIParser::URI#route_from") do
 
   dest = uri.route_from(base, domain_root: true)
   assert_equal("/one/TWO", dest.to_s)
+
+  assert_equal("foo/bar.html", (URIParser.parse("http://example.com/foo/bar.html") - URIParser.parse("http://example.com/")).to_s)
 end
 
 assert("URIParser::URI#normalize!") do
@@ -180,4 +182,9 @@ assert("URIParser::URI#decode_www_form") do
   uri = URIParser.parse("http://example.com?a=1&a=2&b=&c")
   assert_equal [['a', '1'], ['a', '2'], ['b', ''], ['c', nil]],
                uri.decode_www_form
+end
+
+assert("URIParser::URI#absolute?") do
+  assert_true(URIParser.parse("http://example.com/").absolute?)
+  assert_false(URIParser.parse("./").absolute?)
 end
