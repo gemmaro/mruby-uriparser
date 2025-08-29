@@ -16,6 +16,16 @@
 module URIParser
   Error = Class.new(StandardError)
 
+  module ClassMethods
+    def join(uri_str, *path)
+      path.reduce(URIParser.parse(uri_str)) { |memo, pat| memo.merge!(URIParser.parse(pat)) }
+    end
+  end
+
+  class << self
+    include ClassMethods
+  end
+
   class URI
     def self.parse(str)
       URIParser.parse(str)
@@ -23,6 +33,10 @@ module URIParser
 
     def self.from_filename(filename, windows: false)
       parse(URIParser.filename_to_uri_string(filename, windows:))
+    end
+
+    class << self
+      include ClassMethods
     end
 
     alias + merge

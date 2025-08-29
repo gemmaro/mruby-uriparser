@@ -434,8 +434,11 @@ static mrb_value mrb_uriparser_merge_mutably(mrb_state *const mrb,
                                              const mrb_value self) {
   const mrb_value rel;
   mrb_get_args(mrb, "o", &rel);
+
+  /* TODO: Accept string as well. */
   if (!mrb_obj_is_kind_of(mrb, rel, MRB_URIPARSER_URI(mrb)))
     MRB_URIPARSER_RAISE(mrb, "relative URI is expected to be URIParser::URI");
+
   UriUriA *const resolved = mrb_malloc(mrb, sizeof(UriUriA));
   mrb_uriparser_data *const data = DATA_PTR(self);
   if (uriAddBaseUriA(resolved, ((mrb_uriparser_data *)DATA_PTR(rel))->uri,
@@ -469,8 +472,11 @@ static mrb_value mrb_uriparser_merge(mrb_state *const mrb,
                                      const mrb_value self) {
   const mrb_value rel;
   mrb_get_args(mrb, "o", &rel);
+
+  /* TODO: Accept string as well. */
   if (!mrb_obj_is_kind_of(mrb, rel, MRB_URIPARSER_URI(mrb)))
     MRB_URIPARSER_RAISE(mrb, "relative URI is expected to be URIParser::URI");
+
   UriUriA *const resolved = mrb_malloc(mrb, sizeof(UriUriA));
   if (uriAddBaseUriA(resolved, ((mrb_uriparser_data *)DATA_PTR(rel))->uri,
                      ((mrb_uriparser_data *)DATA_PTR(self))->uri) !=

@@ -65,6 +65,14 @@ assert("URIParser.encode_www_form") do
                URIParser.encode_www_form([["a", ""], ["b", nil]])
 end
 
+assert("URIParser.join") do
+  uri = URIParser.join('http://www.ruby-lang.org/', '/ja/man-1.6/')
+  assert_equal 'http://www.ruby-lang.org/ja/man-1.6/', uri.to_s
+
+  uri = URIParser::URI.join('http://www.ruby-lang.org/', '/ja/man-1.6/')
+  assert_equal 'http://www.ruby-lang.org/ja/man-1.6/', uri.to_s
+end
+
 assert("URIParser::URI#path_segments") do
   uri = URIParser::URI.parse("/a/b")
   assert_equal(["a", "b"], uri.path_segments)
