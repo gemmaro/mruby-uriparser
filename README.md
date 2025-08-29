@@ -13,14 +13,14 @@ Here is an example.  Please refer to the API documentation for more details.
 ```ruby
 str = "http://user:pass@example.com:8000/some-path?some-query#some-fragment"
 uri = URIParser.parse(str) # or URIParser::URI.parse(str)
-uri.class            #=> URIParser::URI
-uri.scheme           #=> "http"
-uri.userinfo         #=> "user:pass"
-uri.host             #=> "example.com"
-uri.port             #=> "8000"
-uri.query            #=> "some-query"
-uri.fragment         #=> "some-fragment"
-uri.to_s             #=> same as str
+uri.class    #=> URIParser::URI
+uri.scheme   #=> "http"
+uri.userinfo #=> "user:pass"
+uri.host     #=> "example.com"
+uri.port     #=> "8000"
+uri.query    #=> "some-query"
+uri.fragment #=> "some-fragment"
+uri.to_s     #=> same as str
 ```
 
 Use constant alias (e.g. `URI = URIParser::URI`) as you like.
