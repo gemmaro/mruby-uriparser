@@ -70,10 +70,21 @@ The below is the supported features list.
 | -                                                       | `URI::Generic#port`                                 |
 | -                                                       | `URI::Generic#port=`                                |
 | `URIParser::URI#query`                                  | `URI::Generic#query`                                |
-| `URIParser::URI#query=`                                 | `URI::Generic#query=`                               |
+| -                                                       | `URI::Generic#query=`                               |
 | -                                                       | `URI::Generic#registry`                             |
 | -                                                       | `URI::Generic#registry=`                            |
 | `URIParser::URI#relative?`                              | `URI::Generic#relative?`                            |
+| `URIParser::URI#route_to`                               | `URI::Generic#route_to`                             |
+| `URIParser::URI#scheme`                                 | `URI::Generic#scheme`                               |
+| -                                                       | `URI::Generic#scheme=`                              |
+| -                                                       | `URI::Generic#select`                               |
+| `URIParser::URI#to_s`                                   | `URI::Generic#to_s`                                 |
+| -                                                       | `URI::Generic#user`                                 |
+| -                                                       | `URI::Generic#user=`                                |
+| `URIParser::URI#userinfo`                               | `URI::Generic#userinfo`                             |
+| -                                                       | `URI::Generic#userinfo=`                            |
+| -                                                       | `URI::Generic::COMPONENT`                           |
+| -                                                       | `URI::Generic::DEFAULT_PORT`                        |
 
 [^1]: No `enc=Encoding::UTF_8` parameter as CRuby's URI gem.
 
