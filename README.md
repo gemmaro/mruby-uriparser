@@ -1,14 +1,16 @@
 # mruby uriparser
 
-The [uriparser](https://uriparser.github.io/) binding for mruby.
+mruby uriparser provides [uriparser](https://uriparser.github.io/) bindings for [mruby](https://mruby.org/).
+
+## Installation
+
+Add the following to your `build_config.rb`:
 
 ```ruby
 conf.linker.libraries << 'uriparser'
 ```
 
-in `build_config.rb`.
-
-Here is an example.  Please refer to the API documentation for more details.
+## Usage
 
 ```ruby
 str = "http://user:pass@example.com:8000/some-path?some-query#some-fragment"
@@ -23,12 +25,18 @@ uri.fragment #=> "some-fragment"
 uri.to_s     #=> same as str
 ```
 
-The below is the supported features list.
-"-" means it is not supported yet or has no plan to support it.
-There might be diffent even if it has same name.
-Please check API document for details.
+You may use a constant alias for convenience:
 
-| this gem                                              | CRuby's URI gem                                     |
+```ruby
+URI = URIParser::URI
+```
+
+## Features
+
+Below is a comparison of supported features with CRuby's URI gem.
+A dash (`-`) indicates not supported or no plans to support.
+
+| mruby uriparser                                       | CRuby URI gem                                       |
 |-------------------------------------------------------|-----------------------------------------------------|
 | `URIParser::URI#decode_www_form`[^1]                  | `URI.decode_www_form`                               |
 | -                                                     | `URI.decode_www_form_component`                     |
@@ -88,28 +96,31 @@ Please check API document for details.
 | -                                                     | `URI::Generic::COMPONENT`                           |
 | -                                                     | `URI::Generic::DEFAULT_PORT`                        |
 
-[^1]: No `enc=Encoding::UTF_8` parameter as CRuby's URI gem.  TODO: Move to API document.
+[^1]: No `enc=Encoding::UTF_8` parameter as in CRuby's URI gem.
 
-[^2]: `enum` is only `Array[String, String | nil]`.  No `enc=nil` parameter as CRuby's URI gem.  TODO: Move to API document.
+[^2]: Only supports `Array[String, String | nil]` for `enum`. No `enc=nil` parameter.
 
-[^3]: This method is obsolete since Ruby 2.2.
+[^3]: Obsolete since Ruby 2.2.
 
-[^4]: This method is obsolete since Ruby 2.2.
+[^4]: Obsolete since Ruby 2.2.
 
-[^5]: Passed relative path must be URI at the moment.  TODO: Move to API document.
+[^5]: Relative path must be a URI. See API docs.
 
-Use constant alias (e.g. `URI = URIParser::URI`) as you like.
+Refer to the API documentation for details.
+
+## Running Tests
+
+To run tests:
 
 ```shell
 rake --directory /path/to/mruby all test MRUBY_CONFIG=$PWD/build_config.rb
 ```
 
-to run tests.  You can also use `test/run` script with `MRUBY_SRC` env var in `.env` file.
+Alternatively, use the `test/run` script with `MRUBY_SRC` set in your `.env` file.
 
-## Prior works
+## Prior Work
 
-There is [mruby-uri-parser](https://github.com/Asmod4n/mruby-uri-parser "GitHub"),
-which uses [uri\_parser](https://github.com/Zewo/uri_parser "GitHub").
+See [mruby-uri-parser](https://github.com/Asmod4n/mruby-uri-parser), which uses [uri\_parser](https://github.com/Zewo/uri_parser).
 
 ## License
 
