@@ -12,7 +12,7 @@ Here is an example.  Please refer to the API documentation for more details.
 
 ```ruby
 str = "http://user:pass@example.com:8000/some-path?some-query#some-fragment"
-uri = URIParser.parse(str) # or URIParser::URI.parse(str)
+uri = URIParser.parse(str)
 uri.class    #=> URIParser::URI
 uri.scheme   #=> "http"
 uri.userinfo #=> "user:pass"
@@ -22,6 +22,24 @@ uri.query    #=> "some-query"
 uri.fragment #=> "some-fragment"
 uri.to_s     #=> same as str
 ```
+
+| this gem                                  | CRuby's URI gem                 |
+|-------------------------------------------|---------------------------------|
+| `URIParser::URI#decode_www_form`[^1]      | `URI.decode_www_form`           |
+| -                                         | `URI.decode_www_form_component` |
+| `URIParser.encode_www_form`[^2]           | `URI.encode_www_form`           |
+| -                                         | `URI.encode_www_form_component` |
+| -                                         | `URI.extract`[^4]               |
+| `URIParser.join`, `URIParser::URI.join`   | `URI.join`                      |
+| `URIParser.parse`, `URIParser::URI.parse` | `URI.parse`                     |
+| -                                         | `URI.regexp`[^3]                |
+| -                                         | `URI.split`                     |
+| -                                         | `URI::UNSAFE`                   |
+
+[^1]: No `enc=Encoding::UTF_8` parameter as CRuby's URI gem.
+[^2]: `enum` is only `Array[String, String | nil]`.  No `enc=nil` parameter as CRuby's URI gem.
+[^3]: This method is obsolete since Ruby 2.2.
+[^4]: This method is obsolete since Ruby 2.2.
 
 Use constant alias (e.g. `URI = URIParser::URI`) as you like.
 
