@@ -57,6 +57,7 @@ module URIParser
     alias + merge
     alias - route_from
     alias absolute absolute?
+    alias normalize normalize!
 
     def route_to(dest, domain_root: false)
       dest.route_from(self, domain_root:)
