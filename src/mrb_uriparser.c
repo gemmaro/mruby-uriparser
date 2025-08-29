@@ -94,16 +94,6 @@ static mrb_value mrb_uriparser_str_in_range(mrb_state *const mrb,
   return val;
 }
 
-static mrb_value mrb_uriparser_int_in_range(mrb_state *const mrb,
-                                            const UriTextRangeA range) {
-  char *const str = mrb_uriparser_cstr_in_range(mrb, range);
-  if (str == NULL)
-    return mrb_nil_value();
-  const mrb_value val = mrb_int_value(mrb, atoi(str));
-  free(str);
-  return val;
-}
-
 static mrb_value mrb_uriparser_new(mrb_state *const mrb, UriUriA *uri) {
   const mrb_value value = mrb_obj_new(mrb, MRB_URIPARSER_URI(mrb), 0, NULL);
   DATA_TYPE(value) = &mrb_uriparser_data_type;
@@ -323,7 +313,7 @@ static mrb_value mrb_uriparser_host(mrb_state *const mrb,
 }
 
 /**
- * @brief Get port as integer
+ * @brief Get port as string
  *
  * ```ruby
  * uri.port
@@ -333,7 +323,7 @@ static mrb_value mrb_uriparser_host(mrb_state *const mrb,
  */
 static mrb_value mrb_uriparser_port(mrb_state *const mrb,
                                     const mrb_value self) {
-  return mrb_uriparser_int_in_range(
+  return mrb_uriparser_str_in_range(
       mrb, ((mrb_uriparser_data *)DATA_PTR(self))->uri->portText);
 }
 

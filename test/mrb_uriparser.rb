@@ -23,7 +23,7 @@ assert("URIParser.parse") do
   assert_nil(uri.fragment)
 
   uri = URIParser.parse("gemini://example.com:1965")
-  assert_equal(1965, uri.port)
+  assert_equal('1965', uri.port)
 
   uri = URIParser.parse("http://u:p@example.com?q#f")
   assert_equal("u:p", uri.userinfo)
