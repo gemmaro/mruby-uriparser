@@ -78,7 +78,7 @@ static char *mrb_uriparser_cstr_in_range(mrb_state *const mrb,
   if (range.first == NULL || range.afterLast == NULL)
     return NULL;
   const size_t len = range.afterLast - range.first;
-  char *const str = malloc(len + 1);
+  char *const str = malloc((len + 1) * sizeof(char));
   strncpy(str, range.first, len);
   str[len] = '\0';
   return str;
@@ -130,7 +130,7 @@ static mrb_value mrb_uriparser_parse(mrb_state *const mrb,
   if (uriParseSingleUriA(uri, str, &error_pos) != URI_SUCCESS) {
     const size_t len = strlen(MRB_URIPARSER_PARSE_FAILED) + strlen(error_pos) +
                        5 /* for punctuations and null */;
-    char *const message = malloc(len);
+    char *const message = malloc(len * sizeof(char));
     if (message == NULL)
       MRB_URIPARSER_RAISE_NOMEM(mrb, "no space for error message");
     sprintf(message, "%s: `%s'", MRB_URIPARSER_PARSE_FAILED, error_pos);
