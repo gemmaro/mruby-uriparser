@@ -58,5 +58,9 @@ module URIParser
     def to_filename(windows: false)
       URIParser.uri_string_to_filename(to_s, windows:)
     end
+
+    def hierarchical?
+      path ? true : false
+    end
   end
 end

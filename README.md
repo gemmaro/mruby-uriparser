@@ -23,23 +23,47 @@ uri.fragment #=> "some-fragment"
 uri.to_s     #=> same as str
 ```
 
-| this gem                                  | CRuby's URI gem                 |
-|-------------------------------------------|---------------------------------|
-| `URIParser::URI#decode_www_form`[^1]      | `URI.decode_www_form`           |
-| -                                         | `URI.decode_www_form_component` |
-| `URIParser.encode_www_form`[^2]           | `URI.encode_www_form`           |
-| -                                         | `URI.encode_www_form_component` |
-| -                                         | `URI.extract`[^4]               |
-| `URIParser.join`, `URIParser::URI.join`   | `URI.join`                      |
-| `URIParser.parse`, `URIParser::URI.parse` | `URI.parse`                     |
-| -                                         | `URI.regexp`[^3]                |
-| -                                         | `URI.split`                     |
-| -                                         | `URI::UNSAFE`                   |
+The below is the supported features list.
+"-" means it is not supported yet or has no plan to support it.
+
+| this gem                                              | CRuby's URI gem                                   |
+|-------------------------------------------------------|---------------------------------------------------|
+| `URIParser::URI#decode_www_form`[^1]                  | `URI.decode_www_form`                             |
+| -                                                     | `URI.decode_www_form_component`                   |
+| `URIParser.encode_www_form`[^2]                       | `URI.encode_www_form`                             |
+| -                                                     | `URI.encode_www_form_component`                   |
+| -                                                     | `URI.extract`[^4]                                 |
+| `URIParser.join`, `URIParser::URI.join`               | `URI.join`                                        |
+| `URIParser.parse`, `URIParser::URI.parse`             | `URI.parse`                                       |
+| -                                                     | `URI.regexp`[^3]                                  |
+| -                                                     | `URI.split`                                       |
+| -                                                     | `URI::UNSAFE`                                     |
+| -                                                     | `URI::Generic.build`                              |
+| -                                                     | `URI::Generic.build2`                             |
+| -                                                     | `URI::Generic.component`                          |
+| -                                                     | `URI::Generic.default_port`                       |
+| -                                                     | `URI::Generic.new`                                |
+| -                                                     | `URI::Generic.use_registry`                       |
+| `URIParser::URI#merge`, `URIParser::URI#@+`[^5]       | `URI::Generic#merge`, `URI::Generic#@+`           |
+| `URIParser::URI#route_from`, `URIParser::URI#@-`      | `URI::Generic#route_from`, `URI::Generic#@-`      |
+| -                                                     | `URI::Generic#==`                                 |
+| `URIParser::URI#absolute`, `URIParser::URI#absolute?` | `URI::Generic#absolute`, `URI::Generic#absolute?` |
+| -                                                     | `URI::Generic#coerce`                             |
+| -                                                     | `URI::Generic#component`                          |
+| -                                                     | `URI::Generic#find_proxy`                         |
+| `URIParser::URI#fragment`                             | `URI::Generic#fragment`                           |
+| -                                                     | `URI::Generic#fragment=`                          |
+| `URIParser::URI#hierarchical?`                        | `URI::Generic#hierarchical?`                      |
 
 [^1]: No `enc=Encoding::UTF_8` parameter as CRuby's URI gem.
+
 [^2]: `enum` is only `Array[String, String | nil]`.  No `enc=nil` parameter as CRuby's URI gem.
+
 [^3]: This method is obsolete since Ruby 2.2.
+
 [^4]: This method is obsolete since Ruby 2.2.
+
+[^5]: Passed relative path must be URI at the moment.
 
 Use constant alias (e.g. `URI = URIParser::URI`) as you like.
 
