@@ -70,5 +70,9 @@ module URIParser
     def hierarchical?
       path ? true : false
     end
+
+    def relative?
+      scheme ? true : false
+    end
   end
 end
