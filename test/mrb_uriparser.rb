@@ -17,7 +17,7 @@ assert("URIParser.parse") do
   uri = URIParser.parse("gemini://geminiprotocol.net/docs/ja/protocol-specification.gmi")
   assert_kind_of(URIParser::URI, uri)
   assert_equal("gemini", uri.scheme)
-  assert_equal("geminiprotocol.net", uri.host)
+  assert_equal("geminiprotocol.net", uri.hostname)
   assert_equal(nil, uri.port)
   assert_nil(uri.query)
   assert_nil(uri.fragment)
@@ -29,6 +29,10 @@ assert("URIParser.parse") do
   assert_equal("u:p", uri.userinfo)
   assert_equal("q", uri.query)
   assert_equal("f", uri.fragment)
+
+  uri = URIParser.parse("http://[::1]/bar")
+  assert_equal "::1", uri.hostname
+  # assert_equal "[::1]", uri.host
 
   assert_raise_with_message(URIParser::Error, "URI parse failed at: ` bar'") do
     URIParser.parse("foo bar")

@@ -295,16 +295,18 @@ static mrb_value mrb_uriparser_userinfo(mrb_state *const mrb,
 }
 
 /**
- * @brief Get host string
+ * @brief Get hostname string
  *
  * ```ruby
- * uri.host
+ * uri.hostname
  * ```
  *
- * where `uri` is `URIParser::URI`.
+ * where `uri` is `URIParser::URI`.  Note that it returns `::1` for
+ * `http://[::1]/bar` so it corresponds to CRuby's URI gem's
+ * `URI::Generic#hostname` method.
  */
-static mrb_value mrb_uriparser_host(mrb_state *const mrb,
-                                    const mrb_value self) {
+static mrb_value mrb_uriparser_hostname(mrb_state *const mrb,
+                                        const mrb_value self) {
   return mrb_uriparser_str_in_range(
       mrb, ((mrb_uriparser_data *)DATA_PTR(self))->uri->hostText);
 }
@@ -632,7 +634,8 @@ void mrb_mruby_uriparser_gem_init(mrb_state *const mrb) {
   mrb_define_method(mrb, uri, "scheme", mrb_uriparser_scheme, MRB_ARGS_NONE());
   mrb_define_method(mrb, uri, "userinfo", mrb_uriparser_userinfo,
                     MRB_ARGS_NONE());
-  mrb_define_method(mrb, uri, "host", mrb_uriparser_host, MRB_ARGS_NONE());
+  mrb_define_method(mrb, uri, "hostname", mrb_uriparser_hostname,
+                    MRB_ARGS_NONE());
   mrb_define_method(mrb, uri, "port", mrb_uriparser_port, MRB_ARGS_NONE());
   mrb_define_method(mrb, uri, "path_segments", mrb_uriparser_path_segments,
                     MRB_ARGS_NONE());

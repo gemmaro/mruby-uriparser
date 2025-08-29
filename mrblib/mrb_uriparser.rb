@@ -22,11 +22,18 @@ module URIParser
       path.reduce(URIParser.parse(uri_str)) { |memo, pat| memo.merge!(URIParser.parse(pat)) }
     end
 
+    # TODO: Implement this.
     def split(uri)
       uri = parse(uri)
 
       # TODO: Support registry, path, and opaque
-      [uri.scheme, uri.userinfo, uri.host, uri.port, nil, uri.path, nil, uri.query, uri.fragment]
+      [uri.scheme, uri.userinfo,
+       nil, # host
+       uri.port,
+       nil, # registry
+       nil, # path
+       nil, # opaque
+       uri.query, uri.fragment]
     end
   end
 
