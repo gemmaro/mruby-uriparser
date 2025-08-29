@@ -135,6 +135,16 @@ assert("URIParser::URI#merge") do
   assert_kind_of(URIParser::URI, resolved)
   assert_equal("file:///one/TWO", resolved.to_s)
   assert_equal("file:///one/two/three", uri.to_s)
+
+  rel = URIParser.parse('/foo/bar.html')
+  assert_equal("http://example.com/foo/bar.html",
+               (URIParser.parse('http://example.com/') + rel).to_s)
+
+  assert_equal("http://a/b/c/d;p?y", URIParser.parse('http://a/b/c/d;p?q').merge(URIParser.parse('?y')).to_s)
+  assert_equal("http://a/g", URIParser.parse('http://a/b/c/d;p?q').merge(URIParser.parse('/./g')).to_s)
+  assert_equal("http://a/g", URIParser.parse('http://a/b/c/d;p?q').merge(URIParser.parse('/../g')).to_s)
+  assert_equal("http://a/g", URIParser.parse('http://a/b/c/d;p?q').merge(URIParser.parse('../../../g')).to_s)
+  assert_equal("http://a/g", URIParser.parse('http://a/b/c/d;p?q').merge(URIParser.parse('../../../../g')).to_s)
 end
 
 assert("URIParser::URI#route_from") do
