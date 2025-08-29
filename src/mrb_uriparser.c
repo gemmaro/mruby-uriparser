@@ -128,9 +128,10 @@ static mrb_value mrb_uriparser_parse(mrb_state *const mrb,
   UriUriA *const uri = mrb_malloc(mrb, sizeof(UriUriA));
   const char *error_pos;
   if (uriParseSingleUriA(uri, str, &error_pos) != URI_SUCCESS) {
-    const size_t len = strlen(MRB_URIPARSER_PARSE_FAILED) + strlen(error_pos) +
-                       5 /* for punctuations and null */;
-    char *const message = malloc(len * sizeof(char));
+    char *const message =
+        malloc((strlen(MRB_URIPARSER_PARSE_FAILED) + strlen(error_pos) +
+                5 /* for punctuations and null */) *
+               sizeof(char));
     if (message == NULL)
       MRB_URIPARSER_RAISE_NOMEM(mrb, "no space for error message");
     sprintf(message, "%s: `%s'", MRB_URIPARSER_PARSE_FAILED, error_pos);
@@ -155,21 +156,19 @@ static mrb_value mrb_uriparser_filename_to_uri_string(mrb_state *const mrb,
   const char *abs_filename = NULL;
   const mrb_int kw_num = 1;
   const mrb_sym windows_key = mrb_intern_lit(mrb, "windows");
-  const mrb_sym *const kw_table = {&windows_key};
   mrb_value kw_values[kw_num];
   const mrb_kwargs kwargs = {.num = kw_num,
                              .required = 0,
                              .rest = NULL,
-                             .table = kw_table,
+                             .table = &windows_key,
                              .values = kw_values};
   mrb_get_args(mrb, "z:", &abs_filename, &kwargs);
   if (mrb_undef_p(kw_values[0]))
     kw_values[0] = mrb_false_value();
-  const mrb_value windows_value = kw_values[0];
-  const mrb_bool windows = mrb_test(windows_value);
-  const int bytes_needed =
-      (windows ? 8 : 7 /* Unix */) + 3 * strlen(abs_filename) + 1;
-  char *const abs_uri = malloc(bytes_needed * sizeof(char));
+  const mrb_bool windows = mrb_test(kw_values[0]);
+  char *const abs_uri =
+      malloc(((windows ? 8 : 7 /* Unix */) + 3 * strlen(abs_filename) + 1) *
+             sizeof(char));
   if ((windows ? uriWindowsFilenameToUriStringA(abs_filename, abs_uri)
                : uriUnixFilenameToUriStringA(abs_filename, abs_uri)) !=
       URI_SUCCESS) {
@@ -197,20 +196,18 @@ static mrb_value mrb_uriparser_uri_string_to_filename(mrb_state *const mrb,
   const char *abs_uri = NULL;
   const mrb_int kw_num = 1;
   const mrb_sym windows_key = mrb_intern_lit(mrb, "windows");
-  const mrb_sym *const kw_table = {&windows_key};
   mrb_value kw_values[kw_num];
   const mrb_kwargs kwargs = {.num = kw_num,
                              .required = 0,
                              .rest = NULL,
-                             .table = kw_table,
+                             .table = &windows_key,
                              .values = kw_values};
   mrb_get_args(mrb, "z:", &abs_uri, &kwargs);
   if (mrb_undef_p(kw_values[0]))
     kw_values[0] = mrb_false_value();
-  const mrb_value windows_value = kw_values[0];
-  const mrb_bool windows = mrb_test(windows_value);
-  const int bytes_needed = strlen(abs_uri) + 1 - (windows ? 8 : 7 /* Unix */);
-  char *const abs_filename = malloc(bytes_needed * sizeof(char));
+  const mrb_bool windows = mrb_test(kw_values[0]);
+  char *const abs_filename = malloc(
+      (strlen(abs_uri) + 1 - (windows ? 8 : 7 /* Unix */)) * sizeof(char));
   if ((windows ? uriUriStringToWindowsFilenameA(abs_uri, abs_filename)
                : uriUriStringToUnixFilenameA(abs_uri, abs_filename)) !=
       URI_SUCCESS) {
@@ -251,7 +248,6 @@ static mrb_value mrb_uriparser_compose_query(mrb_state *const mrb,
     query_list = current;
   }
   int chars_required;
-  int chars_written;
   char *query_string;
   if (uriComposeQueryCharsRequiredA(query_list, &chars_required) != URI_SUCCESS)
     MRB_URIPARSER_RAISE(
@@ -259,10 +255,11 @@ static mrb_value mrb_uriparser_compose_query(mrb_state *const mrb,
   query_string = malloc((chars_required + 1) * sizeof(char));
   if (query_string == NULL)
     MRB_URIPARSER_RAISE_NOMEM(mrb, "no space for query string");
+  int chars_written;
   if (uriComposeQueryA(query_string, query_list, chars_required + 1,
                        &chars_written) != URI_SUCCESS)
     MRB_URIPARSER_RAISE(mrb, "failed to compose query");
-  mrb_value str = mrb_str_new_cstr(mrb, query_string);
+  mrb_value str = mrb_str_new(mrb, query_string, chars_written - 1);
   free(query_string);
   return str;
 }
@@ -439,10 +436,10 @@ static mrb_value mrb_uriparser_merge_mutably(mrb_state *const mrb,
   mrb_get_args(mrb, "o", &rel);
   if (!mrb_obj_is_kind_of(mrb, rel, MRB_URIPARSER_URI(mrb)))
     MRB_URIPARSER_RAISE(mrb, "relative URI is expected to be URIParser::URI");
-  const mrb_uriparser_data *const rel_data = DATA_PTR(rel);
   UriUriA *const resolved = mrb_malloc(mrb, sizeof(UriUriA));
   mrb_uriparser_data *const data = DATA_PTR(self);
-  if (uriAddBaseUriA(resolved, rel_data->uri, data->uri) != URI_SUCCESS)
+  if (uriAddBaseUriA(resolved, ((mrb_uriparser_data *)DATA_PTR(rel))->uri,
+                     data->uri) != URI_SUCCESS)
     MRB_URIPARSER_RAISE(mrb, "failed to resolve URI");
   mrb_free(mrb, data->uri);
   data->uri = resolved;
@@ -474,10 +471,10 @@ static mrb_value mrb_uriparser_merge(mrb_state *const mrb,
   mrb_get_args(mrb, "o", &rel);
   if (!mrb_obj_is_kind_of(mrb, rel, MRB_URIPARSER_URI(mrb)))
     MRB_URIPARSER_RAISE(mrb, "relative URI is expected to be URIParser::URI");
-  const mrb_uriparser_data *const rel_data = DATA_PTR(rel);
   UriUriA *const resolved = mrb_malloc(mrb, sizeof(UriUriA));
-  mrb_uriparser_data *const data = DATA_PTR(self);
-  if (uriAddBaseUriA(resolved, rel_data->uri, data->uri) != URI_SUCCESS)
+  if (uriAddBaseUriA(resolved, ((mrb_uriparser_data *)DATA_PTR(rel))->uri,
+                     ((mrb_uriparser_data *)DATA_PTR(self))->uri) !=
+      URI_SUCCESS)
     MRB_URIPARSER_RAISE(mrb, "failed to resolve URI");
   return mrb_uriparser_new(mrb, resolved);
 }
@@ -511,24 +508,21 @@ static mrb_value mrb_uriparser_create_reference(mrb_state *const mrb,
   const mrb_value base;
   const mrb_int num = 1;
   const mrb_sym domain_root_key = mrb_intern_lit(mrb, "domain_root");
-  const mrb_sym *const table = {&domain_root_key};
   mrb_value values[num];
   const mrb_kwargs kwargs = {.num = num,
                              .required = 0,
                              .rest = NULL,
-                             .table = table,
+                             .table = &domain_root_key,
                              .values = values};
   mrb_get_args(mrb, "o:", &base, &kwargs);
   if (mrb_undef_p(values[0]))
     values[0] = mrb_false_value();
-  const mrb_value domain_root = values[0];
   if (!mrb_obj_is_kind_of(mrb, base, MRB_URIPARSER_URI(mrb)))
     MRB_URIPARSER_RAISE(mrb, "base URI is expected to be URIParser::URI");
-  const mrb_uriparser_data *const base_data = DATA_PTR(base);
-  const mrb_uriparser_data *const data = DATA_PTR(self);
   UriUriA *const dest = mrb_malloc(mrb, sizeof(UriUriA));
-  if (uriRemoveBaseUriA(dest, data->uri, base_data->uri,
-                        mrb_test(domain_root) ? URI_TRUE : URI_FALSE) !=
+  if (uriRemoveBaseUriA(dest, ((mrb_uriparser_data *)DATA_PTR(self))->uri,
+                        ((mrb_uriparser_data *)DATA_PTR(base))->uri,
+                        mrb_test(values[0]) ? URI_TRUE : URI_FALSE) !=
       URI_SUCCESS)
     MRB_URIPARSER_RAISE(mrb, "failed to remove base URI");
   return mrb_uriparser_new(mrb, dest);
@@ -573,8 +567,8 @@ static mrb_value mrb_uriparser_normalize(mrb_state *const mrb,
     mask |= URI_NORMALIZE_QUERY;
   if (mrb_undef_p(kw_values[5]) || mrb_test(kw_values[5]))
     mask |= URI_NORMALIZE_FRAGMENT;
-  const mrb_uriparser_data *const data = DATA_PTR(self);
-  if (uriNormalizeSyntaxExA(data->uri, mask) != URI_SUCCESS)
+  if (uriNormalizeSyntaxExA(((mrb_uriparser_data *)DATA_PTR(self))->uri,
+                            mask) != URI_SUCCESS)
     MRB_URIPARSER_RAISE(mrb, "failed to normalize");
   return self;
 }
