@@ -73,6 +73,11 @@ assert("URIParser.join") do
   assert_equal 'http://www.ruby-lang.org/ja/man-1.6/', uri.to_s
 end
 
+# assert("URIParser.split") do
+#   assert_equal ["http", nil, "www.ruby-lang.org", nil, nil, "/", nil, nil, nil],
+#                URIParser.split("http://www.ruby-lang.org/")
+# end
+
 assert("URIParser::URI#path_segments") do
   uri = URIParser::URI.parse("/a/b")
   assert_equal(["a", "b"], uri.path_segments)
