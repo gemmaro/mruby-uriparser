@@ -595,10 +595,7 @@ static mrb_value mrb_uriparser_dissect_query(mrb_state *const mrb,
   mrb_value ary = mrb_ary_new(mrb);
   while (query_list != NULL) {
     mrb_value entry = mrb_ary_new(mrb);
-    mrb_ary_push(mrb, entry,
-                 query_list->key == NULL
-                     ? mrb_nil_value()
-                     : mrb_str_new_cstr(mrb, query_list->key));
+    mrb_ary_push(mrb, entry, mrb_str_new_cstr(mrb, query_list->key));
     mrb_ary_push(mrb, entry,
                  query_list->value == NULL
                      ? mrb_nil_value()
