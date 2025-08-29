@@ -25,6 +25,8 @@ uri.to_s     #=> same as str
 
 The below is the supported features list.
 "-" means it is not supported yet or has no plan to support it.
+There might be diffent even if it has same name.
+Please check API document for details.
 
 | this gem                                                | CRuby's URI gem                                     |
 |---------------------------------------------------------|-----------------------------------------------------|
@@ -86,15 +88,15 @@ The below is the supported features list.
 | -                                                       | `URI::Generic::COMPONENT`                           |
 | -                                                       | `URI::Generic::DEFAULT_PORT`                        |
 
-[^1]: No `enc=Encoding::UTF_8` parameter as CRuby's URI gem.
+[^1]: No `enc=Encoding::UTF_8` parameter as CRuby's URI gem.  TODO: Move to API document.
 
-[^2]: `enum` is only `Array[String, String | nil]`.  No `enc=nil` parameter as CRuby's URI gem.
+[^2]: `enum` is only `Array[String, String | nil]`.  No `enc=nil` parameter as CRuby's URI gem.  TODO: Move to API document.
 
 [^3]: This method is obsolete since Ruby 2.2.
 
 [^4]: This method is obsolete since Ruby 2.2.
 
-[^5]: Passed relative path must be URI at the moment.
+[^5]: Passed relative path must be URI at the moment.  TODO: Move to API document.
 
 Use constant alias (e.g. `URI = URIParser::URI`) as you like.
 

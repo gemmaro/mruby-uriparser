@@ -67,6 +67,12 @@ assert("URIParser.encode_www_form") do
                URIParser.encode_www_form([["a", "1"], ["b", "2"], ["c", "x yz"]])
   assert_equal "a=&b",
                URIParser.encode_www_form([["a", ""], ["b", nil]])
+
+  # TODO: Implement Hash case.
+  assert_raise_with_message(TypeError, "Hash cannot be converted to Array") do
+    URIParser.encode_www_form({"a"=>"1", "b"=>"2", "c"=>"x yz"})
+    # "a=1&b=2&c=x+yz"
+  end
 end
 
 assert("URIParser.join") do
