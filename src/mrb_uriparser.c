@@ -106,18 +106,15 @@ static mrb_value mrb_uriparser_new(mrb_state *const mrb, UriUriA *uri) {
 /* initialized functions */
 
 /**
- * @brief Parse string into URI
+ * @brief Parse a string into a URI object.
  *
  * ```ruby
- * URIParser.parse(str) #=> kind of URIParser::URI
+ * URIParser.parse(str)
+ * URIParser::URI.parse(str)
  * ```
  *
- * or
- *
- * ```ruby
- * URIParser::URI.parse(str) #=> kind of URIParser::URI
- * ```
- *
+ * @param str URI string to parse.
+ * @return `URIParser::URI` instance.
  * @sa mrb_uriparser_recompose
  */
 static mrb_value mrb_uriparser_parse(mrb_state *const mrb,
@@ -141,14 +138,15 @@ static mrb_value mrb_uriparser_parse(mrb_state *const mrb,
 }
 
 /**
- * @brief Filename to URI string
+ * @brief Convert a filename to a URI string.
  *
  * ```ruby
  * URIParser.filename_to_uri_string(filename, windows: false)
  * ```
  *
- * returns string.
- *
+ * @param filename Absolute filename.
+ * @param windows  If true, use Windows path conversion.
+ * @return URI string.
  * @sa mrb_uriparser_uri_string_to_filename
  */
 static mrb_value mrb_uriparser_filename_to_uri_string(mrb_state *const mrb,
@@ -181,14 +179,15 @@ static mrb_value mrb_uriparser_filename_to_uri_string(mrb_state *const mrb,
 }
 
 /**
- * @brief URI string to filename
+ * @brief Convert a URI string to a filename.
  *
  * ```ruby
- * URIParser.uri_string_filename(uri, windows: false)
+ * URIParser.uri_string_to_filename(uri, windows: false)
  * ```
  *
- * returns string.
- *
+ * @param uri URI string.
+ * @param windows If `true`, use Windows path conversion.
+ * @return Filename string.
  * @sa mrb_uriparser_filename_to_uri_string
  */
 static mrb_value mrb_uriparser_uri_string_to_filename(mrb_state *const mrb,
@@ -220,15 +219,16 @@ static mrb_value mrb_uriparser_uri_string_to_filename(mrb_state *const mrb,
 }
 
 /**
- * @brief Encode WWW form
+ * @brief Encode an array of key-value pairs as a WWW form query string.
  *
  * ```ruby
  * URIParser.encode_www_form(query_list)
  * ```
  *
- * where `query_list` is array.  Each entry has string and value.  Value is
- * nil or string.
+ * @param query_list Array of `[key, value]` pairs.  Key is `String`.  Value
+ * may be `nil` or `String`.
  *
+ * @return Encoded query string.
  * @sa mrb_uriparser_dissect_query
  */
 static mrb_value mrb_uriparser_compose_query(mrb_state *const mrb,
@@ -265,13 +265,14 @@ static mrb_value mrb_uriparser_compose_query(mrb_state *const mrb,
 }
 
 /**
- * @brief Get scheme string
+ * @brief Get the scheme component of the URI.
  *
  * ```ruby
  * uri.scheme
  * ```
  *
- * where `uri` is `URIParser::URI`.
+ * @param self `URIParser::URI` instance.
+ * @return Scheme string or `nil`.
  */
 static mrb_value mrb_uriparser_scheme(mrb_state *const mrb,
                                       const mrb_value self) {
@@ -280,13 +281,14 @@ static mrb_value mrb_uriparser_scheme(mrb_state *const mrb,
 }
 
 /**
- * @brief Get userinfo string
+ * @brief Get the userinfo component of the URI.
  *
  * ```ruby
  * uri.userinfo
  * ```
  *
- * where `uri` is `URIParser::URI`.
+ * @param self `URIParser::URI` instance.
+ * @return Userinfo string or `nil`.
  */
 static mrb_value mrb_uriparser_userinfo(mrb_state *const mrb,
                                         const mrb_value self) {
@@ -295,15 +297,17 @@ static mrb_value mrb_uriparser_userinfo(mrb_state *const mrb,
 }
 
 /**
- * @brief Get hostname string
+ * @brief Get the hostname component of the URI.
  *
  * ```ruby
  * uri.hostname
  * ```
  *
- * where `uri` is `URIParser::URI`.  Note that it returns `::1` for
- * `http://[::1]/bar` so it corresponds to CRuby's URI gem's
- * `URI::Generic#hostname` method.
+ * @param self `URIParser::URI` instance.
+ * @return Hostname string or `nil`.
+ *
+ * Note that it returns `::1` for `http://[::1]/bar` so it corresponds to
+ * CRuby's URI gem's `URI::Generic#hostname` method.
  */
 static mrb_value mrb_uriparser_hostname(mrb_state *const mrb,
                                         const mrb_value self) {
@@ -312,13 +316,14 @@ static mrb_value mrb_uriparser_hostname(mrb_state *const mrb,
 }
 
 /**
- * @brief Get port as string
+ * @brief Get the port component of the URI as a string.
  *
  * ```ruby
  * uri.port
  * ```
  *
- * where `uri` is `URIParser::URI`.
+ * @param self `URIParser::URI` instance.
+ * @return Port string or `nil`.
  */
 static mrb_value mrb_uriparser_port(mrb_state *const mrb,
                                     const mrb_value self) {
@@ -327,13 +332,14 @@ static mrb_value mrb_uriparser_port(mrb_state *const mrb,
 }
 
 /**
- * @brief Get path segments as array of strings
+ * @brief Get the path segments as an array of strings.
  *
  * ```ruby
  * uri.path_segments
  * ```
  *
- * where `uri` is `URIParser::URI`.
+ * @param self `URIParser::URI` instance.
+ * @return Array of path segment strings.
  */
 static mrb_value mrb_uriparser_path_segments(mrb_state *const mrb,
                                              const mrb_value self) {
@@ -348,13 +354,14 @@ static mrb_value mrb_uriparser_path_segments(mrb_state *const mrb,
 }
 
 /**
- * @brief Get query string
+ * @brief Get the query component of the URI.
  *
  * ```ruby
  * uri.query
  * ```
  *
- * where `uri` is `URIParser::URI`.
+ * @param self `URIParser::URI` instance.
+ * @return Query string or `nil`.
  */
 static mrb_value mrb_uriparser_query(mrb_state *const mrb,
                                      const mrb_value self) {
@@ -363,13 +370,14 @@ static mrb_value mrb_uriparser_query(mrb_state *const mrb,
 }
 
 /**
- * @brief Get fragment string
+ * @brief Get the fragment component of the URI.
  *
  * ```ruby
  * uri.fragment
  * ```
  *
- * where `uri` is `URIParser::URI`.
+ * @param self `URIParser::URI` instance.
+ * @return Fragment string or `nil`.
  */
 static mrb_value mrb_uriparser_fragment(mrb_state *const mrb,
                                         const mrb_value self) {
@@ -378,13 +386,14 @@ static mrb_value mrb_uriparser_fragment(mrb_state *const mrb,
 }
 
 /**
- * @brief Check if absolute path
+ * @brief Check if the URI has an absolute path.
  *
  * ```ruby
  * uri.absolute_path?
  * ```
  *
- * where `uri` is `URIParser::URI`.
+ * @param self `URIParser::URI` instance.
+ * @return Boolean.
  */
 static mrb_value mrb_uriparser_absolute_path(mrb_state *const mrb,
                                              const mrb_value self) {
@@ -393,17 +402,17 @@ static mrb_value mrb_uriparser_absolute_path(mrb_state *const mrb,
 }
 
 /**
- * @brief Recomposing URI
- *
- * Recomposing means serializing.
+ * @brief Serialize the URI to a string.
  *
  * ```ruby
  * uri.to_s
  * ```
  *
- * where `uri` is `URIParser::URI`.
- *
+ * @param self `URIParser::URI` instance.
+ * @return URI string.
  * @sa mrb_uriparser_parse
+ *
+ * Recomposing means serializing.
  */
 static mrb_value mrb_uriparser_recompose(mrb_state *const mrb,
                                          const mrb_value self) {
@@ -421,15 +430,15 @@ static mrb_value mrb_uriparser_recompose(mrb_state *const mrb,
 }
 
 /**
- * @brief Resolve references mutably
+ * @brief Mutably resolve a relative URI reference.
  *
  * ```ruby
- * uri.merge!(rel) #=> resolved URI
- * uri             #=> same
+ * uri.merge!(rel)
  * ```
  *
- * where `uri` and `rel` are kind of `URIParser::URI`.
- *
+ * @param self `URIParser::URI` instance.
+ * @param rel Relative URI (`URIParser::URI`).
+ * @return Modified `URIParser::URI` instance.
  * @sa mrb_uriparser_merge
  */
 static mrb_value mrb_uriparser_merge_mutably(mrb_state *const mrb,
@@ -452,21 +461,16 @@ static mrb_value mrb_uriparser_merge_mutably(mrb_state *const mrb,
 }
 
 /**
- * @brief Resolve references immutably
+ * @brief Immutably resolve a relative URI reference.
  *
  * ```ruby
- * uri.merge(rel) #=> resolved URI
- * uri            #=> original (not resolved)
- * ```
- *
- * or
- *
- * ```ruby
+ * uri.merge(rel)
  * uri + rel
  * ```
  *
- * where `uri` and `rel` are kind of `URIParser::URI`.
- *
+ * @param self `URIParser::URI` instance.
+ * @param rel Relative URI (`URIParser::URI`).
+ * @return New resolved `URIParser::URI` instance.
  * @sa mrb_uriparser_merge_mutably
  * @sa mrb_uriparser_create_reference
  */
@@ -488,27 +492,18 @@ static mrb_value mrb_uriparser_merge(mrb_state *const mrb,
 }
 
 /**
- * @brief Create references
+ * @brief Create a relative reference from a base URI.
  *
  * ```ruby
- * uri.route_from(base, domain_root: false) #=> relative to the base URI
- * ```
- *
- * or
- *
- * ```ruby
+ * uri.route_from(base, domain_root: false)
  * uri - base
+ *
+ * uri.base_to(dest)
  * ```
  *
- * where `uri` and `base` are kind of `URIParser::URI`.
- * `domain_root` makes the result relative URI from domain root.
- *
- * There is also
- *
- * ```ruby
- * uri.base_to(dest) #=> relative to destination URI
- * ```
- *
+ * @param base Base URI (`URIParser::URI`).
+ * @param domain_root If true, reference is from domain root.
+ * @return New relative `URIParser::URI` instance.
  * @sa mrb_uriparser_merge
  */
 static mrb_value mrb_uriparser_create_reference(mrb_state *const mrb,
@@ -537,16 +532,22 @@ static mrb_value mrb_uriparser_create_reference(mrb_state *const mrb,
 }
 
 /**
- * @brief Normalize URI
+ * @brief Normalize URI components in place.
  *
  * ```ruby
- * uri.normalize!(scheme: true, userinfo: true,
- *                host: true, path: true,
- *                query: true, fragment: true)
+ * uri.normalize!(scheme: true,
+ *                userinfo: true,
+ *                host: true,
+ *                path: true,
+ *                query: true,
+ *                fragment: true)
  * ```
  *
- * where `uri` is kind of `URIParser::URI`.  The components enabled is
- * normalized.  By default all parts are normalized.  If path is empty, this
+ * @param self `URIParser::URI` instance.
+ * @param scheme, userinfo, host, path, query, fragment: Enable normalization for each component.
+ * @return Modified `URIParser::URI` instance.
+ *
+ * By default all parts are normalized.  If path is empty, this
  * doen't set `/`, which is the difference against CRuby's URI gem's
  * `URI::Generic#normalize!` method.
  */
@@ -584,14 +585,14 @@ static mrb_value mrb_uriparser_normalize(mrb_state *const mrb,
 }
 
 /**
- * @brief Decode WWW form
+ * @brief Decode the query string into an array of key-value pairs.
  *
  * ```ruby
- * uri.decode_www_form #=> string
+ * uri.decode_www_form
  * ```
  *
- * where `uri` is kind of `URIParser::URI`.
- *
+ * @param self `URIParser::URI` instance.
+ * @return Array of `[key, value]` pairs.
  * @sa mrb_uriparser_compose_query
  */
 static mrb_value mrb_uriparser_dissect_query(mrb_state *const mrb,
