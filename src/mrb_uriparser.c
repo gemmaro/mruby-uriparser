@@ -75,7 +75,7 @@
  * URIParser::Error
  * ```
  */
-#define MRB_URIPARSER_ERROR(mrb)                        \
+#define MRB_URIPARSER_ERROR(mrb)                                               \
   mrb_class_get_under(mrb, MRB_URIPARSER(mrb), "Error")
 
 /** @brief No memory error class.
@@ -93,6 +93,12 @@
 
 #define MRB_URIPARSER_PARSE_FAILED "URI parse failed at"
 
+#define MRB_URIPARSER_STR_IN_RANGE(mrb, range, field)                          \
+  (!range->field.afterLast || !range->field.first)                             \
+      ? mrb_nil_value()                                                        \
+      : mrb_str_new(mrb, range->field.first,                                   \
+                    range->field.afterLast - range->field.first)
+
 typedef struct {
   UriUriA *uri;
 } mrb_uriparser_data;
@@ -109,27 +115,6 @@ static const struct mrb_data_type mrb_uriparser_data_type = {
 };
 
 /* utilities */
-
-static char *mrb_uriparser_cstr_in_range(mrb_state *const mrb,
-                                         const UriTextRangeA range) {
-  if (range.first == NULL || range.afterLast == NULL)
-    return NULL;
-  const size_t len = range.afterLast - range.first;
-  char *const str = malloc((len + 1) * sizeof(char));
-  strncpy(str, range.first, len);
-  str[len] = '\0';
-  return str;
-}
-
-static mrb_value mrb_uriparser_str_in_range(mrb_state *const mrb,
-                                            const UriTextRangeA range) {
-  char *const str = mrb_uriparser_cstr_in_range(mrb, range);
-  if (str == NULL)
-    return mrb_nil_value();
-  const mrb_value val = mrb_str_new_cstr(mrb, str);
-  free(str);
-  return val;
-}
 
 static mrb_value mrb_uriparser_new(mrb_state *const mrb, UriUriA *uri) {
   const mrb_value value = mrb_obj_new(mrb, MRB_URIPARSER_URI(mrb), 0, NULL);
@@ -317,8 +302,8 @@ static mrb_value mrb_uriparser_compose_query(mrb_state *const mrb,
  */
 static mrb_value mrb_uriparser_scheme(mrb_state *const mrb,
                                       const mrb_value self) {
-  return mrb_uriparser_str_in_range(
-      mrb, ((mrb_uriparser_data *)DATA_PTR(self))->uri->scheme);
+  return MRB_URIPARSER_STR_IN_RANGE(
+      mrb, ((mrb_uriparser_data *)DATA_PTR(self))->uri, scheme);
 }
 
 /**
@@ -333,8 +318,8 @@ static mrb_value mrb_uriparser_scheme(mrb_state *const mrb,
  */
 static mrb_value mrb_uriparser_userinfo(mrb_state *const mrb,
                                         const mrb_value self) {
-  return mrb_uriparser_str_in_range(
-      mrb, ((mrb_uriparser_data *)DATA_PTR(self))->uri->userInfo);
+  return MRB_URIPARSER_STR_IN_RANGE(
+      mrb, ((mrb_uriparser_data *)DATA_PTR(self))->uri, userInfo);
 }
 
 /**
@@ -352,8 +337,8 @@ static mrb_value mrb_uriparser_userinfo(mrb_state *const mrb,
  */
 static mrb_value mrb_uriparser_hostname(mrb_state *const mrb,
                                         const mrb_value self) {
-  return mrb_uriparser_str_in_range(
-      mrb, ((mrb_uriparser_data *)DATA_PTR(self))->uri->hostText);
+  return MRB_URIPARSER_STR_IN_RANGE(
+      mrb, ((mrb_uriparser_data *)DATA_PTR(self))->uri, hostText);
 }
 
 /**
@@ -368,8 +353,8 @@ static mrb_value mrb_uriparser_hostname(mrb_state *const mrb,
  */
 static mrb_value mrb_uriparser_port(mrb_state *const mrb,
                                     const mrb_value self) {
-  return mrb_uriparser_str_in_range(
-      mrb, ((mrb_uriparser_data *)DATA_PTR(self))->uri->portText);
+  return MRB_URIPARSER_STR_IN_RANGE(
+      mrb, ((mrb_uriparser_data *)DATA_PTR(self))->uri, portText);
 }
 
 /**
@@ -388,7 +373,7 @@ static mrb_value mrb_uriparser_path_segments(mrb_state *const mrb,
       ((mrb_uriparser_data *)DATA_PTR(self))->uri->pathHead;
   mrb_value ary = mrb_ary_new(mrb);
   while (segment != NULL) {
-    mrb_ary_push(mrb, ary, mrb_uriparser_str_in_range(mrb, segment->text));
+    mrb_ary_push(mrb, ary, MRB_URIPARSER_STR_IN_RANGE(mrb, segment, text));
     segment = segment->next;
   }
   return ary;
@@ -406,8 +391,8 @@ static mrb_value mrb_uriparser_path_segments(mrb_state *const mrb,
  */
 static mrb_value mrb_uriparser_query(mrb_state *const mrb,
                                      const mrb_value self) {
-  return mrb_uriparser_str_in_range(
-      mrb, ((mrb_uriparser_data *)DATA_PTR(self))->uri->query);
+  return MRB_URIPARSER_STR_IN_RANGE(
+      mrb, ((mrb_uriparser_data *)DATA_PTR(self))->uri, query);
 }
 
 /**
@@ -422,8 +407,8 @@ static mrb_value mrb_uriparser_query(mrb_state *const mrb,
  */
 static mrb_value mrb_uriparser_fragment(mrb_state *const mrb,
                                         const mrb_value self) {
-  return mrb_uriparser_str_in_range(
-      mrb, ((mrb_uriparser_data *)DATA_PTR(self))->uri->fragment);
+  return MRB_URIPARSER_STR_IN_RANGE(
+      mrb, ((mrb_uriparser_data *)DATA_PTR(self))->uri, fragment);
 }
 
 /**
@@ -588,7 +573,8 @@ static mrb_value mrb_uriparser_create_reference(mrb_state *const mrb,
  * ```
  *
  * @param self `URIParser::URI` instance.
- * @param scheme, userinfo, host, path, query, fragment: Enable normalization for each component.
+ * @param scheme, userinfo, host, path, query, fragment: Enable normalization
+ * for each component.
  * @return Modified `URIParser::URI` instance.
  *
  * By default all parts are normalized.  If path is empty, this
