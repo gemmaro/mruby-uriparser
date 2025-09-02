@@ -151,7 +151,7 @@ static mrb_value mrb_uriparser_parse(mrb_state *const mrb,
         malloc((strlen(MRB_URIPARSER_PARSE_FAILED) + strlen(error_pos) +
                 5 /* for punctuations and null */) *
                sizeof(char));
-    if (message == NULL)
+    if (!message)
       MRB_URIPARSER_RAISE_NOMEM(mrb, "no space for error message");
     sprintf(message, "%s: `%s'", MRB_URIPARSER_PARSE_FAILED, error_pos);
     MRB_URIPARSER_RAISE(mrb, message);
@@ -279,7 +279,7 @@ static mrb_value mrb_uriparser_compose_query(mrb_state *const mrb,
     MRB_URIPARSER_RAISE(
         mrb, "failed to calculate characters required to compose query");
   query_string = malloc((chars_required + 1) * sizeof(char));
-  if (query_string == NULL)
+  if (!query_string)
     MRB_URIPARSER_RAISE_NOMEM(mrb, "no space for query string");
   int chars_written;
   if (uriComposeQueryA(query_string, query_list, chars_required + 1,
@@ -372,7 +372,7 @@ static mrb_value mrb_uriparser_path_segments(mrb_state *const mrb,
   UriPathSegmentA *segment =
       ((mrb_uriparser_data *)DATA_PTR(self))->uri->pathHead;
   mrb_value ary = mrb_ary_new(mrb);
-  while (segment != NULL) {
+  while (segment) {
     mrb_ary_push(mrb, ary, MRB_URIPARSER_STR_IN_RANGE(mrb, segment, text));
     segment = segment->next;
   }
@@ -451,7 +451,7 @@ static mrb_value mrb_uriparser_recompose(mrb_state *const mrb,
     MRB_URIPARSER_RAISE(mrb, "could not calculate chars required");
   chars_required++; /* zero terminator */
   char *const uri_string = malloc(chars_required * sizeof(char));
-  if (uri_string == NULL)
+  if (!uri_string)
     MRB_URIPARSER_RAISE_NOMEM(mrb, "no space for URI string");
   if (uriToStringA(uri_string, data->uri, chars_required, NULL) != URI_SUCCESS)
     MRB_URIPARSER_RAISE(mrb, "URI recomposing failed");
@@ -634,13 +634,12 @@ static mrb_value mrb_uriparser_dissect_query(mrb_state *const mrb,
                              data->uri->query.afterLast) != URI_SUCCESS)
     MRB_URIPARSER_RAISE(mrb, "failed to dissect query");
   mrb_value ary = mrb_ary_new(mrb);
-  while (query_list != NULL) {
+  while (query_list) {
     mrb_value entry = mrb_ary_new(mrb);
     mrb_ary_push(mrb, entry, mrb_str_new_cstr(mrb, query_list->key));
     mrb_ary_push(mrb, entry,
-                 query_list->value == NULL
-                     ? mrb_nil_value()
-                     : mrb_str_new_cstr(mrb, query_list->value));
+                 query_list->value ? mrb_str_new_cstr(mrb, query_list->value)
+                                   : mrb_nil_value());
     mrb_ary_push(mrb, ary, entry);
     query_list = query_list->next;
   }
