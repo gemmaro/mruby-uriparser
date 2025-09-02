@@ -70,6 +70,7 @@ module URIParser
       URIParser.uri_string_to_filename(to_s, windows:)
     end
 
+    # TODO: Implement path.
     def hierarchical?
       path ? true : false
     end

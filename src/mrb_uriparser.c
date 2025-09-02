@@ -2,6 +2,29 @@
  * @file mrb_uriparser.c
  * @brief mruby uriparser implementation
  *
+ * # mruby uriparser
+ *
+ * ## Other Functions
+ *
+ * ```ruby
+ * URIParser.join(uri_str, *path)
+ * URIParser::URI.join(uri_str, *path)
+ * ```
+ *
+ * where `uri` is kind of `URIParser::URI`.
+ *
+ * ## Planned Functions
+ *
+ * ```ruby
+ * URIParser.split(uri)
+ * URIParser::URI.split(uri)
+ * uri.hierarchical?
+ * ```
+ *
+ * where `uri` is kind of `URIParser::URI`.
+ *
+ * ## License
+ *
  * Copyright (C) 2025  gemmaro
  *
  * This program is free software: you can redistribute it and/or modify
@@ -45,8 +68,22 @@
 #define MRB_URIPARSER(mrb) mrb_module_get(mrb, MRB_URIPARSER_MODULE_NAME)
 #define MRB_URIPARSER_URI(mrb)                                                 \
   mrb_class_get_under(mrb, MRB_URIPARSER(mrb), MRB_URIPARSER_URI_MODULE_NAME)
-#define MRB_URIPARSER_ERROR(mrb)                                               \
+
+/** @brief Error class.
+ *
+ * ```ruby
+ * URIParser::Error
+ * ```
+ */
+#define MRB_URIPARSER_ERROR(mrb)                        \
   mrb_class_get_under(mrb, MRB_URIPARSER(mrb), "Error")
+
+/** @brief No memory error class.
+ *
+ * ```ruby
+ * URIParser::NoMemoryError
+ * ```
+ */
 #define MRB_URIPARSER_NOMEM(mrb) mrb_class_get(mrb, "NoMemoryError")
 
 #define MRB_URIPARSER_RAISE(mrb, message)                                      \
@@ -142,6 +179,7 @@ static mrb_value mrb_uriparser_parse(mrb_state *const mrb,
  *
  * ```ruby
  * URIParser.filename_to_uri_string(filename, windows: false)
+ * URIParser::URI.from_filename(filename, windows: false)
  * ```
  *
  * @param filename Absolute filename.
@@ -183,7 +221,10 @@ static mrb_value mrb_uriparser_filename_to_uri_string(mrb_state *const mrb,
  *
  * ```ruby
  * URIParser.uri_string_to_filename(uri, windows: false)
+ * uri.to_filename(windows: false)
  * ```
+ *
+ * where `uri` is kind of `URIParser::URI`.
  *
  * @param uri URI string.
  * @param windows If `true`, use Windows path conversion.
@@ -390,6 +431,9 @@ static mrb_value mrb_uriparser_fragment(mrb_state *const mrb,
  *
  * ```ruby
  * uri.absolute_path?
+ * uri.absolute?
+ * uri.absolute
+ * uri.relative?
  * ```
  *
  * @param self `URIParser::URI` instance.
@@ -498,7 +542,7 @@ static mrb_value mrb_uriparser_merge(mrb_state *const mrb,
  * uri.route_from(base, domain_root: false)
  * uri - base
  *
- * uri.base_to(dest)
+ * uri.route_to(dest, domain_root: false)
  * ```
  *
  * @param base Base URI (`URIParser::URI`).
