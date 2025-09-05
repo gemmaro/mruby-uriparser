@@ -77,7 +77,7 @@ A dash (`-`) indicates not supported or no plans to support.
 | -                                                     | `URI::Generic#password=`                            |
 | -                                                     | `URI::Generic#path`                                 |
 | -                                                     | `URI::Generic#path=`                                |
-| -                                                     | `URI::Generic#port`                                 |
+| `URIParser::URI#port`                                 | `URI::Generic#port`                                 |
 | -                                                     | `URI::Generic#port=`                                |
 | `URIParser::URI#query`                                | `URI::Generic#query`                                |
 | -                                                     | `URI::Generic#query=`                               |
@@ -95,6 +95,10 @@ A dash (`-`) indicates not supported or no plans to support.
 | -                                                     | `URI::Generic#userinfo=`                            |
 | -                                                     | `URI::Generic::COMPONENT`                           |
 | -                                                     | `URI::Generic::DEFAULT_PORT`                        |
+| `URIParser.filename_to_uri_string`                    | -                                                   |
+| `URIParser.uri_string_to_filename`                    | -                                                   |
+| `URIParser::URI#path_segments`                        | -                                                   |
+| `URIParser::URI#absolute_path?`                       | -                                                   |
 
 [^1]: No `enc=Encoding::UTF_8` parameter as in CRuby's URI gem.
 
