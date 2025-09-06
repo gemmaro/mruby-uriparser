@@ -145,7 +145,8 @@ static mrb_value mrb_uriparser_new(mrb_state *const mrb, UriUriA *uri) {
  * URIParser::URI.parse(str)
  * ```
  *
- * @param str URI string to parse.
+ * where `str` is a URI string to parse.
+ *
  * @return `URIParser::URI` instance.
  * @sa mrb_uriparser_recompose
  */
@@ -177,8 +178,9 @@ static mrb_value mrb_uriparser_parse(mrb_state *const mrb,
  * URIParser::URI.from_filename(filename, windows: false)
  * ```
  *
- * @param filename Absolute filename.
- * @param windows  If true, use Windows path conversion.
+ * where `filename` is an absolute filename.  If `windows` is true, use
+ * Windows path conversion.
+ *
  * @return URI string.
  * @sa mrb_uriparser_uri_string_to_filename
  */
@@ -216,13 +218,17 @@ static mrb_value mrb_uriparser_filename_to_uri_string(mrb_state *const mrb,
  *
  * ```ruby
  * URIParser.uri_string_to_filename(uri, windows: false)
+ * ```
+ *
+ * where `uri` is a URI string.  If `windows` is true, use Windows path
+ * conversion.
+ *
+ * ```ruby
  * uri.to_filename(windows: false)
  * ```
  *
  * where `uri` is kind of `URIParser::URI`.
  *
- * @param uri URI string.
- * @param windows If `true`, use Windows path conversion.
  * @return Filename string.
  * @sa mrb_uriparser_filename_to_uri_string
  */
@@ -261,8 +267,8 @@ static mrb_value mrb_uriparser_uri_string_to_filename(mrb_state *const mrb,
  * URIParser.encode_www_form(query_list)
  * ```
  *
- * @param query_list Array of `[key, value]` pairs.  Key is `String`.  Value
- * may be `nil` or `String`.
+ * where `query_list` is `Array` of `[key, value]` pairs.  Key is `String`.
+ * Value may be `nil` or `String`.
  *
  * @return Encoded query string.
  * @sa mrb_uriparser_dissect_query
@@ -309,7 +315,8 @@ static mrb_value mrb_uriparser_compose_query(mrb_state *const mrb,
  * uri.scheme
  * ```
  *
- * @param self `URIParser::URI` instance.
+ * where `uri` is a `URIParser::URI` instance.
+ *
  * @return Scheme string or `nil`.
  */
 static mrb_value mrb_uriparser_scheme(mrb_state *const mrb,
@@ -324,7 +331,8 @@ static mrb_value mrb_uriparser_scheme(mrb_state *const mrb,
  * uri.userinfo
  * ```
  *
- * @param self `URIParser::URI` instance.
+ * where `uri` is a `URIParser::URI` instance.
+ *
  * @return Userinfo string or `nil`.
  */
 static mrb_value mrb_uriparser_userinfo(mrb_state *const mrb,
@@ -339,7 +347,8 @@ static mrb_value mrb_uriparser_userinfo(mrb_state *const mrb,
  * uri.hostname
  * ```
  *
- * @param self `URIParser::URI` instance.
+ * where `uri` is a `URIParser::URI` instance.
+ *
  * @return Hostname string or `nil`.
  *
  * Note that it returns `::1` for `http://[::1]/bar` so it corresponds to
@@ -357,7 +366,8 @@ static mrb_value mrb_uriparser_hostname(mrb_state *const mrb,
  * uri.port
  * ```
  *
- * @param self `URIParser::URI` instance.
+ * where `uri` is a `URIParser::URI` instance.
+ *
  * @return Port string or `nil`.
  */
 static mrb_value mrb_uriparser_port(mrb_state *const mrb,
@@ -372,7 +382,8 @@ static mrb_value mrb_uriparser_port(mrb_state *const mrb,
  * uri.path_segments
  * ```
  *
- * @param self `URIParser::URI` instance.
+ * where `uri` is a `URIParser::URI` instance.
+ *
  * @return Array of path segment strings.
  */
 static mrb_value mrb_uriparser_path_segments(mrb_state *const mrb,
@@ -393,7 +404,8 @@ static mrb_value mrb_uriparser_path_segments(mrb_state *const mrb,
  * uri.query
  * ```
  *
- * @param self `URIParser::URI` instance.
+ * where `uri` is a `URIParser::URI` instance.
+ *
  * @return Query string or `nil`.
  */
 static mrb_value mrb_uriparser_query(mrb_state *const mrb,
@@ -408,7 +420,8 @@ static mrb_value mrb_uriparser_query(mrb_state *const mrb,
  * uri.fragment
  * ```
  *
- * @param self `URIParser::URI` instance.
+ * where `uri` is a `URIParser::URI` instance.
+ *
  * @return Fragment string or `nil`.
  */
 static mrb_value mrb_uriparser_fragment(mrb_state *const mrb,
@@ -426,7 +439,8 @@ static mrb_value mrb_uriparser_fragment(mrb_state *const mrb,
  * uri.relative?
  * ```
  *
- * @param self `URIParser::URI` instance.
+ * where `uri` is a `URIParser::URI` instance.
+ *
  * @return Boolean.
  */
 static mrb_value mrb_uriparser_absolute_path(mrb_state *const mrb,
@@ -441,7 +455,8 @@ static mrb_value mrb_uriparser_absolute_path(mrb_state *const mrb,
  * uri.to_s
  * ```
  *
- * @param self `URIParser::URI` instance.
+ * where `uri` is a `URIParser::URI` instance.
+ *
  * @return URI string.
  * @sa mrb_uriparser_parse
  *
@@ -469,8 +484,9 @@ static mrb_value mrb_uriparser_recompose(mrb_state *const mrb,
  * uri.merge!(rel)
  * ```
  *
- * @param self `URIParser::URI` instance.
- * @param rel Relative URI (`URIParser::URI`).
+ * where `uri` is a `URIParser::URI` instance, and `rel` is relative URI
+ * (`URIParser::URI`).
+ *
  * @return Modified `URIParser::URI` instance.
  * @sa mrb_uriparser_merge
  */
@@ -501,8 +517,9 @@ static mrb_value mrb_uriparser_merge_mutably(mrb_state *const mrb,
  * uri + rel
  * ```
  *
- * @param self `URIParser::URI` instance.
- * @param rel Relative URI (`URIParser::URI`).
+ * where `uri` is a `URIParser::URI` instance, and `rel` is relative URI
+ * (`URIParser::URI`).
+ *
  * @return New resolved `URIParser::URI` instance.
  * @sa mrb_uriparser_merge_mutably
  * @sa mrb_uriparser_create_reference
@@ -533,8 +550,9 @@ static mrb_value mrb_uriparser_merge(mrb_state *const mrb,
  * uri.route_to(dest, domain_root: false)
  * ```
  *
- * @param base Base URI (`URIParser::URI`).
- * @param domain_root If true, reference is from domain root.
+ * where `base` is a base URI (`URIParser::URI`).  If `domain_root` is true,
+ * reference is from domain root.
+ *
  * @return New relative `URIParser::URI` instance.
  * @sa mrb_uriparser_merge
  */
@@ -574,9 +592,10 @@ static mrb_value mrb_uriparser_create_reference(mrb_state *const mrb,
  *                fragment: true)
  * ```
  *
- * @param self `URIParser::URI` instance.
- * @param scheme, userinfo, host, path, query, fragment: Enable normalization
- * for each component.
+ * where `uri` is kind of `URIParser::URI`.  `scheme`, `userinfo`, `host`,
+ * `path`, `query`, `fragment` are for enabling normalization for each
+ * component.
+ *
  * @return Modified `URIParser::URI` instance.
  *
  * By default all parts are normalized.  If path is empty, this
@@ -622,7 +641,8 @@ static mrb_value mrb_uriparser_normalize(mrb_state *const mrb,
  * uri.decode_www_form
  * ```
  *
- * @param self `URIParser::URI` instance.
+ * where `uri` is a `URIParser::URI` instance.
+ *
  * @return Array of `[key, value]` pairs.
  * @sa mrb_uriparser_compose_query
  *
