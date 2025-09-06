@@ -23,6 +23,13 @@
  *
  * where `uri` is kind of `URIParser::URI`.
  *
+ * ## Comparison of Supported Features
+ *
+ * Below is a comparison of supported features with CRuby's URI gem.
+ * A dash (`-`) indicates not supported or no plans to support.
+ *
+ * @htmlinclude comparison.html
+ *
  * ## License
  *
  * Copyright (C) 2025  gemmaro
