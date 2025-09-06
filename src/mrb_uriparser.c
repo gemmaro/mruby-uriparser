@@ -259,6 +259,8 @@ static mrb_value mrb_uriparser_uri_string_to_filename(mrb_state *const mrb,
  *
  * @return Encoded query string.
  * @sa mrb_uriparser_dissect_query
+ *
+ * No `enc=nil` parameter as seen in CRuby's URI gem.
  */
 static mrb_value mrb_uriparser_compose_query(mrb_state *const mrb,
                                              const mrb_value self) {
@@ -616,6 +618,8 @@ static mrb_value mrb_uriparser_normalize(mrb_state *const mrb,
  * @param self `URIParser::URI` instance.
  * @return Array of `[key, value]` pairs.
  * @sa mrb_uriparser_compose_query
+ *
+ * No `enc=Encoding::UTF_8` parameter as in CRuby's URI gem.
  */
 static mrb_value mrb_uriparser_dissect_query(mrb_state *const mrb,
                                              const mrb_value self) {

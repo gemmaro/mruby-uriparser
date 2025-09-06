@@ -2,4 +2,4 @@
 set -eu
 ./test/run
 doxygen
-rsync -av doc/ pi:/srv/www/mruby-uriparser/
+rsync -av doc/html/ pi:/srv/www/mruby-uriparser/

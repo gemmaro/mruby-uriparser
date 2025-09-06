@@ -38,14 +38,14 @@ A dash (`-`) indicates not supported or no plans to support.
 
 | mruby uriparser                                       | CRuby URI gem                                       | mruby-uri-parser                           |
 |-------------------------------------------------------|-----------------------------------------------------|--------------------------------------------|
-| `URIParser::URI#decode_www_form`[^1]                  | `URI.decode_www_form`                               |                                            |
+| `URIParser::URI#decode_www_form`                      | `URI.decode_www_form`                               |                                            |
 | -                                                     | `URI.decode_www_form_component`                     | `URI.decode`                               |
-| `URIParser.encode_www_form`[^2]                       | `URI.encode_www_form`                               |                                            |
+| `URIParser.encode_www_form`                           | `URI.encode_www_form`                               |                                            |
 | -                                                     | `URI.encode_www_form_component`                     | `URI.encode`                               |
-| -                                                     | `URI.extract`[^4]                                   |                                            |
+| -                                                     | `URI.extract`                                       |                                            |
 | `URIParser.join`, `URIParser::URI.join`               | `URI.join`                                          |                                            |
 | `URIParser.parse`, `URIParser::URI.parse`             | `URI.parse`                                         | `URI.parse`                                |
-| -                                                     | `URI.regexp`[^3]                                    |                                            |
+| -                                                     | `URI.regexp`                                        |                                            |
 | -                                                     | `URI.split`                                         |                                            |
 | -                                                     | `URI::UNSAFE`                                       |                                            |
 | -                                                     | `URI::Generic.build`                                |                                            |
@@ -54,7 +54,7 @@ A dash (`-`) indicates not supported or no plans to support.
 | -                                                     | `URI::Generic.default_port`                         |                                            |
 | -                                                     | `URI::Generic.new`                                  | `URI::Parsed.new`                          |
 | -                                                     | `URI::Generic.use_registry`                         |                                            |
-| `URIParser::URI#merge`, `URIParser::URI#@+`[^5]       | `URI::Generic#merge`, `URI::Generic#@+`             |                                            |
+| `URIParser::URI#merge`, `URIParser::URI#@+`           | `URI::Generic#merge`, `URI::Generic#@+`             |                                            |
 | `URIParser::URI#route_from`, `URIParser::URI#@-`      | `URI::Generic#route_from`, `URI::Generic#@-`        |                                            |
 | -                                                     | `URI::Generic#==`                                   |                                            |
 | `URIParser::URI#absolute`, `URIParser::URI#absolute?` | `URI::Generic#absolute`, `URI::Generic#absolute?`   |                                            |
@@ -99,16 +99,6 @@ A dash (`-`) indicates not supported or no plans to support.
 | `URIParser.uri_string_to_filename`                    | -                                                   |                                            |
 | `URIParser::URI#path_segments`                        | -                                                   |                                            |
 | `URIParser::URI#absolute_path?`                       | -                                                   |                                            |
-
-[^1]: No `enc=Encoding::UTF_8` parameter as in CRuby's URI gem.
-
-[^2]: Only supports `Array[String, String | nil]` for `enum`. No `enc=nil` parameter.
-
-[^3]: Obsolete since Ruby 2.2.
-
-[^4]: Obsolete since Ruby 2.2.
-
-[^5]: Relative path must be a URI. See API docs.
 
 Refer to the API documentation for details.
 
