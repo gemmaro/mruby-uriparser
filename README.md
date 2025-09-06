@@ -46,6 +46,7 @@ Alternatively, use the `test/run` script with `MRUBY_SRC` set in your `.env` fil
 ## Prior Work
 
 See [mruby-uri-parser](https://github.com/Asmod4n/mruby-uri-parser), which uses [uri\_parser](https://github.com/Zewo/uri_parser).
+Also see [ruby-uriparser](https://github.com/tlewin/ruby-uriparser).
 
 ## License
 
