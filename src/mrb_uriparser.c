@@ -360,6 +360,17 @@ static mrb_value mrb_uriparser_hostname(mrb_state *const mrb,
 }
 
 #ifdef HAVE_URI_HAS_HOST
+/**
+ * @brief Check if the URI has host.
+ *
+ * ```ruby
+ * uri.host?
+ * ```
+ *
+ * where `uri` is a `URIParser::URI` instance.
+ *
+ * @return Boolean.
+ */
 static mrb_value mrb_uriparser_has_host(mrb_state *mrb, mrb_value self) {
   return mrb_bool_value(uriHasHostA(MRB_URIPARSER_URI(self)));
 }
