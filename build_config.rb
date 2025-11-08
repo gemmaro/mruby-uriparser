@@ -2,6 +2,31 @@ require "tmpdir"
 require "shellwords"
 require "open3"
 
+def check_function(name:, checker:, macro:, conf:)
+  Dir.mktmpdir("mruby_check_") do |tmpdir|
+    exe = File.join(tmpdir, "check_#{name}")
+    command = [conf.cc.command,
+               *conf.cc.flags.flatten,
+               "-l", "uriparser",
+               '-o', exe,
+               File.join(__dir__, "build/#{checker}")]
+    output, status = Open3.capture2e(ENV, *command)
+    puts "status: #{status}"
+    output.strip!
+    if output
+      puts ">>> output >>>"
+      puts output
+      puts "<<< output <<<"
+    end
+    if status.success?
+      conf.defines << macro
+      puts "found #{name}"
+    else
+      warn "not found #{name}"
+    end
+  end
+end
+
 MRuby::Build.new do |conf|
   toolchain :gcc
   conf.gem File.expand_path(File.dirname(__FILE__))
@@ -9,23 +34,14 @@ MRuby::Build.new do |conf|
 
   conf.linker.libraries << 'uriparser'
 
-  Dir.mktmpdir("mruby_check_") do |tmpdir|
-    exe = File.join(tmpdir, "check_uri_has_host")
-    command = [conf.cc.command,
-               *conf.cc.flags.flatten,
-               "-l", "uriparser",
-               '-o', exe,
-               File.join(__dir__, "build/check_uri_has_host.c")]
-    output, status = Open3.capture2e(ENV, *command)
-    puts ">>> output (status: #{status}) >>>"
-    puts output
-    puts "<<< output <<<"
-    if status.success?
-      conf.defines << "HAVE_URI_HAS_HOST"
-    else
-      warn "don't have uriHasHostA"
-    end
-  end
+  check_function(name: "uriHasHostA",
+                 checker: "check_uri_has_host.c",
+                 macro: "HAVE_URI_HAS_HOST",
+                 conf:)
+  check_function(name: "uriCopyUriA",
+                 checker: "check_uri_copy_uri.c",
+                 macro: "HAVE_URI_COPY_URI",
+                 conf:)
 
   if ENV['DEBUG'] == 'true'
     conf.enable_debug
