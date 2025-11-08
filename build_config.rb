@@ -42,6 +42,10 @@ MRuby::Build.new do |conf|
                  checker: "check_uri_copy_uri.c",
                  macro: "HAVE_URI_COPY_URI",
                  conf:)
+  check_function(name: "uriEqualsUriA",
+                 checker: "check_uri_equals_uri.c",
+                 macro: "HAVE_URI_EQUALS_URI",
+                 conf:)
 
   if ENV['DEBUG'] == 'true'
     conf.enable_debug
