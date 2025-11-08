@@ -47,5 +47,6 @@ MRuby::Build.new do |conf|
     conf.enable_debug
     conf.defines << "MRB_ENABLE_DEBUG_HOOK"
     conf.gem core: 'mruby-bin-debugger'
+    conf.gem core: 'mruby-bin-mirb'
   end
 end
