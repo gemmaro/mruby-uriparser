@@ -337,6 +337,26 @@ static mrb_value mrb_uriparser_initialize_copy(mrb_state *mrb, mrb_value self) {
 }
 #endif
 
+#ifdef HAVE_URI_EQUALS_URI
+/**
+ * @brief Check two URIs for equivalence.
+ *
+ * ```ruby
+ * uri == another_uri
+ * ```
+ *
+ * where `uri` and `another_uri` are `URIParser::URI` instances.
+ *
+ * @return Boolean.
+ */
+static mrb_value mrb_uriparser_equals(mrb_state *mrb, mrb_value self) {
+  mrb_value another;
+  mrb_get_args(mrb, "o", &another);
+  UriBool result = uriEqualsUriA(MRB_URIPARSER_URI(self), MRB_URIPARSER_URI(another));
+  return mrb_bool_value(result);
+}
+#endif
+
 /**
  * @brief Get the scheme component of the URI.
  *
@@ -734,6 +754,9 @@ void mrb_mruby_uriparser_gem_init(mrb_state *const mrb) {
       mrb, uriparser, MRB_URIPARSER_URI_MODULE_NAME, mrb->object_class);
 #ifdef HAVE_URI_COPY_URI
   mrb_define_method(mrb, uri, "initialize_copy", mrb_uriparser_initialize_copy, MRB_ARGS_REQ(1));
+#endif
+#ifdef HAVE_URI_EQUALS_URI
+  mrb_define_method(mrb, uri, "==", mrb_uriparser_equals, MRB_ARGS_REQ(1));
 #endif
   mrb_define_method(mrb, uri, "scheme", mrb_uriparser_scheme, MRB_ARGS_NONE());
   mrb_define_method(mrb, uri, "userinfo", mrb_uriparser_userinfo,

@@ -206,3 +206,11 @@ assert("URIParser::URI#dup") do
   assert_equal("example.com", new_uri.hostname)
   assert_not_same(uri, new_uri)
 end
+
+assert("URIParser::URI#==") do
+  source = "http://example.com:12345/some/path?query"
+  uri = URIParser.parse(source)
+  assert_true(uri == URIParser.parse(source))
+  another_source = "http://foo.example.com:12345/some/path?query"
+  assert_false(uri == URIParser.parse(another_source))
+end
