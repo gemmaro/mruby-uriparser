@@ -359,6 +359,12 @@ static mrb_value mrb_uriparser_hostname(mrb_state *const mrb,
   return MRB_URIPARSER_STR_IN_RANGE(mrb, MRB_URIPARSER_URI(self), hostText);
 }
 
+#ifdef HAVE_URI_HAS_HOST
+static mrb_value mrb_uriparser_has_host(mrb_state *mrb, mrb_value self) {
+  return mrb_bool_value(uriHasHostA(MRB_URIPARSER_URI(self)));
+}
+#endif
+
 /**
  * @brief Get the port component of the URI as a string.
  *
@@ -691,6 +697,9 @@ void mrb_mruby_uriparser_gem_init(mrb_state *const mrb) {
                     MRB_ARGS_NONE());
   mrb_define_method(mrb, uri, "hostname", mrb_uriparser_hostname,
                     MRB_ARGS_NONE());
+#ifdef HAVE_URI_HAS_HOST
+  mrb_define_method(mrb, uri, "host?", mrb_uriparser_has_host, MRB_ARGS_NONE());
+#endif
   mrb_define_method(mrb, uri, "port", mrb_uriparser_port, MRB_ARGS_NONE());
   mrb_define_method(mrb, uri, "path_segments", mrb_uriparser_path_segments,
                     MRB_ARGS_NONE());

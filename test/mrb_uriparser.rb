@@ -195,3 +195,7 @@ assert("URIParser::URI#absolute?") do
   assert_true(URIParser.parse("http://example.com/").absolute?)
   assert_false(URIParser.parse("./").absolute?)
 end
+
+assert("URIParser::URI#host?") do
+  assert_true(URIParser.parse("http://example.com").host?)
+end
