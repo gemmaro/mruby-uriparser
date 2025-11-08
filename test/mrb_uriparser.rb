@@ -199,3 +199,10 @@ end
 assert("URIParser::URI#host?") do
   assert_true(URIParser.parse("http://example.com").host?)
 end
+
+assert("URIParser::URI#dup") do
+  uri = URIParser.parse("http://example.com")
+  new_uri = uri.dup
+  assert_equal("example.com", new_uri.hostname)
+  assert_not_same(uri, new_uri)
+end

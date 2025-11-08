@@ -308,6 +308,35 @@ static mrb_value mrb_uriparser_compose_query(mrb_state *const mrb,
   return str;
 }
 
+#ifdef HAVE_URI_COPY_URI
+/**
+ * @brief Copy URI.
+ *
+ * ```ruby
+ * uri.dup
+ * uri.clone
+ * ```
+ *
+ * where `uri` is a `URIParser::URI` instance.
+ *
+ * @return New URI.
+ */
+static mrb_value mrb_uriparser_initialize_copy(mrb_state *mrb, mrb_value self) {
+  mrb_value original;
+  mrb_get_args(mrb, "o", &original);
+  UriUriA *uri = MRB_URIPARSER_URI(original);
+  UriUriA *new_uri = mrb_malloc(mrb, sizeof(UriUriA));
+  if (uriCopyUriA(new_uri, uri)) {
+    MRB_URIPARSER_RAISE(mrb, "failed to copy URI");
+  }
+  DATA_TYPE(self) = &mrb_uriparser_data_type;
+  mrb_uriparser_data *data = mrb_malloc(mrb, sizeof(mrb_uriparser_data));
+  data->uri = new_uri;
+  DATA_PTR(self) = data;
+  return self;
+}
+#endif
+
 /**
  * @brief Get the scheme component of the URI.
  *
@@ -703,6 +732,9 @@ void mrb_mruby_uriparser_gem_init(mrb_state *const mrb) {
                              mrb_uriparser_compose_query, MRB_ARGS_REQ(1));
   struct RClass *const uri = mrb_define_class_under(
       mrb, uriparser, MRB_URIPARSER_URI_MODULE_NAME, mrb->object_class);
+#ifdef HAVE_URI_COPY_URI
+  mrb_define_method(mrb, uri, "initialize_copy", mrb_uriparser_initialize_copy, MRB_ARGS_REQ(1));
+#endif
   mrb_define_method(mrb, uri, "scheme", mrb_uriparser_scheme, MRB_ARGS_NONE());
   mrb_define_method(mrb, uri, "userinfo", mrb_uriparser_userinfo,
                     MRB_ARGS_NONE());
