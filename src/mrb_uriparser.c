@@ -449,6 +449,26 @@ static mrb_value mrb_uriparser_hostname(mrb_state *const mrb,
   return MRB_URIPARSER_STR_IN_RANGE(mrb, MRB_URIPARSER_URI(self), hostText);
 }
 
+/* TODO: Use macro conditional */
+/**
+ * @brief Set the host component of the URI.
+ * ```ruby
+ * uri.host = ...
+ * ```
+ *
+ * where `uri` is a `URIParser::URI` instance.
+ *
+ * @return `nil`.
+ */
+static mrb_value mrb_uriparser_set_host(mrb_state *mrb, mrb_value self) {
+  char *component;
+  mrb_get_args(mrb, "z", &component);
+  if (uriSetHostAutoA(MRB_URIPARSER_URI(self), component,
+                      component + strlen(component)))
+    MRB_URIPARSER_RAISE(mrb, "failed to set host");
+  return mrb_nil_value();
+}
+
 #ifdef HAVE_URI_HAS_HOST
 /**
  * @brief Check if the URI has host.
@@ -811,6 +831,8 @@ void mrb_mruby_uriparser_gem_init(mrb_state *const mrb) {
                     MRB_ARGS_REQ(1));
   mrb_define_method(mrb, uri, "hostname", mrb_uriparser_hostname,
                     MRB_ARGS_NONE());
+  /* TODO: Use macro conditional */
+  mrb_define_method(mrb, uri, "host=", mrb_uriparser_set_host, MRB_ARGS_REQ(1));
 #ifdef HAVE_URI_HAS_HOST
   mrb_define_method(mrb, uri, "host?", mrb_uriparser_has_host, MRB_ARGS_NONE());
 #endif
