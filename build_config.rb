@@ -54,6 +54,10 @@ MRuby::Build.new do |conf|
                  checker: "check_uri_set_userinfo.c",
                  macro: "HAVE_URI_SET_USERINFO",
                  conf:)
+  check_function(name: "uriSetHostAutoA",
+                 checker: "check_uri_set_host.c",
+                 macro: "HAVE_URI_SET_HOST",
+                 conf:)
 
   if ENV['DEBUG'] == 'true'
     conf.enable_debug
