@@ -580,6 +580,26 @@ static mrb_value mrb_uriparser_query(mrb_state *const mrb,
   return MRB_URIPARSER_STR_IN_RANGE(mrb, MRB_URIPARSER_URI(self), query);
 }
 
+/* TODO: Use macro conditional */
+/**
+ * @brief Set the query component of the URI.
+ * ```ruby
+ * uri.query = ...
+ * ```
+ *
+ * where `uri` is a `URIParser::URI` instance.
+ *
+ * @return `nil`.
+ */
+static mrb_value mrb_uriparser_set_query(mrb_state *mrb, mrb_value self) {
+  char *component;
+  mrb_get_args(mrb, "z", &component);
+  if (uriSetQueryA(MRB_URIPARSER_URI(self), component,
+                   component + strlen(component)))
+    MRB_URIPARSER_RAISE(mrb, "failed to set query");
+  return mrb_nil_value();
+}
+
 /**
  * @brief Get the fragment component of the URI.
  *
@@ -884,6 +904,9 @@ void mrb_mruby_uriparser_gem_init(mrb_state *const mrb) {
   /* TODO: Use macro conditional */
   mrb_define_method(mrb, uri, "path=", mrb_uriparser_set_path, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, uri, "query", mrb_uriparser_query, MRB_ARGS_NONE());
+  /* TODO: Use macro conditional */
+  mrb_define_method(mrb, uri, "query=", mrb_uriparser_set_query,
+                    MRB_ARGS_REQ(1));
   mrb_define_method(mrb, uri, "fragment", mrb_uriparser_fragment,
                     MRB_ARGS_NONE());
   mrb_define_method(mrb, uri, "absolute_path?", mrb_uriparser_absolute_path,
