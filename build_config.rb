@@ -46,6 +46,10 @@ MRuby::Build.new do |conf|
                  checker: "check_uri_equals_uri.c",
                  macro: "HAVE_URI_EQUALS_URI",
                  conf:)
+  check_function(name: "uriSetSchemeA",
+                 checker: "check_uri_set_scheme.c",
+                 macro: "HAVE_URI_SET_SCHEME",
+                 conf:)
 
   if ENV['DEBUG'] == 'true'
     conf.enable_debug
