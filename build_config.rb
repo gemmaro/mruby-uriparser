@@ -62,6 +62,10 @@ MRuby::Build.new do |conf|
                  checker: "check_uri_set_port.c",
                  macro: "HAVE_URI_SET_PORT",
                  conf:)
+  check_function(name: "uriSetPathA",
+                 checker: "check_uri_set_path.c",
+                 macro: "HAVE_URI_SET_PATH",
+                 conf:)
 
   if ENV['DEBUG'] == 'true'
     conf.enable_debug
