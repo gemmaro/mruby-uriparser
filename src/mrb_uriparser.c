@@ -502,6 +502,26 @@ static mrb_value mrb_uriparser_port(mrb_state *const mrb,
   return MRB_URIPARSER_STR_IN_RANGE(mrb, MRB_URIPARSER_URI(self), portText);
 }
 
+/* TODO: Use macro conditional */
+/**
+ * @brief Set the port component of the URI.
+ * ```ruby
+ * uri.port = ...
+ * ```
+ *
+ * where `uri` is a `URIParser::URI` instance.
+ *
+ * @return `nil`.
+ */
+static mrb_value mrb_uriparser_set_port(mrb_state *mrb, mrb_value self) {
+  char *component;
+  mrb_get_args(mrb, "z", &component);
+  if (uriSetPortTextA(MRB_URIPARSER_URI(self), component,
+                      component + strlen(component)))
+    MRB_URIPARSER_RAISE(mrb, "failed to set port");
+  return mrb_nil_value();
+}
+
 /**
  * @brief Get the path segments as an array of strings.
  *
@@ -837,6 +857,8 @@ void mrb_mruby_uriparser_gem_init(mrb_state *const mrb) {
   mrb_define_method(mrb, uri, "host?", mrb_uriparser_has_host, MRB_ARGS_NONE());
 #endif
   mrb_define_method(mrb, uri, "port", mrb_uriparser_port, MRB_ARGS_NONE());
+  /* TODO: Use macro conditional */
+  mrb_define_method(mrb, uri, "port=", mrb_uriparser_set_port, MRB_ARGS_REQ(1));
   mrb_define_method(mrb, uri, "path_segments", mrb_uriparser_path_segments,
                     MRB_ARGS_NONE());
   mrb_define_method(mrb, uri, "query", mrb_uriparser_query, MRB_ARGS_NONE());
