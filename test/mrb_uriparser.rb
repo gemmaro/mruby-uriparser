@@ -214,3 +214,9 @@ assert("URIParser::URI#==") do
   another_source = "http://foo.example.com:12345/some/path?query"
   assert_false(uri == URIParser.parse(another_source))
 end
+
+assert("URIParser::URI#scheme=") do
+  uri = URIParser.parse("http://example.com")
+  uri.scheme = "https"
+  assert_equal("https://example.com", uri.to_s)
+end
