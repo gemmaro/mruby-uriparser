@@ -386,9 +386,10 @@ static mrb_value mrb_uriparser_scheme(mrb_state *const mrb,
  * @return `nil`.
  */
 static mrb_value mrb_uriparser_set_scheme(mrb_state *mrb, mrb_value self) {
-  char *scheme;
-  mrb_get_args(mrb, "z", &scheme);
-  if (uriSetSchemeA(MRB_URIPARSER_URI(self), scheme, scheme + strlen(scheme)))
+  char *component;
+  mrb_get_args(mrb, "z", &component);
+  if (uriSetSchemeA(MRB_URIPARSER_URI(self), component,
+                    component + strlen(component)))
     MRB_URIPARSER_RAISE(mrb, "failed to set scheme");
   return mrb_nil_value();
 }
@@ -407,6 +408,26 @@ static mrb_value mrb_uriparser_set_scheme(mrb_state *mrb, mrb_value self) {
 static mrb_value mrb_uriparser_userinfo(mrb_state *const mrb,
                                         const mrb_value self) {
   return MRB_URIPARSER_STR_IN_RANGE(mrb, MRB_URIPARSER_URI(self), userInfo);
+}
+
+/* TODO: Use macro conditional */
+/**
+ * @brief Set the userinfo component of the URI.
+ * ```ruby
+ * uri.userinfo = ...
+ * ```
+ *
+ * where `uri` is a `URIParser::URI` instance.
+ *
+ * @return `nil`.
+ */
+static mrb_value mrb_uriparser_set_userinfo(mrb_state *mrb, mrb_value self) {
+  char *component;
+  mrb_get_args(mrb, "z", &component);
+  if (uriSetUserInfoA(MRB_URIPARSER_URI(self), component,
+                      component + strlen(component)))
+    MRB_URIPARSER_RAISE(mrb, "failed to set userinfo");
+  return mrb_nil_value();
 }
 
 /**
@@ -785,6 +806,9 @@ void mrb_mruby_uriparser_gem_init(mrb_state *const mrb) {
                     MRB_ARGS_REQ(1));
   mrb_define_method(mrb, uri, "userinfo", mrb_uriparser_userinfo,
                     MRB_ARGS_NONE());
+  /* TODO: Use macro conditional */
+  mrb_define_method(mrb, uri, "userinfo=", mrb_uriparser_set_userinfo,
+                    MRB_ARGS_REQ(1));
   mrb_define_method(mrb, uri, "hostname", mrb_uriparser_hostname,
                     MRB_ARGS_NONE());
 #ifdef HAVE_URI_HAS_HOST
