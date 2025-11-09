@@ -70,6 +70,10 @@ MRuby::Build.new do |conf|
                  checker: "check_uri_set_query.c",
                  macro: "HAVE_URI_SET_QUERY",
                  conf:)
+  check_function(name: "uriSetFragmentA",
+                 checker: "check_uri_set_fragment.c",
+                 macro: "HAVE_URI_SET_FRAGMENT",
+                 conf:)
 
   if ENV['DEBUG'] == 'true'
     conf.enable_debug

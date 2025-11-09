@@ -622,7 +622,7 @@ static mrb_value mrb_uriparser_fragment(mrb_state *const mrb,
   return MRB_URIPARSER_STR_IN_RANGE(mrb, MRB_URIPARSER_URI(self), fragment);
 }
 
-/* TODO: Use macro conditional */
+#ifdef HAVE_URI_SET_FRAGMENT
 /**
  * @brief Set the fragment component of the URI.
  * ```ruby
@@ -641,6 +641,7 @@ static mrb_value mrb_uriparser_set_fragment(mrb_state *mrb, mrb_value self) {
     MRB_URIPARSER_RAISE(mrb, "failed to set fragment");
   return mrb_nil_value();
 }
+#endif
 
 /**
  * @brief Check if the URI has an absolute path.
@@ -941,9 +942,10 @@ void mrb_mruby_uriparser_gem_init(mrb_state *const mrb) {
 #endif
   mrb_define_method(mrb, uri, "fragment", mrb_uriparser_fragment,
                     MRB_ARGS_NONE());
-  /* TODO: Use macro conditional */
+#ifdef HAVE_URI_SET_FRAGMENT
   mrb_define_method(mrb, uri, "fragment=", mrb_uriparser_set_fragment,
                     MRB_ARGS_REQ(1));
+#endif
   mrb_define_method(mrb, uri, "absolute_path?", mrb_uriparser_absolute_path,
                     MRB_ARGS_NONE());
   mrb_define_method(mrb, uri, "to_s", mrb_uriparser_recompose, MRB_ARGS_NONE());
