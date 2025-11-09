@@ -33,6 +33,14 @@ URI = URIParser::URI
 
 Refer to the API documentation for details.
 
+## Links
+
+* [API documentation](https://gemmaro.github.io/mruby-uriparser/ "mruby-uriparser")
+* [GitHub repository](https://github.com/gemmaro/mruby-uriparser "GitHub")
+
+For prior works, see [mruby-uri-parser](https://github.com/Asmod4n/mruby-uri-parser), which uses [uri\_parser](https://github.com/Zewo/uri_parser).
+Also see [ruby-uriparser](https://github.com/tlewin/ruby-uriparser) as in [uriparser - uriparser Bindings & 3rd-party Wrappers](https://uriparser.github.io/doc/bindings/ "uriparser").
+
 ## Running Tests
 
 To run tests:
@@ -42,11 +50,6 @@ rake --directory /path/to/mruby all test MRUBY_CONFIG=$PWD/build_config.rb
 ```
 
 Alternatively, use the `test/run` script with `MRUBY_SRC` set in your `.env` file.
-
-## Prior Work
-
-See [mruby-uri-parser](https://github.com/Asmod4n/mruby-uri-parser), which uses [uri\_parser](https://github.com/Zewo/uri_parser).
-Also see [ruby-uriparser](https://github.com/tlewin/ruby-uriparser).
 
 ## License
 
