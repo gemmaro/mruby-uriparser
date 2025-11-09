@@ -1,0 +1,64 @@
+* URIParserモジュール
+** ClassMethodsモジュール
+*** splitメソッド
+#+begin_src ruby
+      def split(uri)
+        uri = parse(uri)
+      
+        # TODO: Support registry, path, and opaque
+        [uri.scheme, uri.userinfo,
+         nil, # host
+         uri.port,
+         nil, # registry
+         nil, # path
+         nil, # opaque
+         uri.query, uri.fragment]
+      end
+#+end_src
+** URIクラス
+*** hierarchical?メソッド
+#+begin_src ruby
+      def hierarchical?
+        path ? true : false
+      end
+#+end_src
+* Guixパッケージ
+#+begin_src scheme
+  (define-public ruby-yard-mruby
+    (package
+      (name "ruby-yard-mruby")
+      (version "0.3.0")
+      (source
+       (origin
+         (method url-fetch)
+         (uri (rubygems-uri "yard-mruby" version))
+         (sha256
+          (base32 "1vv4s9lv0bif1xcn12yavr05adpj41y0xkrvwzza9rxxr3jz6l7r"))))
+      (build-system ruby-build-system)
+      (arguments (list #:test-target "spec"))
+      (native-inputs (list ruby-rspec))
+      (propagated-inputs (list ruby-yard))
+      (synopsis "Generate Yard documentation for MRuby projects.")
+      (description "Generate Yard documentation for MRuby projects.")
+      (home-page "https://github.com/sagmor/yard-mruby")
+      (license license:expat)))
+
+  (define-public ruby-yard-coderay
+    (package
+      (name "ruby-yard-coderay")
+      (version "0.1.0")
+      (source
+       (origin
+         (method url-fetch)
+         (uri (rubygems-uri "yard-coderay" version))
+         (sha256
+          (base32 "0gqn2m83vxvp579malqi1jhkh0xcwpbz9190qr64zwbiljp5kfrq"))))
+      (build-system ruby-build-system)
+      (arguments (list #:test-target "spec"))
+      (native-inputs (list ruby-rspec))
+      (propagated-inputs (list ruby-coderay ruby-yard))
+      (synopsis "Add's coderay syntax highlighting to YARD docs")
+      (description "Add's coderay syntax highlighting to YARD docs.")
+      (home-page "https://github.com/sagmor/yard-coderay")
+      (license license:expat)))
+#+end_src
