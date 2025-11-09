@@ -352,7 +352,8 @@ static mrb_value mrb_uriparser_initialize_copy(mrb_state *mrb, mrb_value self) {
 static mrb_value mrb_uriparser_equals(mrb_state *mrb, mrb_value self) {
   mrb_value another;
   mrb_get_args(mrb, "o", &another);
-  UriBool result = uriEqualsUriA(MRB_URIPARSER_URI(self), MRB_URIPARSER_URI(another));
+  UriBool result =
+      uriEqualsUriA(MRB_URIPARSER_URI(self), MRB_URIPARSER_URI(another));
   return mrb_bool_value(result);
 }
 #endif
@@ -753,7 +754,8 @@ void mrb_mruby_uriparser_gem_init(mrb_state *const mrb) {
   struct RClass *const uri = mrb_define_class_under(
       mrb, uriparser, MRB_URIPARSER_URI_MODULE_NAME, mrb->object_class);
 #ifdef HAVE_URI_COPY_URI
-  mrb_define_method(mrb, uri, "initialize_copy", mrb_uriparser_initialize_copy, MRB_ARGS_REQ(1));
+  mrb_define_method(mrb, uri, "initialize_copy", mrb_uriparser_initialize_copy,
+                    MRB_ARGS_REQ(1));
 #endif
 #ifdef HAVE_URI_EQUALS_URI
   mrb_define_method(mrb, uri, "==", mrb_uriparser_equals, MRB_ARGS_REQ(1));
