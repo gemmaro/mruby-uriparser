@@ -50,6 +50,10 @@ MRuby::Build.new do |conf|
                  checker: "check_uri_set_scheme.c",
                  macro: "HAVE_URI_SET_SCHEME",
                  conf:)
+  check_function(name: "uriSetUserInfoA",
+                 checker: "check_uri_set_userinfo.c",
+                 macro: "HAVE_URI_SET_USERINFO",
+                 conf:)
 
   if ENV['DEBUG'] == 'true'
     conf.enable_debug

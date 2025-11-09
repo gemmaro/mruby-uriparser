@@ -411,7 +411,7 @@ static mrb_value mrb_uriparser_userinfo(mrb_state *const mrb,
   return MRB_URIPARSER_STR_IN_RANGE(mrb, MRB_URIPARSER_URI(self), userInfo);
 }
 
-/* TODO: Use macro conditional */
+#ifdef HAVE_URI_SET_USERINFO
 /**
  * @brief Set the userinfo component of the URI.
  * ```ruby
@@ -430,6 +430,7 @@ static mrb_value mrb_uriparser_set_userinfo(mrb_state *mrb, mrb_value self) {
     MRB_URIPARSER_RAISE(mrb, "failed to set userinfo");
   return mrb_nil_value();
 }
+#endif
 
 /**
  * @brief Get the hostname component of the URI.
@@ -908,9 +909,10 @@ void mrb_mruby_uriparser_gem_init(mrb_state *const mrb) {
 #endif
   mrb_define_method(mrb, uri, "userinfo", mrb_uriparser_userinfo,
                     MRB_ARGS_NONE());
-  /* TODO: Use macro conditional */
+#ifdef HAVE_URI_SET_USERINFO
   mrb_define_method(mrb, uri, "userinfo=", mrb_uriparser_set_userinfo,
                     MRB_ARGS_REQ(1));
+#endif
   mrb_define_method(mrb, uri, "hostname", mrb_uriparser_hostname,
                     MRB_ARGS_NONE());
   /* TODO: Use macro conditional */
