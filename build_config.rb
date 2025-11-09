@@ -66,6 +66,10 @@ MRuby::Build.new do |conf|
                  checker: "check_uri_set_path.c",
                  macro: "HAVE_URI_SET_PATH",
                  conf:)
+  check_function(name: "uriSetQueryA",
+                 checker: "check_uri_set_query.c",
+                 macro: "HAVE_URI_SET_QUERY",
+                 conf:)
 
   if ENV['DEBUG'] == 'true'
     conf.enable_debug
