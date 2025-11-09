@@ -38,7 +38,7 @@ Refer to the API documentation for details.
 * [API documentation](https://gemmaro.github.io/mruby-uriparser/ "mruby-uriparser")
 * [GitHub repository](https://github.com/gemmaro/mruby-uriparser "GitHub")
 
-For prior works, see [mruby-uri-parser](https://github.com/Asmod4n/mruby-uri-parser), which uses [uri\_parser](https://github.com/Zewo/uri_parser).
+For prior works, see [mruby-uri-parser](https://github.com/Asmod4n/mruby-uri-parser), which uses [uri\_parser](https://github.com/Zewo/uri_parser), and [mruby-uri](https://github.com/zzak/mruby-uri), which is written in pure Ruby.
 Also see [ruby-uriparser](https://github.com/tlewin/ruby-uriparser) as in [uriparser - uriparser Bindings & 3rd-party Wrappers](https://uriparser.github.io/doc/bindings/ "uriparser").
 
 ## Running Tests
