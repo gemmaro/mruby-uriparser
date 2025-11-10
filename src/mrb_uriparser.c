@@ -433,13 +433,23 @@ MRB_URIPARSER_DEFUN_GETTER(fragment);
 #ifdef HAVE_URI_SET_SCHEME
 MRB_URIPARSER_DEFUN_SETTER(Scheme);
 #endif
-
 #ifdef HAVE_URI_SET_USERINFO
 MRB_URIPARSER_DEFUN_SETTER(UserInfo);
 #endif
-
 #ifdef HAVE_URI_SET_HOST
 MRB_URIPARSER_DEFUN_SETTER(HostAuto)
+#endif
+#ifdef HAVE_URI_SET_PORT
+MRB_URIPARSER_DEFUN_SETTER(PortText);
+#endif
+#ifdef HAVE_URI_SET_PATH
+MRB_URIPARSER_DEFUN_SETTER(Path)
+#endif
+#ifdef HAVE_URI_SET_QUERY
+MRB_URIPARSER_DEFUN_SETTER(Query)
+#endif
+#ifdef HAVE_URI_SET_FRAGMENT
+MRB_URIPARSER_DEFUN_SETTER(Fragment)
 #endif
 
 #ifdef HAVE_URI_HAS_HOST
@@ -457,10 +467,6 @@ MRB_URIPARSER_DEFUN_SETTER(HostAuto)
 static mrb_value mrb_uriparser_has_host(mrb_state *mrb, mrb_value self) {
   return mrb_bool_value(uriHasHostA(MRB_URIPARSER_URI(self)));
 }
-#endif
-
-#ifdef HAVE_URI_SET_PORT
-MRB_URIPARSER_DEFUN_SETTER(PortText);
 #endif
 
 /**
@@ -485,18 +491,6 @@ static mrb_value mrb_uriparser_path_segments(mrb_state *const mrb,
   }
   return ary;
 }
-
-#ifdef HAVE_URI_SET_PATH
-MRB_URIPARSER_DEFUN_SETTER(Path)
-#endif
-
-#ifdef HAVE_URI_SET_QUERY
-MRB_URIPARSER_DEFUN_SETTER(Query)
-#endif
-
-#ifdef HAVE_URI_SET_FRAGMENT
-MRB_URIPARSER_DEFUN_SETTER(Fragment)
-#endif
 
 /**
  * @brief Check if the URI has an absolute path.
