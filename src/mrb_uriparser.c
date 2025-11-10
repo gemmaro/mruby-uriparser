@@ -391,9 +391,8 @@ static mrb_value mrb_uriparser_initialize_copy(mrb_state *mrb, mrb_value self) {
   mrb_get_args(mrb, "o", &original);
   UriUriA *uri = MRB_URIPARSER_URI(original);
   UriUriA *new_uri = mrb_malloc(mrb, sizeof(UriUriA));
-  if (uriCopyUriA(new_uri, uri)) {
+  if (uriCopyUriA(new_uri, uri))
     MRB_URIPARSER_RAISE(mrb, "failed to copy URI");
-  }
   DATA_TYPE(self) = &mrb_uriparser_data_type;
   mrb_uriparser_data *data = mrb_malloc(mrb, sizeof(mrb_uriparser_data));
   data->uri = new_uri;
