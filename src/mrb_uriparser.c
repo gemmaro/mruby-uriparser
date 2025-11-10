@@ -119,6 +119,24 @@
   return value;
 
 /**
+ * Get the specific component of the URI.
+ *
+ * ```ruby
+ * uri.scheme
+ * ```
+ *
+ * where `uri` is a `URIParser::URI` instance.
+ *
+ * @return String of the component or `nil`.
+ */
+#define MRB_URIPARSER_DEFUN_GETTER(component)                                  \
+  static mrb_value mrb_uriparser_##component(mrb_state *const mrb,             \
+                                             const mrb_value self) {           \
+    return MRB_URIPARSER_STR_IN_RANGE(mrb, MRB_URIPARSER_URI(self),            \
+                                      component);                              \
+  }
+
+/**
  * @brief Internal data structure for wrapping a `UriUriA` pointer in mruby.
  *
  * This structure is used to associate a parsed URI (represented by a
@@ -367,21 +385,7 @@ static mrb_value mrb_uriparser_equals(mrb_state *mrb, mrb_value self) {
 }
 #endif
 
-/**
- * @brief Get the scheme component of the URI.
- *
- * ```ruby
- * uri.scheme
- * ```
- *
- * where `uri` is a `URIParser::URI` instance.
- *
- * @return Scheme string or `nil`.
- */
-static mrb_value mrb_uriparser_scheme(mrb_state *const mrb,
-                                      const mrb_value self) {
-  return MRB_URIPARSER_STR_IN_RANGE(mrb, MRB_URIPARSER_URI(self), scheme);
-}
+MRB_URIPARSER_DEFUN_GETTER(scheme);
 
 #ifdef HAVE_URI_SET_SCHEME
 /**
