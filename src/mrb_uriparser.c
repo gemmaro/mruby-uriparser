@@ -123,6 +123,7 @@
  *
  * ```ruby
  * uri.scheme
+ * uri.userinfo
  * ```
  *
  * where `uri` is a `URIParser::URI` instance.
@@ -386,6 +387,7 @@ static mrb_value mrb_uriparser_equals(mrb_state *mrb, mrb_value self) {
 #endif
 
 MRB_URIPARSER_DEFUN_GETTER(scheme);
+MRB_URIPARSER_DEFUN_GETTER(userInfo);
 
 #ifdef HAVE_URI_SET_SCHEME
 /**
@@ -407,22 +409,6 @@ static mrb_value mrb_uriparser_set_scheme(mrb_state *mrb, mrb_value self) {
   return mrb_nil_value();
 }
 #endif
-
-/**
- * @brief Get the userinfo component of the URI.
- *
- * ```ruby
- * uri.userinfo
- * ```
- *
- * where `uri` is a `URIParser::URI` instance.
- *
- * @return Userinfo string or `nil`.
- */
-static mrb_value mrb_uriparser_userinfo(mrb_state *const mrb,
-                                        const mrb_value self) {
-  return MRB_URIPARSER_STR_IN_RANGE(mrb, MRB_URIPARSER_URI(self), userInfo);
-}
 
 #ifdef HAVE_URI_SET_USERINFO
 /**
@@ -925,7 +911,7 @@ void mrb_mruby_uriparser_gem_init(mrb_state *const mrb) {
   mrb_define_method(mrb, uri, "scheme=", mrb_uriparser_set_scheme,
                     MRB_ARGS_REQ(1));
 #endif
-  mrb_define_method(mrb, uri, "userinfo", mrb_uriparser_userinfo,
+  mrb_define_method(mrb, uri, "userinfo", mrb_uriparser_userInfo,
                     MRB_ARGS_NONE());
 #ifdef HAVE_URI_SET_USERINFO
   mrb_define_method(mrb, uri, "userinfo=", mrb_uriparser_set_userinfo,
