@@ -152,6 +152,7 @@
  * ```ruby
  * uri.scheme = ...
  * uri.userinfo = ...
+ * uri.host = ...
  * ```
  *
  * where `uri` is a `URIParser::URI` instance.
@@ -434,24 +435,7 @@ MRB_URIPARSER_DEFUN_SETTER(UserInfo);
 #endif
 
 #ifdef HAVE_URI_SET_HOST
-/**
- * @brief Set the host component of the URI.
- * ```ruby
- * uri.host = ...
- * ```
- *
- * where `uri` is a `URIParser::URI` instance.
- *
- * @return `nil`.
- */
-static mrb_value mrb_uriparser_set_host(mrb_state *mrb, mrb_value self) {
-  char *component;
-  mrb_get_args(mrb, "z", &component);
-  if (uriSetHostAutoA(MRB_URIPARSER_URI(self), component,
-                      component + strlen(component)))
-    MRB_URIPARSER_RAISE(mrb, "failed to set host");
-  return mrb_nil_value();
-}
+MRB_URIPARSER_DEFUN_SETTER(HostAuto)
 #endif
 
 #ifdef HAVE_URI_HAS_HOST
@@ -856,7 +840,8 @@ void mrb_mruby_uriparser_gem_init(mrb_state *const mrb) {
   mrb_define_method(mrb, uri, "hostname", mrb_uriparser_hostText,
                     MRB_ARGS_NONE());
 #ifdef HAVE_URI_SET_HOST
-  mrb_define_method(mrb, uri, "host=", mrb_uriparser_set_host, MRB_ARGS_REQ(1));
+  mrb_define_method(mrb, uri, "host=", mrb_uriparser_set_HostAuto,
+                    MRB_ARGS_REQ(1));
 #endif
 #ifdef HAVE_URI_HAS_HOST
   mrb_define_method(mrb, uri, "host?", mrb_uriparser_has_host, MRB_ARGS_NONE());
