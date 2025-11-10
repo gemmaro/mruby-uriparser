@@ -147,6 +147,28 @@
   }
 
 /**
+ * @brief Set the scheme component of the URI.
+ *
+ * ```ruby
+ * uri.scheme = ...
+ * ```
+ *
+ * where `uri` is a `URIParser::URI` instance.
+ *
+ * @return `nil`.
+ */
+#define MRB_URIPARSER_DEFUN_SETTER(component_name)                             \
+  static mrb_value mrb_uriparser_set_##component_name(mrb_state *mrb,          \
+                                                      mrb_value self) {        \
+    char *component;                                                           \
+    mrb_get_args(mrb, "z", &component);                                        \
+    if (uriSet##component_name##A(MRB_URIPARSER_URI(self), component,          \
+                                  component + strlen(component)))              \
+      MRB_URIPARSER_RAISE(mrb, "failed to set " #component_name);              \
+    return mrb_nil_value();                                                    \
+  }
+
+/**
  * @brief Internal data structure for wrapping a `UriUriA` pointer in mruby.
  *
  * This structure is used to associate a parsed URI (represented by a
@@ -403,24 +425,7 @@ MRB_URIPARSER_DEFUN_GETTER(query);
 MRB_URIPARSER_DEFUN_GETTER(fragment);
 
 #ifdef HAVE_URI_SET_SCHEME
-/**
- * @brief Set the scheme component of the URI.
- * ```ruby
- * uri.scheme = ...
- * ```
- *
- * where `uri` is a `URIParser::URI` instance.
- *
- * @return `nil`.
- */
-static mrb_value mrb_uriparser_set_scheme(mrb_state *mrb, mrb_value self) {
-  char *component;
-  mrb_get_args(mrb, "z", &component);
-  if (uriSetSchemeA(MRB_URIPARSER_URI(self), component,
-                    component + strlen(component)))
-    MRB_URIPARSER_RAISE(mrb, "failed to set scheme");
-  return mrb_nil_value();
-}
+MRB_URIPARSER_DEFUN_SETTER(Scheme);
 #endif
 
 #ifdef HAVE_URI_SET_USERINFO
@@ -855,7 +860,7 @@ void mrb_mruby_uriparser_gem_init(mrb_state *const mrb) {
 #endif
   mrb_define_method(mrb, uri, "scheme", mrb_uriparser_scheme, MRB_ARGS_NONE());
 #ifdef HAVE_URI_SET_SCHEME
-  mrb_define_method(mrb, uri, "scheme=", mrb_uriparser_set_scheme,
+  mrb_define_method(mrb, uri, "scheme=", mrb_uriparser_set_Scheme,
                     MRB_ARGS_REQ(1));
 #endif
   mrb_define_method(mrb, uri, "userinfo", mrb_uriparser_userInfo,
