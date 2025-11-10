@@ -463,7 +463,8 @@ MRB_URIPARSER_DEFUN_SETTER(Fragment)
  *
  * @return Boolean.
  */
-static mrb_value mrb_uriparser_has_host(mrb_state *mrb, mrb_value self) {
+static mrb_value mrb_uriparser_has_host(mrb_state *const mrb,
+                                        const mrb_value self) {
   return mrb_bool_value(uriHasHostA(MRB_URIPARSER_URI(self)));
 }
 #endif
