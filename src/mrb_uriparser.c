@@ -555,7 +555,7 @@ static mrb_value mrb_uriparser_recompose(mrb_state *const mrb,
  */
 static mrb_value mrb_uriparser_merge_mutably(mrb_state *const mrb,
                                              const mrb_value self) {
-  const mrb_value rel;
+  mrb_value rel;
   mrb_get_args(mrb, "o", &rel);
 
   /* TODO: Accept string as well. */
@@ -589,7 +589,7 @@ static mrb_value mrb_uriparser_merge_mutably(mrb_state *const mrb,
  */
 static mrb_value mrb_uriparser_merge(mrb_state *const mrb,
                                      const mrb_value self) {
-  const mrb_value rel;
+  mrb_value rel;
   mrb_get_args(mrb, "o", &rel);
 
   /* TODO: Accept string as well. */
@@ -621,7 +621,7 @@ static mrb_value mrb_uriparser_merge(mrb_state *const mrb,
  */
 static mrb_value mrb_uriparser_create_reference(mrb_state *const mrb,
                                                 const mrb_value self) {
-  const mrb_value base;
+  mrb_value base;
   const mrb_int num = 1;
   const mrb_sym domain_root_key = mrb_intern_lit(mrb, "domain_root");
   mrb_value values[num];
