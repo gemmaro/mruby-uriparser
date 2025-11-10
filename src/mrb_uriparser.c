@@ -108,6 +108,16 @@
 
 #define MRB_URIPARSER_URI(value) ((mrb_uriparser_data *)DATA_PTR(value))->uri
 
+#define MRB_URIPARSER_NEW(mrb, uri_val)                                        \
+  const mrb_value value =                                                      \
+      mrb_obj_new(mrb, MRB_URIPARSER_URI_CLASS(mrb), 0, NULL);                 \
+  DATA_TYPE(value) = &mrb_uriparser_data_type;                                 \
+  mrb_uriparser_data *const data =                                             \
+      mrb_malloc(mrb, sizeof(mrb_uriparser_data));                             \
+  data->uri = uri_val;                                                         \
+  DATA_PTR(value) = data;                                                      \
+  return value;
+
 typedef struct {
   UriUriA *uri;
 } mrb_uriparser_data;
@@ -122,18 +132,6 @@ static const struct mrb_data_type mrb_uriparser_data_type = {
     .struct_name = "mrb_uriparser_data_type",
     .dfree = mrb_uriparser_free,
 };
-
-/* utilities */
-
-static mrb_value mrb_uriparser_new(mrb_state *const mrb, UriUriA *uri) {
-  const mrb_value value =
-      mrb_obj_new(mrb, MRB_URIPARSER_URI_CLASS(mrb), 0, NULL);
-  DATA_TYPE(value) = &mrb_uriparser_data_type;
-  mrb_uriparser_data *const data = mrb_malloc(mrb, sizeof(mrb_uriparser_data));
-  data->uri = uri;
-  DATA_PTR(value) = data;
-  return value;
-}
 
 /* initialized functions */
 
@@ -167,7 +165,7 @@ static mrb_value mrb_uriparser_parse(mrb_state *const mrb,
     sprintf(message, "%s: `%s'", MRB_URIPARSER_PARSE_FAILED, error_pos);
     MRB_URIPARSER_RAISE(mrb, message);
   }
-  return mrb_uriparser_new(mrb, uri);
+  MRB_URIPARSER_NEW(mrb, uri);
 }
 
 /**
@@ -751,7 +749,7 @@ static mrb_value mrb_uriparser_merge(mrb_state *const mrb,
   if (uriAddBaseUriA(resolved, MRB_URIPARSER_URI(rel),
                      MRB_URIPARSER_URI(self)) != URI_SUCCESS)
     MRB_URIPARSER_RAISE(mrb, "failed to resolve URI");
-  return mrb_uriparser_new(mrb, resolved);
+  MRB_URIPARSER_NEW(mrb, resolved);
 }
 
 /**
@@ -791,7 +789,7 @@ static mrb_value mrb_uriparser_create_reference(mrb_state *const mrb,
                         mrb_test(values[0]) ? URI_TRUE : URI_FALSE) !=
       URI_SUCCESS)
     MRB_URIPARSER_RAISE(mrb, "failed to remove base URI");
-  return mrb_uriparser_new(mrb, dest);
+  MRB_URIPARSER_NEW(mrb, dest);
 }
 
 /**
