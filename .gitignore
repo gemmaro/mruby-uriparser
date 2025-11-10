@@ -1,3 +1,4 @@
 /build_config.rb.lock
 /doc/
 /compile_commands.json
+/.cache/
