@@ -413,12 +413,12 @@ static mrb_value mrb_uriparser_initialize_copy(mrb_state *const mrb,
  *
  * @return Boolean.
  */
-static mrb_value mrb_uriparser_equals(mrb_state *mrb, mrb_value self) {
+static mrb_value mrb_uriparser_equals(mrb_state *const mrb,
+                                      const mrb_value self) {
   mrb_value another;
   mrb_get_args(mrb, "o", &another);
-  UriBool result =
-      uriEqualsUriA(MRB_URIPARSER_URI(self), MRB_URIPARSER_URI(another));
-  return mrb_bool_value(result);
+  return mrb_bool_value(
+      uriEqualsUriA(MRB_URIPARSER_URI(self), MRB_URIPARSER_URI(another)));
 }
 #endif
 
