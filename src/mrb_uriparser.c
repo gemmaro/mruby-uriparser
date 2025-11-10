@@ -126,6 +126,7 @@
  * uri.userinfo
  * uri.hostname
  * uri.port
+ * uri.query
  * ```
  *
  * where `uri` is a `URIParser::URI` instance.
@@ -396,6 +397,7 @@ MRB_URIPARSER_DEFUN_GETTER(scheme);
 MRB_URIPARSER_DEFUN_GETTER(userInfo);
 MRB_URIPARSER_DEFUN_GETTER(hostText);
 MRB_URIPARSER_DEFUN_GETTER(portText);
+MRB_URIPARSER_DEFUN_GETTER(query);
 
 #ifdef HAVE_URI_SET_SCHEME
 /**
@@ -540,22 +542,6 @@ static mrb_value mrb_uriparser_set_path(mrb_state *mrb, mrb_value self) {
   return mrb_nil_value();
 }
 #endif
-
-/**
- * @brief Get the query component of the URI.
- *
- * ```ruby
- * uri.query
- * ```
- *
- * where `uri` is a `URIParser::URI` instance.
- *
- * @return Query string or `nil`.
- */
-static mrb_value mrb_uriparser_query(mrb_state *const mrb,
-                                     const mrb_value self) {
-  return MRB_URIPARSER_STR_IN_RANGE(mrb, MRB_URIPARSER_URI(self), query);
-}
 
 #ifdef HAVE_URI_SET_QUERY
 /**
