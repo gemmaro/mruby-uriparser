@@ -155,6 +155,7 @@
  * uri.host = ...
  * uri.port = ...
  * uri.path = ...
+ * uri.query = ...
  * ```
  *
  * where `uri` is a `URIParser::URI` instance.
@@ -489,24 +490,7 @@ MRB_URIPARSER_DEFUN_SETTER(Path)
 #endif
 
 #ifdef HAVE_URI_SET_QUERY
-/**
- * @brief Set the query component of the URI.
- * ```ruby
- * uri.query = ...
- * ```
- *
- * where `uri` is a `URIParser::URI` instance.
- *
- * @return `nil`.
- */
-static mrb_value mrb_uriparser_set_query(mrb_state *mrb, mrb_value self) {
-  char *component;
-  mrb_get_args(mrb, "z", &component);
-  if (uriSetQueryA(MRB_URIPARSER_URI(self), component,
-                   component + strlen(component)))
-    MRB_URIPARSER_RAISE(mrb, "failed to set query");
-  return mrb_nil_value();
-}
+MRB_URIPARSER_DEFUN_SETTER(Query)
 #endif
 
 #ifdef HAVE_URI_SET_FRAGMENT
@@ -826,7 +810,7 @@ void mrb_mruby_uriparser_gem_init(mrb_state *const mrb) {
 #endif
   mrb_define_method(mrb, uri, "query", mrb_uriparser_query, MRB_ARGS_NONE());
 #ifdef HAVE_URI_SET_QUERY
-  mrb_define_method(mrb, uri, "query=", mrb_uriparser_set_query,
+  mrb_define_method(mrb, uri, "query=", mrb_uriparser_set_Query,
                     MRB_ARGS_REQ(1));
 #endif
   mrb_define_method(mrb, uri, "fragment", mrb_uriparser_fragment,
