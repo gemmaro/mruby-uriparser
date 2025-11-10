@@ -153,6 +153,7 @@
  * uri.scheme = ...
  * uri.userinfo = ...
  * uri.host = ...
+ * uri.port = ...
  * ```
  *
  * where `uri` is a `URIParser::URI` instance.
@@ -456,24 +457,7 @@ static mrb_value mrb_uriparser_has_host(mrb_state *mrb, mrb_value self) {
 #endif
 
 #ifdef HAVE_URI_SET_PORT
-/**
- * @brief Set the port component of the URI.
- * ```ruby
- * uri.port = ...
- * ```
- *
- * where `uri` is a `URIParser::URI` instance.
- *
- * @return `nil`.
- */
-static mrb_value mrb_uriparser_set_port(mrb_state *mrb, mrb_value self) {
-  char *component;
-  mrb_get_args(mrb, "z", &component);
-  if (uriSetPortTextA(MRB_URIPARSER_URI(self), component,
-                      component + strlen(component)))
-    MRB_URIPARSER_RAISE(mrb, "failed to set port");
-  return mrb_nil_value();
-}
+MRB_URIPARSER_DEFUN_SETTER(PortText);
 #endif
 
 /**
@@ -848,7 +832,8 @@ void mrb_mruby_uriparser_gem_init(mrb_state *const mrb) {
 #endif
   mrb_define_method(mrb, uri, "port", mrb_uriparser_portText, MRB_ARGS_NONE());
 #ifdef HAVE_URI_SET_PORT
-  mrb_define_method(mrb, uri, "port=", mrb_uriparser_set_port, MRB_ARGS_REQ(1));
+  mrb_define_method(mrb, uri, "port=", mrb_uriparser_set_PortText,
+                    MRB_ARGS_REQ(1));
 #endif
   mrb_define_method(mrb, uri, "path_segments", mrb_uriparser_path_segments,
                     MRB_ARGS_NONE());
