@@ -156,6 +156,7 @@
  * uri.port = ...
  * uri.path = ...
  * uri.query = ...
+ * uri.fragment = ...
  * ```
  *
  * where `uri` is a `URIParser::URI` instance.
@@ -494,24 +495,7 @@ MRB_URIPARSER_DEFUN_SETTER(Query)
 #endif
 
 #ifdef HAVE_URI_SET_FRAGMENT
-/**
- * @brief Set the fragment component of the URI.
- * ```ruby
- * uri.fragment = ...
- * ```
- *
- * where `uri` is a `URIParser::URI` instance.
- *
- * @return `nil`.
- */
-static mrb_value mrb_uriparser_set_fragment(mrb_state *mrb, mrb_value self) {
-  char *component;
-  mrb_get_args(mrb, "z", &component);
-  if (uriSetFragmentA(MRB_URIPARSER_URI(self), component,
-                      component + strlen(component)))
-    MRB_URIPARSER_RAISE(mrb, "failed to set fragment");
-  return mrb_nil_value();
-}
+MRB_URIPARSER_DEFUN_SETTER(Fragment)
 #endif
 
 /**
@@ -816,7 +800,7 @@ void mrb_mruby_uriparser_gem_init(mrb_state *const mrb) {
   mrb_define_method(mrb, uri, "fragment", mrb_uriparser_fragment,
                     MRB_ARGS_NONE());
 #ifdef HAVE_URI_SET_FRAGMENT
-  mrb_define_method(mrb, uri, "fragment=", mrb_uriparser_set_fragment,
+  mrb_define_method(mrb, uri, "fragment=", mrb_uriparser_set_Fragment,
                     MRB_ARGS_REQ(1));
 #endif
   mrb_define_method(mrb, uri, "absolute_path?", mrb_uriparser_absolute_path,
