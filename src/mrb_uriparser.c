@@ -118,7 +118,18 @@
   DATA_PTR(value) = data;                                                      \
   return value;
 
+/**
+ * @brief Internal data structure for wrapping a `UriUriA` pointer in mruby.
+ *
+ * This structure is used to associate a parsed URI (represented by a
+ * `UriUriA` pointer) with an mruby object.  It enables integration
+ * between the uriparser C library and mruby's object system via the
+ * `DATA_PTR` mechanism.
+ */
 typedef struct {
+  /**
+   * Pointer to a `UriUriA` structure representing the parsed URI.
+   */
   UriUriA *uri;
 } mrb_uriparser_data;
 
