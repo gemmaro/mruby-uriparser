@@ -124,9 +124,14 @@
  * ```ruby
  * uri.scheme
  * uri.userinfo
+ * uri.hostname
  * ```
  *
  * where `uri` is a `URIParser::URI` instance.
+ *
+ * Note for hostname method: it returns `::1` for `http://[::1]/bar`
+ * so it corresponds to CRuby's URI gem's `URI::Generic#hostname`
+ * method.
  *
  * @return String of the component or `nil`.
  */
@@ -388,6 +393,7 @@ static mrb_value mrb_uriparser_equals(mrb_state *mrb, mrb_value self) {
 
 MRB_URIPARSER_DEFUN_GETTER(scheme);
 MRB_URIPARSER_DEFUN_GETTER(userInfo);
+MRB_URIPARSER_DEFUN_GETTER(hostText);
 
 #ifdef HAVE_URI_SET_SCHEME
 /**
@@ -430,25 +436,6 @@ static mrb_value mrb_uriparser_set_userinfo(mrb_state *mrb, mrb_value self) {
   return mrb_nil_value();
 }
 #endif
-
-/**
- * @brief Get the hostname component of the URI.
- *
- * ```ruby
- * uri.hostname
- * ```
- *
- * where `uri` is a `URIParser::URI` instance.
- *
- * @return Hostname string or `nil`.
- *
- * Note that it returns `::1` for `http://[::1]/bar` so it corresponds to
- * CRuby's URI gem's `URI::Generic#hostname` method.
- */
-static mrb_value mrb_uriparser_hostname(mrb_state *const mrb,
-                                        const mrb_value self) {
-  return MRB_URIPARSER_STR_IN_RANGE(mrb, MRB_URIPARSER_URI(self), hostText);
-}
 
 #ifdef HAVE_URI_SET_HOST
 /**
@@ -917,7 +904,7 @@ void mrb_mruby_uriparser_gem_init(mrb_state *const mrb) {
   mrb_define_method(mrb, uri, "userinfo=", mrb_uriparser_set_userinfo,
                     MRB_ARGS_REQ(1));
 #endif
-  mrb_define_method(mrb, uri, "hostname", mrb_uriparser_hostname,
+  mrb_define_method(mrb, uri, "hostname", mrb_uriparser_hostText,
                     MRB_ARGS_NONE());
 #ifdef HAVE_URI_SET_HOST
   mrb_define_method(mrb, uri, "host=", mrb_uriparser_set_host, MRB_ARGS_REQ(1));
