@@ -125,6 +125,7 @@
  * uri.scheme
  * uri.userinfo
  * uri.hostname
+ * uri.port
  * ```
  *
  * where `uri` is a `URIParser::URI` instance.
@@ -394,6 +395,7 @@ static mrb_value mrb_uriparser_equals(mrb_state *mrb, mrb_value self) {
 MRB_URIPARSER_DEFUN_GETTER(scheme);
 MRB_URIPARSER_DEFUN_GETTER(userInfo);
 MRB_URIPARSER_DEFUN_GETTER(hostText);
+MRB_URIPARSER_DEFUN_GETTER(portText);
 
 #ifdef HAVE_URI_SET_SCHEME
 /**
@@ -474,22 +476,6 @@ static mrb_value mrb_uriparser_has_host(mrb_state *mrb, mrb_value self) {
   return mrb_bool_value(uriHasHostA(MRB_URIPARSER_URI(self)));
 }
 #endif
-
-/**
- * @brief Get the port component of the URI as a string.
- *
- * ```ruby
- * uri.port
- * ```
- *
- * where `uri` is a `URIParser::URI` instance.
- *
- * @return Port string or `nil`.
- */
-static mrb_value mrb_uriparser_port(mrb_state *const mrb,
-                                    const mrb_value self) {
-  return MRB_URIPARSER_STR_IN_RANGE(mrb, MRB_URIPARSER_URI(self), portText);
-}
 
 #ifdef HAVE_URI_SET_PORT
 /**
@@ -912,7 +898,7 @@ void mrb_mruby_uriparser_gem_init(mrb_state *const mrb) {
 #ifdef HAVE_URI_HAS_HOST
   mrb_define_method(mrb, uri, "host?", mrb_uriparser_has_host, MRB_ARGS_NONE());
 #endif
-  mrb_define_method(mrb, uri, "port", mrb_uriparser_port, MRB_ARGS_NONE());
+  mrb_define_method(mrb, uri, "port", mrb_uriparser_portText, MRB_ARGS_NONE());
 #ifdef HAVE_URI_SET_PORT
   mrb_define_method(mrb, uri, "port=", mrb_uriparser_set_port, MRB_ARGS_REQ(1));
 #endif
