@@ -137,6 +137,7 @@
  * method.
  *
  * @return String of the component or `nil`.
+ * @sa mrb_uriparser_path_segments
  */
 #define MRB_URIPARSER_DEFUN_GETTER(component)                                  \
   static mrb_value mrb_uriparser_##component(mrb_state *const mrb,             \
@@ -512,6 +513,7 @@ static mrb_value mrb_uriparser_set_port(mrb_state *mrb, mrb_value self) {
  * where `uri` is a `URIParser::URI` instance.
  *
  * @return Array of path segment strings.
+ * @sa MRB_URIPARSER_DEFUN_GETTER
  */
 static mrb_value mrb_uriparser_path_segments(mrb_state *const mrb,
                                              const mrb_value self) {
