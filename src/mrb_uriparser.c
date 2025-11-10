@@ -154,6 +154,7 @@
  * uri.userinfo = ...
  * uri.host = ...
  * uri.port = ...
+ * uri.path = ...
  * ```
  *
  * where `uri` is a `URIParser::URI` instance.
@@ -484,24 +485,7 @@ static mrb_value mrb_uriparser_path_segments(mrb_state *const mrb,
 }
 
 #ifdef HAVE_URI_SET_PATH
-/**
- * @brief Set the path component of the URI.
- * ```ruby
- * uri.path = ...
- * ```
- *
- * where `uri` is a `URIParser::URI` instance.
- *
- * @return `nil`.
- */
-static mrb_value mrb_uriparser_set_path(mrb_state *mrb, mrb_value self) {
-  char *component;
-  mrb_get_args(mrb, "z", &component);
-  if (uriSetPathA(MRB_URIPARSER_URI(self), component,
-                  component + strlen(component)))
-    MRB_URIPARSER_RAISE(mrb, "failed to set path");
-  return mrb_nil_value();
-}
+MRB_URIPARSER_DEFUN_SETTER(Path)
 #endif
 
 #ifdef HAVE_URI_SET_QUERY
@@ -838,7 +822,7 @@ void mrb_mruby_uriparser_gem_init(mrb_state *const mrb) {
   mrb_define_method(mrb, uri, "path_segments", mrb_uriparser_path_segments,
                     MRB_ARGS_NONE());
 #ifdef HAVE_URI_SET_PATH
-  mrb_define_method(mrb, uri, "path=", mrb_uriparser_set_path, MRB_ARGS_REQ(1));
+  mrb_define_method(mrb, uri, "path=", mrb_uriparser_set_Path, MRB_ARGS_REQ(1));
 #endif
   mrb_define_method(mrb, uri, "query", mrb_uriparser_query, MRB_ARGS_NONE());
 #ifdef HAVE_URI_SET_QUERY
