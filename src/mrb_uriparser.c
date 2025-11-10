@@ -164,9 +164,9 @@
  * @return `nil`.
  */
 #define MRB_URIPARSER_DEFUN_SETTER(component_name)                             \
-  static mrb_value mrb_uriparser_set_##component_name(mrb_state *mrb,          \
-                                                      mrb_value self) {        \
-    char *component;                                                           \
+  static mrb_value mrb_uriparser_set_##component_name(mrb_state *const mrb,    \
+                                                      const mrb_value self) {  \
+    const char *component;                                                     \
     mrb_get_args(mrb, "z", &component);                                        \
     if (uriSet##component_name##A(MRB_URIPARSER_URI(self), component,          \
                                   component + strlen(component)))              \
