@@ -498,6 +498,12 @@ static mrb_value mrb_uriparser_path_segments(mrb_state *const mrb,
  *
  * ```ruby
  * uri.absolute_path?
+ * ```
+ *
+ * There are also the following, which might be slightly different
+ * from `absolute_path?`.
+ *
+ * ```ruby
  * uri.absolute?
  * uri.absolute
  * uri.relative?
