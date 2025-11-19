@@ -1,0 +1,6 @@
+#!/bin/sh
+set -eu
+
+: "${MRUBY_SRC?no mruby source directory is set}"
+
+"${MRUBY_SRC}/build/host/bin/mrbtest" -v
