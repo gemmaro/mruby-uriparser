@@ -1,6 +1,7 @@
 # Change Log of mruby uriparser
 
 - Added `uri.path` where `uri` is an instance of `URIParser::URI`.
+- Requires uriparser 0.9.9.
 
 ## 0.1.0 - 2025-11-09
 

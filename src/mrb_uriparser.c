@@ -373,7 +373,6 @@ static mrb_value mrb_uriparser_compose_query(mrb_state *const mrb,
   return str;
 }
 
-#ifdef HAVE_URI_COPY_URI
 /**
  * @brief Copy URI.
  *
@@ -399,9 +398,7 @@ static mrb_value mrb_uriparser_initialize_copy(mrb_state *const mrb,
   DATA_PTR(self) = data;
   return self;
 }
-#endif
 
-#ifdef HAVE_URI_EQUALS_URI
 /**
  * @brief Check two URIs for equivalence.
  *
@@ -420,7 +417,6 @@ static mrb_value mrb_uriparser_equals(mrb_state *const mrb,
   return mrb_bool_value(
       uriEqualsUriA(MRB_URIPARSER_URI(self), MRB_URIPARSER_URI(another)));
 }
-#endif
 
 MRB_URIPARSER_DEFUN_GETTER(scheme);
 MRB_URIPARSER_DEFUN_GETTER(userInfo);
@@ -429,29 +425,14 @@ MRB_URIPARSER_DEFUN_GETTER(portText);
 MRB_URIPARSER_DEFUN_GETTER(query);
 MRB_URIPARSER_DEFUN_GETTER(fragment);
 
-#ifdef HAVE_URI_SET_SCHEME
 MRB_URIPARSER_DEFUN_SETTER(Scheme);
-#endif
-#ifdef HAVE_URI_SET_USERINFO
 MRB_URIPARSER_DEFUN_SETTER(UserInfo);
-#endif
-#ifdef HAVE_URI_SET_HOST
 MRB_URIPARSER_DEFUN_SETTER(HostAuto)
-#endif
-#ifdef HAVE_URI_SET_PORT
 MRB_URIPARSER_DEFUN_SETTER(PortText);
-#endif
-#ifdef HAVE_URI_SET_PATH
 MRB_URIPARSER_DEFUN_SETTER(Path)
-#endif
-#ifdef HAVE_URI_SET_QUERY
 MRB_URIPARSER_DEFUN_SETTER(Query)
-#endif
-#ifdef HAVE_URI_SET_FRAGMENT
 MRB_URIPARSER_DEFUN_SETTER(Fragment)
-#endif
 
-#ifdef HAVE_URI_HAS_HOST
 /**
  * @brief Check if the URI has host.
  *
@@ -467,7 +448,6 @@ static mrb_value mrb_uriparser_has_host(mrb_state *const mrb,
                                         const mrb_value self) {
   return mrb_bool_value(uriHasHostA(MRB_URIPARSER_URI(self)));
 }
-#endif
 
 /**
  * @brief Get the path segments as an array of strings.
@@ -756,54 +736,34 @@ void mrb_mruby_uriparser_gem_init(mrb_state *const mrb) {
                              mrb_uriparser_compose_query, MRB_ARGS_REQ(1));
   struct RClass *const uri = mrb_define_class_under(
       mrb, uriparser, MRB_URIPARSER_URI_MODULE_NAME, mrb->object_class);
-#ifdef HAVE_URI_COPY_URI
   mrb_define_method(mrb, uri, "initialize_copy", mrb_uriparser_initialize_copy,
                     MRB_ARGS_REQ(1));
-#endif
-#ifdef HAVE_URI_EQUALS_URI
   mrb_define_method(mrb, uri, "==", mrb_uriparser_equals, MRB_ARGS_REQ(1));
-#endif
   mrb_define_method(mrb, uri, "scheme", mrb_uriparser_scheme, MRB_ARGS_NONE());
-#ifdef HAVE_URI_SET_SCHEME
   mrb_define_method(mrb, uri, "scheme=", mrb_uriparser_set_Scheme,
                     MRB_ARGS_REQ(1));
-#endif
   mrb_define_method(mrb, uri, "userinfo", mrb_uriparser_userInfo,
                     MRB_ARGS_NONE());
-#ifdef HAVE_URI_SET_USERINFO
   mrb_define_method(mrb, uri, "userinfo=", mrb_uriparser_set_UserInfo,
                     MRB_ARGS_REQ(1));
-#endif
   mrb_define_method(mrb, uri, "hostname", mrb_uriparser_hostText,
                     MRB_ARGS_NONE());
-#ifdef HAVE_URI_SET_HOST
   mrb_define_method(mrb, uri, "host=", mrb_uriparser_set_HostAuto,
                     MRB_ARGS_REQ(1));
-#endif
-#ifdef HAVE_URI_HAS_HOST
   mrb_define_method(mrb, uri, "host?", mrb_uriparser_has_host, MRB_ARGS_NONE());
-#endif
   mrb_define_method(mrb, uri, "port", mrb_uriparser_portText, MRB_ARGS_NONE());
-#ifdef HAVE_URI_SET_PORT
   mrb_define_method(mrb, uri, "port=", mrb_uriparser_set_PortText,
                     MRB_ARGS_REQ(1));
-#endif
   mrb_define_method(mrb, uri, "path_segments", mrb_uriparser_path_segments,
                     MRB_ARGS_NONE());
-#ifdef HAVE_URI_SET_PATH
   mrb_define_method(mrb, uri, "path=", mrb_uriparser_set_Path, MRB_ARGS_REQ(1));
-#endif
   mrb_define_method(mrb, uri, "query", mrb_uriparser_query, MRB_ARGS_NONE());
-#ifdef HAVE_URI_SET_QUERY
   mrb_define_method(mrb, uri, "query=", mrb_uriparser_set_Query,
                     MRB_ARGS_REQ(1));
-#endif
   mrb_define_method(mrb, uri, "fragment", mrb_uriparser_fragment,
                     MRB_ARGS_NONE());
-#ifdef HAVE_URI_SET_FRAGMENT
   mrb_define_method(mrb, uri, "fragment=", mrb_uriparser_set_Fragment,
                     MRB_ARGS_REQ(1));
-#endif
   mrb_define_method(mrb, uri, "absolute_path?", mrb_uriparser_absolute_path,
                     MRB_ARGS_NONE());
   mrb_define_method(mrb, uri, "to_s", mrb_uriparser_recompose, MRB_ARGS_NONE());
