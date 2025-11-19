@@ -40,6 +40,17 @@ module URIParser
       include ClassMethods
     end
 
+    # https://github.com/uriparser/uriparser/blob/1c2ed87f3a2dbfcb99e4f4f6a86f8c4e04f51ddf/src/UriRecompose.c#L435-L499
+    def path
+      segments = path_segments
+      result = ""
+      if absolute_path? || !segments.empty? && host?
+        result += "/"
+      end
+      result += segments.join("/")
+      result
+    end
+
     def absolute?
       scheme ? true : false
     end

@@ -220,3 +220,13 @@ assert("URIParser::URI#scheme=") do
   uri.scheme = "https"
   assert_equal("https://example.com", uri.to_s)
 end
+
+assert("URIParser::URI#path") do
+  assert_equal("", URIParser.parse("http://example.com").path)
+  assert_equal("/", URIParser.parse("http://example.com/").path)
+  assert_equal("/abc/", URIParser.parse("http://example.com/abc/").path)
+  assert_equal("/abc/def", URIParser.parse("http://example.com/abc/def").path)
+  assert_equal("/abc/def/", URIParser.parse("http://example.com/abc/def/").path)
+  assert_equal("//", URIParser.parse("http://example.com//").path)
+  assert_equal("/./..", URIParser.parse("http://example.com/./..").path)
+end

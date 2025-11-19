@@ -474,6 +474,7 @@ static mrb_value mrb_uriparser_has_host(mrb_state *const mrb,
  *
  * ```ruby
  * uri.path_segments
+ * uri.path  #=> string
  * ```
  *
  * where `uri` is a `URIParser::URI` instance.
