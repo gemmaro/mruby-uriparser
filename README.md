@@ -4,7 +4,12 @@ mruby uriparser provides [uriparser](https://uriparser.github.io/) bindings for 
 
 ## Installation
 
-Add the following to your `build_config.rb`:
+This mgem requires the uriparser library to be available.
+In most cases, you only need to install it [using your system's package manager](https://repology.org/project/uriparser/versions).
+If you installed it manually, make sure to update the relevant C environment variables, such as `C_INCLUDE_PATH` and `LIBRARY_PATH`.
+If you are using [GNU Guix](https://guix.gnu.org/) together with [Direnv](https://direnv.net/), simply run `direnv allow .`.
+
+Then add the following to your `build_config.rb`:
 
 ```ruby
 conf.linker.libraries << 'uriparser'
