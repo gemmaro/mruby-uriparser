@@ -1,5 +1,11 @@
 # Change Log of mruby uriparser
 
+## 0.2.1 - 2026-03-02
+
+- Fill some fields in `mrbgem.rake`.
+- Improve test setup.
+- Improve Direnv and Guix setup.
+
 ## 0.2.0 - 2025-12-14
 
 - Added `uri.path` where `uri` is an instance of `URIParser::URI`.
