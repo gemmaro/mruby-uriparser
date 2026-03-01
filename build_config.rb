@@ -10,4 +10,8 @@ MRuby::Build.new do |conf|
     conf.gem core: 'mruby-bin-debugger'
     conf.gem core: 'mruby-bin-mirb'
   end
+
+  if ENV['ENABLE_TESTS'] == 'true'
+    conf.gem core: 'mruby-io'
+  end
 end
