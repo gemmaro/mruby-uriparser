@@ -2,3 +2,4 @@
 /doc/
 /compile_commands.json
 /.cache/
+/vendor/mruby/
