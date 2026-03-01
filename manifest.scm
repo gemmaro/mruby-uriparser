@@ -107,4 +107,4 @@ on enforcing Minitest best practices and coding conventions.")
     (home-page "https://github.com/Shopify/ruby-lsp")
     (license license:expat)))
 
-(packages->manifest (list gcc-toolchain uriparser doxygen bear))
+(packages->manifest (list gcc-toolchain uriparser doxygen))
