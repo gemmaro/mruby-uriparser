@@ -67,14 +67,14 @@
 /* https://uriparser.github.io/doc/api/latest/ */
 #include <uriparser/Uri.h>
 
-#define DONE mrb_gc_arena_restore(mrb, 0);
+#define DONE mrb_gc_arena_restore (mrb, 0);
 
 #define MRB_URIPARSER_MODULE_NAME "URIParser"
 #define MRB_URIPARSER_URI_MODULE_NAME "URI"
 
-#define MRB_URIPARSER(mrb) mrb_module_get(mrb, MRB_URIPARSER_MODULE_NAME)
-#define MRB_URIPARSER_URI_CLASS(mrb)                                           \
-  mrb_class_get_under(mrb, MRB_URIPARSER(mrb), MRB_URIPARSER_URI_MODULE_NAME)
+#define MRB_URIPARSER(mrb) mrb_module_get (mrb, MRB_URIPARSER_MODULE_NAME)
+#define MRB_URIPARSER_URI_CLASS(mrb)                                          \
+  mrb_class_get_under (mrb, MRB_URIPARSER (mrb), MRB_URIPARSER_URI_MODULE_NAME)
 
 /** @brief Error class.
  *
@@ -82,8 +82,8 @@
  * URIParser::Error
  * ```
  */
-#define MRB_URIPARSER_ERROR(mrb)                                               \
-  mrb_class_get_under(mrb, MRB_URIPARSER(mrb), "Error")
+#define MRB_URIPARSER_ERROR(mrb)                                              \
+  mrb_class_get_under (mrb, MRB_URIPARSER (mrb), "Error")
 
 /** @brief No memory error class.
  *
@@ -91,31 +91,31 @@
  * URIParser::NoMemoryError
  * ```
  */
-#define MRB_URIPARSER_NOMEM(mrb) mrb_class_get(mrb, "NoMemoryError")
+#define MRB_URIPARSER_NOMEM(mrb) mrb_class_get (mrb, "NoMemoryError")
 
-#define MRB_URIPARSER_RAISE(mrb, message)                                      \
-  mrb_raise(mrb, MRB_URIPARSER_ERROR(mrb), message)
-#define MRB_URIPARSER_RAISE_NOMEM(mrb, message)                                \
-  mrb_raise(mrb, MRB_URIPARSER_NOMEM(mrb), message)
+#define MRB_URIPARSER_RAISE(mrb, message)                                     \
+  mrb_raise (mrb, MRB_URIPARSER_ERROR (mrb), message)
+#define MRB_URIPARSER_RAISE_NOMEM(mrb, message)                               \
+  mrb_raise (mrb, MRB_URIPARSER_NOMEM (mrb), message)
 
 #define MRB_URIPARSER_PARSE_FAILED "URI parse failed at"
 
-#define MRB_URIPARSER_STR_IN_RANGE(mrb, range, field)                          \
-  (!range->field.afterLast || !range->field.first)                             \
-      ? mrb_nil_value()                                                        \
-      : mrb_str_new(mrb, range->field.first,                                   \
-                    range->field.afterLast - range->field.first)
+#define MRB_URIPARSER_STR_IN_RANGE(mrb, range, field)                         \
+  (!range->field.afterLast || !range->field.first)                            \
+      ? mrb_nil_value ()                                                      \
+      : mrb_str_new (mrb, range->field.first,                                 \
+                     range->field.afterLast - range->field.first)
 
-#define MRB_URIPARSER_URI(value) ((mrb_uriparser_data *)DATA_PTR(value))->uri
+#define MRB_URIPARSER_URI(value) ((mrb_uriparser_data *)DATA_PTR (value))->uri
 
-#define MRB_URIPARSER_NEW(mrb, uri_val)                                        \
-  const mrb_value value =                                                      \
-      mrb_obj_new(mrb, MRB_URIPARSER_URI_CLASS(mrb), 0, NULL);                 \
-  DATA_TYPE(value) = &mrb_uriparser_data_type;                                 \
-  mrb_uriparser_data *const data =                                             \
-      mrb_malloc(mrb, sizeof(mrb_uriparser_data));                             \
-  data->uri = uri_val;                                                         \
-  DATA_PTR(value) = data;                                                      \
+#define MRB_URIPARSER_NEW(mrb, uri_val)                                       \
+  const mrb_value value                                                       \
+      = mrb_obj_new (mrb, MRB_URIPARSER_URI_CLASS (mrb), 0, NULL);            \
+  DATA_TYPE (value) = &mrb_uriparser_data_type;                               \
+  mrb_uriparser_data *const data                                              \
+      = mrb_malloc (mrb, sizeof (mrb_uriparser_data));                        \
+  data->uri = uri_val;                                                        \
+  DATA_PTR (value) = data;                                                    \
   return value;
 
 /**
@@ -139,11 +139,12 @@
  * @return String of the component or `nil`.
  * @sa mrb_uriparser_path_segments
  */
-#define MRB_URIPARSER_DEFUN_GETTER(component)                                  \
-  static mrb_value mrb_uriparser_##component(mrb_state *const mrb,             \
-                                             const mrb_value self) {           \
-    return MRB_URIPARSER_STR_IN_RANGE(mrb, MRB_URIPARSER_URI(self),            \
-                                      component);                              \
+#define MRB_URIPARSER_DEFUN_GETTER(component)                                 \
+  static mrb_value mrb_uriparser_##component (mrb_state *const mrb,           \
+                                              const mrb_value self)           \
+  {                                                                           \
+    return MRB_URIPARSER_STR_IN_RANGE (mrb, MRB_URIPARSER_URI (self),         \
+                                       component);                            \
   }
 
 /**
@@ -163,15 +164,16 @@
  *
  * @return `nil`.
  */
-#define MRB_URIPARSER_DEFUN_SETTER(component_name)                             \
-  static mrb_value mrb_uriparser_set_##component_name(mrb_state *const mrb,    \
-                                                      const mrb_value self) {  \
-    const char *component;                                                     \
-    mrb_get_args(mrb, "z", &component);                                        \
-    if (uriSet##component_name##A(MRB_URIPARSER_URI(self), component,          \
-                                  component + strlen(component)))              \
-      MRB_URIPARSER_RAISE(mrb, "failed to set " #component_name);              \
-    return mrb_nil_value();                                                    \
+#define MRB_URIPARSER_DEFUN_SETTER(component_name)                            \
+  static mrb_value mrb_uriparser_set_##component_name (mrb_state *const mrb,  \
+                                                       const mrb_value self)  \
+  {                                                                           \
+    const char *component;                                                    \
+    mrb_get_args (mrb, "z", &component);                                      \
+    if (uriSet##component_name##A (MRB_URIPARSER_URI (self), component,       \
+                                   component + strlen (component)))           \
+      MRB_URIPARSER_RAISE (mrb, "failed to set " #component_name);            \
+    return mrb_nil_value ();                                                  \
   }
 
 /**
@@ -182,22 +184,25 @@
  * between the uriparser C library and mruby's object system via the
  * `DATA_PTR` mechanism.
  */
-typedef struct {
+typedef struct
+{
   /**
    * Pointer to a `UriUriA` structure representing the parsed URI.
    */
   UriUriA *uri;
 } mrb_uriparser_data;
 
-static void mrb_uriparser_free(mrb_state *const mrb, void *const p) {
+static void
+mrb_uriparser_free (mrb_state *const mrb, void *const p)
+{
   mrb_uriparser_data *const data = p;
-  uriFreeUriMembersA(data->uri);
-  mrb_free(mrb, data);
+  uriFreeUriMembersA (data->uri);
+  mrb_free (mrb, data);
 }
 
 static const struct mrb_data_type mrb_uriparser_data_type = {
-    .struct_name = "mrb_uriparser_data_type",
-    .dfree = mrb_uriparser_free,
+  .struct_name = "mrb_uriparser_data_type",
+  .dfree = mrb_uriparser_free,
 };
 
 /* initialized functions */
@@ -215,24 +220,26 @@ static const struct mrb_data_type mrb_uriparser_data_type = {
  * @return `URIParser::URI` instance.
  * @sa mrb_uriparser_recompose
  */
-static mrb_value mrb_uriparser_parse(mrb_state *const mrb,
-                                     const mrb_value self) {
+static mrb_value
+mrb_uriparser_parse (mrb_state *const mrb, const mrb_value self)
+{
   const char *str = NULL;
-  mrb_get_args(mrb, "z", &str);
+  mrb_get_args (mrb, "z", &str);
 
-  UriUriA *const uri = mrb_malloc(mrb, sizeof(UriUriA));
+  UriUriA *const uri = mrb_malloc (mrb, sizeof (UriUriA));
   const char *error_pos;
-  if (uriParseSingleUriA(uri, str, &error_pos) != URI_SUCCESS) {
-    char *const message =
-        malloc((strlen(MRB_URIPARSER_PARSE_FAILED) + strlen(error_pos) +
-                5 /* for punctuations and null */) *
-               sizeof(char));
-    if (!message)
-      MRB_URIPARSER_RAISE_NOMEM(mrb, "no space for error message");
-    sprintf(message, "%s: `%s'", MRB_URIPARSER_PARSE_FAILED, error_pos);
-    MRB_URIPARSER_RAISE(mrb, message);
-  }
-  MRB_URIPARSER_NEW(mrb, uri);
+  if (uriParseSingleUriA (uri, str, &error_pos) != URI_SUCCESS)
+    {
+      char *const message
+          = malloc ((strlen (MRB_URIPARSER_PARSE_FAILED) + strlen (error_pos)
+                     + 5 /* for punctuations and null */)
+                    * sizeof (char));
+      if (!message)
+        MRB_URIPARSER_RAISE_NOMEM (mrb, "no space for error message");
+      sprintf (message, "%s: `%s'", MRB_URIPARSER_PARSE_FAILED, error_pos);
+      MRB_URIPARSER_RAISE (mrb, message);
+    }
+  MRB_URIPARSER_NEW (mrb, uri);
 }
 
 /**
@@ -249,32 +256,35 @@ static mrb_value mrb_uriparser_parse(mrb_state *const mrb,
  * @return URI string.
  * @sa mrb_uriparser_uri_string_to_filename
  */
-static mrb_value mrb_uriparser_filename_to_uri_string(mrb_state *const mrb,
-                                                      const mrb_value self) {
+static mrb_value
+mrb_uriparser_filename_to_uri_string (mrb_state *const mrb,
+                                      const mrb_value self)
+{
   const char *abs_filename = NULL;
   const mrb_int kw_num = 1;
-  const mrb_sym windows_key = mrb_intern_lit(mrb, "windows");
+  const mrb_sym windows_key = mrb_intern_lit (mrb, "windows");
   mrb_value kw_values[kw_num];
-  const mrb_kwargs kwargs = {.num = kw_num,
-                             .required = 0,
-                             .rest = NULL,
-                             .table = &windows_key,
-                             .values = kw_values};
-  mrb_get_args(mrb, "z:", &abs_filename, &kwargs);
-  if (mrb_undef_p(kw_values[0]))
-    kw_values[0] = mrb_false_value();
-  const mrb_bool windows = mrb_test(kw_values[0]);
-  char *const abs_uri =
-      malloc(((windows ? 8 : 7 /* Unix */) + 3 * strlen(abs_filename) + 1) *
-             sizeof(char));
-  if ((windows ? uriWindowsFilenameToUriStringA(abs_filename, abs_uri)
-               : uriUnixFilenameToUriStringA(abs_filename, abs_uri)) !=
-      URI_SUCCESS) {
-    free(abs_uri);
-    MRB_URIPARSER_RAISE(mrb, "failed to convert to URI");
-  }
-  const mrb_value uri = mrb_str_new_cstr(mrb, abs_uri);
-  free(abs_uri);
+  const mrb_kwargs kwargs = { .num = kw_num,
+                              .required = 0,
+                              .rest = NULL,
+                              .table = &windows_key,
+                              .values = kw_values };
+  mrb_get_args (mrb, "z:", &abs_filename, &kwargs);
+  if (mrb_undef_p (kw_values[0]))
+    kw_values[0] = mrb_false_value ();
+  const mrb_bool windows = mrb_test (kw_values[0]);
+  char *const abs_uri
+      = malloc (((windows ? 8 : 7 /* Unix */) + 3 * strlen (abs_filename) + 1)
+                * sizeof (char));
+  if ((windows ? uriWindowsFilenameToUriStringA (abs_filename, abs_uri)
+               : uriUnixFilenameToUriStringA (abs_filename, abs_uri))
+      != URI_SUCCESS)
+    {
+      free (abs_uri);
+      MRB_URIPARSER_RAISE (mrb, "failed to convert to URI");
+    }
+  const mrb_value uri = mrb_str_new_cstr (mrb, abs_uri);
+  free (abs_uri);
   return uri;
 }
 
@@ -297,31 +307,34 @@ static mrb_value mrb_uriparser_filename_to_uri_string(mrb_state *const mrb,
  * @return Filename string.
  * @sa mrb_uriparser_filename_to_uri_string
  */
-static mrb_value mrb_uriparser_uri_string_to_filename(mrb_state *const mrb,
-                                                      const mrb_value self) {
+static mrb_value
+mrb_uriparser_uri_string_to_filename (mrb_state *const mrb,
+                                      const mrb_value self)
+{
   const char *abs_uri = NULL;
   const mrb_int kw_num = 1;
-  const mrb_sym windows_key = mrb_intern_lit(mrb, "windows");
+  const mrb_sym windows_key = mrb_intern_lit (mrb, "windows");
   mrb_value kw_values[kw_num];
-  const mrb_kwargs kwargs = {.num = kw_num,
-                             .required = 0,
-                             .rest = NULL,
-                             .table = &windows_key,
-                             .values = kw_values};
-  mrb_get_args(mrb, "z:", &abs_uri, &kwargs);
-  if (mrb_undef_p(kw_values[0]))
-    kw_values[0] = mrb_false_value();
-  const mrb_bool windows = mrb_test(kw_values[0]);
-  char *const abs_filename = malloc(
-      (strlen(abs_uri) + 1 - (windows ? 8 : 7 /* Unix */)) * sizeof(char));
-  if ((windows ? uriUriStringToWindowsFilenameA(abs_uri, abs_filename)
-               : uriUriStringToUnixFilenameA(abs_uri, abs_filename)) !=
-      URI_SUCCESS) {
-    free(abs_filename);
-    MRB_URIPARSER_RAISE(mrb, "failed to convert to filename");
-  }
-  const mrb_value filename = mrb_str_new_cstr(mrb, abs_filename);
-  free(abs_filename);
+  const mrb_kwargs kwargs = { .num = kw_num,
+                              .required = 0,
+                              .rest = NULL,
+                              .table = &windows_key,
+                              .values = kw_values };
+  mrb_get_args (mrb, "z:", &abs_uri, &kwargs);
+  if (mrb_undef_p (kw_values[0]))
+    kw_values[0] = mrb_false_value ();
+  const mrb_bool windows = mrb_test (kw_values[0]);
+  char *const abs_filename = malloc (
+      (strlen (abs_uri) + 1 - (windows ? 8 : 7 /* Unix */)) * sizeof (char));
+  if ((windows ? uriUriStringToWindowsFilenameA (abs_uri, abs_filename)
+               : uriUriStringToUnixFilenameA (abs_uri, abs_filename))
+      != URI_SUCCESS)
+    {
+      free (abs_filename);
+      MRB_URIPARSER_RAISE (mrb, "failed to convert to filename");
+    }
+  const mrb_value filename = mrb_str_new_cstr (mrb, abs_filename);
+  free (abs_filename);
   return filename;
 }
 
@@ -340,36 +353,40 @@ static mrb_value mrb_uriparser_uri_string_to_filename(mrb_state *const mrb,
  *
  * No `enc=nil` parameter as seen in CRuby's URI gem.
  */
-static mrb_value mrb_uriparser_compose_query(mrb_state *const mrb,
-                                             const mrb_value self) {
+static mrb_value
+mrb_uriparser_compose_query (mrb_state *const mrb, const mrb_value self)
+{
   UriQueryListA *query_list = NULL;
   mrb_value ary;
-  mrb_get_args(mrb, "A", &ary);
-  for (mrb_int index = RARRAY_LEN(ary) - 1; index >= 0; index--) {
-    UriQueryListA *current = malloc(sizeof(UriQueryListA));
-    current->next = query_list;
-    mrb_value entry = mrb_ary_ref(mrb, ary, index);
-    current->key = mrb_str_to_cstr(mrb, mrb_ary_ref(mrb, entry, 0));
+  mrb_get_args (mrb, "A", &ary);
+  for (mrb_int index = RARRAY_LEN (ary) - 1; index >= 0; index--)
+    {
+      UriQueryListA *current = malloc (sizeof (UriQueryListA));
+      current->next = query_list;
+      mrb_value entry = mrb_ary_ref (mrb, ary, index);
+      current->key = mrb_str_to_cstr (mrb, mrb_ary_ref (mrb, entry, 0));
 
-    mrb_value value = mrb_ary_ref(mrb, entry, 1);
-    current->value = mrb_nil_p(value) ? NULL : mrb_str_to_cstr(mrb, value);
+      mrb_value value = mrb_ary_ref (mrb, entry, 1);
+      current->value = mrb_nil_p (value) ? NULL : mrb_str_to_cstr (mrb, value);
 
-    query_list = current;
-  }
+      query_list = current;
+    }
   int chars_required;
   char *query_string;
-  if (uriComposeQueryCharsRequiredA(query_list, &chars_required) != URI_SUCCESS)
-    MRB_URIPARSER_RAISE(
+  if (uriComposeQueryCharsRequiredA (query_list, &chars_required)
+      != URI_SUCCESS)
+    MRB_URIPARSER_RAISE (
         mrb, "failed to calculate characters required to compose query");
-  query_string = malloc((chars_required + 1) * sizeof(char));
+  query_string = malloc ((chars_required + 1) * sizeof (char));
   if (!query_string)
-    MRB_URIPARSER_RAISE_NOMEM(mrb, "no space for query string");
+    MRB_URIPARSER_RAISE_NOMEM (mrb, "no space for query string");
   int chars_written;
-  if (uriComposeQueryA(query_string, query_list, chars_required + 1,
-                       &chars_written) != URI_SUCCESS)
-    MRB_URIPARSER_RAISE(mrb, "failed to compose query");
-  mrb_value str = mrb_str_new(mrb, query_string, chars_written - 1);
-  free(query_string);
+  if (uriComposeQueryA (query_string, query_list, chars_required + 1,
+                        &chars_written)
+      != URI_SUCCESS)
+    MRB_URIPARSER_RAISE (mrb, "failed to compose query");
+  mrb_value str = mrb_str_new (mrb, query_string, chars_written - 1);
+  free (query_string);
   return str;
 }
 
@@ -385,17 +402,19 @@ static mrb_value mrb_uriparser_compose_query(mrb_state *const mrb,
  *
  * @return New URI.
  */
-static mrb_value mrb_uriparser_initialize_copy(mrb_state *const mrb,
-                                               const mrb_value self) {
+static mrb_value
+mrb_uriparser_initialize_copy (mrb_state *const mrb, const mrb_value self)
+{
   mrb_value original;
-  mrb_get_args(mrb, "o", &original);
-  UriUriA *const new_uri = mrb_malloc(mrb, sizeof(UriUriA));
-  if (uriCopyUriA(new_uri, MRB_URIPARSER_URI(original)))
-    MRB_URIPARSER_RAISE(mrb, "failed to copy URI");
-  DATA_TYPE(self) = &mrb_uriparser_data_type;
-  mrb_uriparser_data *const data = mrb_malloc(mrb, sizeof(mrb_uriparser_data));
+  mrb_get_args (mrb, "o", &original);
+  UriUriA *const new_uri = mrb_malloc (mrb, sizeof (UriUriA));
+  if (uriCopyUriA (new_uri, MRB_URIPARSER_URI (original)))
+    MRB_URIPARSER_RAISE (mrb, "failed to copy URI");
+  DATA_TYPE (self) = &mrb_uriparser_data_type;
+  mrb_uriparser_data *const data
+      = mrb_malloc (mrb, sizeof (mrb_uriparser_data));
   data->uri = new_uri;
-  DATA_PTR(self) = data;
+  DATA_PTR (self) = data;
   return self;
 }
 
@@ -410,28 +429,29 @@ static mrb_value mrb_uriparser_initialize_copy(mrb_state *const mrb,
  *
  * @return Boolean.
  */
-static mrb_value mrb_uriparser_equals(mrb_state *const mrb,
-                                      const mrb_value self) {
+static mrb_value
+mrb_uriparser_equals (mrb_state *const mrb, const mrb_value self)
+{
   mrb_value another;
-  mrb_get_args(mrb, "o", &another);
-  return mrb_bool_value(
-      uriEqualsUriA(MRB_URIPARSER_URI(self), MRB_URIPARSER_URI(another)));
+  mrb_get_args (mrb, "o", &another);
+  return mrb_bool_value (
+      uriEqualsUriA (MRB_URIPARSER_URI (self), MRB_URIPARSER_URI (another)));
 }
 
-MRB_URIPARSER_DEFUN_GETTER(scheme);
-MRB_URIPARSER_DEFUN_GETTER(userInfo);
-MRB_URIPARSER_DEFUN_GETTER(hostText);
-MRB_URIPARSER_DEFUN_GETTER(portText);
-MRB_URIPARSER_DEFUN_GETTER(query);
-MRB_URIPARSER_DEFUN_GETTER(fragment);
+MRB_URIPARSER_DEFUN_GETTER (scheme);
+MRB_URIPARSER_DEFUN_GETTER (userInfo);
+MRB_URIPARSER_DEFUN_GETTER (hostText);
+MRB_URIPARSER_DEFUN_GETTER (portText);
+MRB_URIPARSER_DEFUN_GETTER (query);
+MRB_URIPARSER_DEFUN_GETTER (fragment);
 
-MRB_URIPARSER_DEFUN_SETTER(Scheme);
-MRB_URIPARSER_DEFUN_SETTER(UserInfo);
-MRB_URIPARSER_DEFUN_SETTER(HostAuto)
-MRB_URIPARSER_DEFUN_SETTER(PortText);
-MRB_URIPARSER_DEFUN_SETTER(Path)
-MRB_URIPARSER_DEFUN_SETTER(Query)
-MRB_URIPARSER_DEFUN_SETTER(Fragment)
+MRB_URIPARSER_DEFUN_SETTER (Scheme);
+MRB_URIPARSER_DEFUN_SETTER (UserInfo);
+MRB_URIPARSER_DEFUN_SETTER (HostAuto)
+MRB_URIPARSER_DEFUN_SETTER (PortText);
+MRB_URIPARSER_DEFUN_SETTER (Path)
+MRB_URIPARSER_DEFUN_SETTER (Query)
+MRB_URIPARSER_DEFUN_SETTER (Fragment)
 
 /**
  * @brief Check if the URI has host.
@@ -444,9 +464,10 @@ MRB_URIPARSER_DEFUN_SETTER(Fragment)
  *
  * @return Boolean.
  */
-static mrb_value mrb_uriparser_has_host(mrb_state *const mrb,
-                                        const mrb_value self) {
-  return mrb_bool_value(uriHasHostA(MRB_URIPARSER_URI(self)));
+static mrb_value
+mrb_uriparser_has_host (mrb_state *const mrb, const mrb_value self)
+{
+  return mrb_bool_value (uriHasHostA (MRB_URIPARSER_URI (self)));
 }
 
 /**
@@ -462,14 +483,16 @@ static mrb_value mrb_uriparser_has_host(mrb_state *const mrb,
  * @return Array of path segment strings.
  * @sa MRB_URIPARSER_DEFUN_GETTER
  */
-static mrb_value mrb_uriparser_path_segments(mrb_state *const mrb,
-                                             const mrb_value self) {
-  UriPathSegmentA *segment = MRB_URIPARSER_URI(self)->pathHead;
-  mrb_value ary = mrb_ary_new(mrb);
-  while (segment) {
-    mrb_ary_push(mrb, ary, MRB_URIPARSER_STR_IN_RANGE(mrb, segment, text));
-    segment = segment->next;
-  }
+static mrb_value
+mrb_uriparser_path_segments (mrb_state *const mrb, const mrb_value self)
+{
+  UriPathSegmentA *segment = MRB_URIPARSER_URI (self)->pathHead;
+  mrb_value ary = mrb_ary_new (mrb);
+  while (segment)
+    {
+      mrb_ary_push (mrb, ary, MRB_URIPARSER_STR_IN_RANGE (mrb, segment, text));
+      segment = segment->next;
+    }
   return ary;
 }
 
@@ -493,9 +516,10 @@ static mrb_value mrb_uriparser_path_segments(mrb_state *const mrb,
  *
  * @return Boolean.
  */
-static mrb_value mrb_uriparser_absolute_path(mrb_state *const mrb,
-                                             const mrb_value self) {
-  return mrb_bool_value(MRB_URIPARSER_URI(self)->absolutePath);
+static mrb_value
+mrb_uriparser_absolute_path (mrb_state *const mrb, const mrb_value self)
+{
+  return mrb_bool_value (MRB_URIPARSER_URI (self)->absolutePath);
 }
 
 /**
@@ -512,19 +536,21 @@ static mrb_value mrb_uriparser_absolute_path(mrb_state *const mrb,
  *
  * Recomposing means serializing.
  */
-static mrb_value mrb_uriparser_recompose(mrb_state *const mrb,
-                                         const mrb_value self) {
-  const mrb_uriparser_data *const data = DATA_PTR(self);
+static mrb_value
+mrb_uriparser_recompose (mrb_state *const mrb, const mrb_value self)
+{
+  const mrb_uriparser_data *const data = DATA_PTR (self);
   int chars_required;
-  if (uriToStringCharsRequiredA(data->uri, &chars_required) != URI_SUCCESS)
-    MRB_URIPARSER_RAISE(mrb, "could not calculate chars required");
+  if (uriToStringCharsRequiredA (data->uri, &chars_required) != URI_SUCCESS)
+    MRB_URIPARSER_RAISE (mrb, "could not calculate chars required");
   chars_required++; /* zero terminator */
-  char *const uri_string = malloc(chars_required * sizeof(char));
+  char *const uri_string = malloc (chars_required * sizeof (char));
   if (!uri_string)
-    MRB_URIPARSER_RAISE_NOMEM(mrb, "no space for URI string");
-  if (uriToStringA(uri_string, data->uri, chars_required, NULL) != URI_SUCCESS)
-    MRB_URIPARSER_RAISE(mrb, "URI recomposing failed");
-  return mrb_str_new_cstr(mrb, uri_string);
+    MRB_URIPARSER_RAISE_NOMEM (mrb, "no space for URI string");
+  if (uriToStringA (uri_string, data->uri, chars_required, NULL)
+      != URI_SUCCESS)
+    MRB_URIPARSER_RAISE (mrb, "URI recomposing failed");
+  return mrb_str_new_cstr (mrb, uri_string);
 }
 
 /**
@@ -540,21 +566,22 @@ static mrb_value mrb_uriparser_recompose(mrb_state *const mrb,
  * @return Modified `URIParser::URI` instance.
  * @sa mrb_uriparser_merge
  */
-static mrb_value mrb_uriparser_merge_mutably(mrb_state *const mrb,
-                                             const mrb_value self) {
+static mrb_value
+mrb_uriparser_merge_mutably (mrb_state *const mrb, const mrb_value self)
+{
   mrb_value rel;
-  mrb_get_args(mrb, "o", &rel);
+  mrb_get_args (mrb, "o", &rel);
 
   /* TODO: Accept string as well. */
-  if (!mrb_obj_is_kind_of(mrb, rel, MRB_URIPARSER_URI_CLASS(mrb)))
-    MRB_URIPARSER_RAISE(mrb, "relative URI is expected to be URIParser::URI");
+  if (!mrb_obj_is_kind_of (mrb, rel, MRB_URIPARSER_URI_CLASS (mrb)))
+    MRB_URIPARSER_RAISE (mrb, "relative URI is expected to be URIParser::URI");
 
-  UriUriA *const resolved = mrb_malloc(mrb, sizeof(UriUriA));
-  mrb_uriparser_data *const data = DATA_PTR(self);
-  if (uriAddBaseUriA(resolved, MRB_URIPARSER_URI(rel), data->uri) !=
-      URI_SUCCESS)
-    MRB_URIPARSER_RAISE(mrb, "failed to resolve URI");
-  mrb_free(mrb, data->uri);
+  UriUriA *const resolved = mrb_malloc (mrb, sizeof (UriUriA));
+  mrb_uriparser_data *const data = DATA_PTR (self);
+  if (uriAddBaseUriA (resolved, MRB_URIPARSER_URI (rel), data->uri)
+      != URI_SUCCESS)
+    MRB_URIPARSER_RAISE (mrb, "failed to resolve URI");
+  mrb_free (mrb, data->uri);
   data->uri = resolved;
   return self;
 }
@@ -574,20 +601,22 @@ static mrb_value mrb_uriparser_merge_mutably(mrb_state *const mrb,
  * @sa mrb_uriparser_merge_mutably
  * @sa mrb_uriparser_create_reference
  */
-static mrb_value mrb_uriparser_merge(mrb_state *const mrb,
-                                     const mrb_value self) {
+static mrb_value
+mrb_uriparser_merge (mrb_state *const mrb, const mrb_value self)
+{
   mrb_value rel;
-  mrb_get_args(mrb, "o", &rel);
+  mrb_get_args (mrb, "o", &rel);
 
   /* TODO: Accept string as well. */
-  if (!mrb_obj_is_kind_of(mrb, rel, MRB_URIPARSER_URI_CLASS(mrb)))
-    MRB_URIPARSER_RAISE(mrb, "relative URI is expected to be URIParser::URI");
+  if (!mrb_obj_is_kind_of (mrb, rel, MRB_URIPARSER_URI_CLASS (mrb)))
+    MRB_URIPARSER_RAISE (mrb, "relative URI is expected to be URIParser::URI");
 
-  UriUriA *const resolved = mrb_malloc(mrb, sizeof(UriUriA));
-  if (uriAddBaseUriA(resolved, MRB_URIPARSER_URI(rel),
-                     MRB_URIPARSER_URI(self)) != URI_SUCCESS)
-    MRB_URIPARSER_RAISE(mrb, "failed to resolve URI");
-  MRB_URIPARSER_NEW(mrb, resolved);
+  UriUriA *const resolved = mrb_malloc (mrb, sizeof (UriUriA));
+  if (uriAddBaseUriA (resolved, MRB_URIPARSER_URI (rel),
+                      MRB_URIPARSER_URI (self))
+      != URI_SUCCESS)
+    MRB_URIPARSER_RAISE (mrb, "failed to resolve URI");
+  MRB_URIPARSER_NEW (mrb, resolved);
 }
 
 /**
@@ -606,28 +635,30 @@ static mrb_value mrb_uriparser_merge(mrb_state *const mrb,
  * @return New relative `URIParser::URI` instance.
  * @sa mrb_uriparser_merge
  */
-static mrb_value mrb_uriparser_create_reference(mrb_state *const mrb,
-                                                const mrb_value self) {
+static mrb_value
+mrb_uriparser_create_reference (mrb_state *const mrb, const mrb_value self)
+{
   mrb_value base;
   const mrb_int num = 1;
-  const mrb_sym domain_root_key = mrb_intern_lit(mrb, "domain_root");
+  const mrb_sym domain_root_key = mrb_intern_lit (mrb, "domain_root");
   mrb_value values[num];
-  const mrb_kwargs kwargs = {.num = num,
-                             .required = 0,
-                             .rest = NULL,
-                             .table = &domain_root_key,
-                             .values = values};
-  mrb_get_args(mrb, "o:", &base, &kwargs);
-  if (mrb_undef_p(values[0]))
-    values[0] = mrb_false_value();
-  if (!mrb_obj_is_kind_of(mrb, base, MRB_URIPARSER_URI_CLASS(mrb)))
-    MRB_URIPARSER_RAISE(mrb, "base URI is expected to be URIParser::URI");
-  UriUriA *const dest = mrb_malloc(mrb, sizeof(UriUriA));
-  if (uriRemoveBaseUriA(dest, MRB_URIPARSER_URI(self), MRB_URIPARSER_URI(base),
-                        mrb_test(values[0]) ? URI_TRUE : URI_FALSE) !=
-      URI_SUCCESS)
-    MRB_URIPARSER_RAISE(mrb, "failed to remove base URI");
-  MRB_URIPARSER_NEW(mrb, dest);
+  const mrb_kwargs kwargs = { .num = num,
+                              .required = 0,
+                              .rest = NULL,
+                              .table = &domain_root_key,
+                              .values = values };
+  mrb_get_args (mrb, "o:", &base, &kwargs);
+  if (mrb_undef_p (values[0]))
+    values[0] = mrb_false_value ();
+  if (!mrb_obj_is_kind_of (mrb, base, MRB_URIPARSER_URI_CLASS (mrb)))
+    MRB_URIPARSER_RAISE (mrb, "base URI is expected to be URIParser::URI");
+  UriUriA *const dest = mrb_malloc (mrb, sizeof (UriUriA));
+  if (uriRemoveBaseUriA (dest, MRB_URIPARSER_URI (self),
+                         MRB_URIPARSER_URI (base),
+                         mrb_test (values[0]) ? URI_TRUE : URI_FALSE)
+      != URI_SUCCESS)
+    MRB_URIPARSER_RAISE (mrb, "failed to remove base URI");
+  MRB_URIPARSER_NEW (mrb, dest);
 }
 
 /**
@@ -652,35 +683,36 @@ static mrb_value mrb_uriparser_create_reference(mrb_state *const mrb,
  * doen't set `/`, which is the difference against CRuby's URI gem's
  * `URI::Generic#normalize!` method.
  */
-static mrb_value mrb_uriparser_normalize(mrb_state *const mrb,
-                                         const mrb_value self) {
+static mrb_value
+mrb_uriparser_normalize (mrb_state *const mrb, const mrb_value self)
+{
   const mrb_int kw_num = 6;
-  const mrb_sym kw_table[] = {
-      mrb_intern_lit(mrb, "scheme"), mrb_intern_lit(mrb, "userinfo"),
-      mrb_intern_lit(mrb, "host"),   mrb_intern_lit(mrb, "path"),
-      mrb_intern_lit(mrb, "query"),  mrb_intern_lit(mrb, "fragment")};
+  const mrb_sym kw_table[]
+      = { mrb_intern_lit (mrb, "scheme"), mrb_intern_lit (mrb, "userinfo"),
+          mrb_intern_lit (mrb, "host"),   mrb_intern_lit (mrb, "path"),
+          mrb_intern_lit (mrb, "query"),  mrb_intern_lit (mrb, "fragment") };
   mrb_value kw_values[kw_num];
-  const mrb_kwargs kwargs = {.num = kw_num,
-                             .required = 0,
-                             .rest = NULL,
-                             .table = kw_table,
-                             .values = kw_values};
-  mrb_get_args(mrb, ":", &kwargs);
+  const mrb_kwargs kwargs = { .num = kw_num,
+                              .required = 0,
+                              .rest = NULL,
+                              .table = kw_table,
+                              .values = kw_values };
+  mrb_get_args (mrb, ":", &kwargs);
   unsigned int mask = URI_NORMALIZED;
-  if (mrb_undef_p(kw_values[0]) || mrb_test(kw_values[0]))
+  if (mrb_undef_p (kw_values[0]) || mrb_test (kw_values[0]))
     mask |= URI_NORMALIZE_SCHEME;
-  if (mrb_undef_p(kw_values[1]) || mrb_test(kw_values[1]))
+  if (mrb_undef_p (kw_values[1]) || mrb_test (kw_values[1]))
     mask |= URI_NORMALIZE_USER_INFO;
-  if (mrb_undef_p(kw_values[2]) || mrb_test(kw_values[2]))
+  if (mrb_undef_p (kw_values[2]) || mrb_test (kw_values[2]))
     mask |= URI_NORMALIZE_HOST;
-  if (mrb_undef_p(kw_values[3]) || mrb_test(kw_values[3]))
+  if (mrb_undef_p (kw_values[3]) || mrb_test (kw_values[3]))
     mask |= URI_NORMALIZE_PATH;
-  if (mrb_undef_p(kw_values[4]) || mrb_test(kw_values[4]))
+  if (mrb_undef_p (kw_values[4]) || mrb_test (kw_values[4]))
     mask |= URI_NORMALIZE_QUERY;
-  if (mrb_undef_p(kw_values[5]) || mrb_test(kw_values[5]))
+  if (mrb_undef_p (kw_values[5]) || mrb_test (kw_values[5]))
     mask |= URI_NORMALIZE_FRAGMENT;
-  if (uriNormalizeSyntaxExA(MRB_URIPARSER_URI(self), mask) != URI_SUCCESS)
-    MRB_URIPARSER_RAISE(mrb, "failed to normalize");
+  if (uriNormalizeSyntaxExA (MRB_URIPARSER_URI (self), mask) != URI_SUCCESS)
+    MRB_URIPARSER_RAISE (mrb, "failed to normalize");
   return self;
 }
 
@@ -698,85 +730,99 @@ static mrb_value mrb_uriparser_normalize(mrb_state *const mrb,
  *
  * No `enc=Encoding::UTF_8` parameter as in CRuby's URI gem.
  */
-static mrb_value mrb_uriparser_dissect_query(mrb_state *const mrb,
-                                             const mrb_value self) {
-  const mrb_uriparser_data *const data = DATA_PTR(self);
+static mrb_value
+mrb_uriparser_dissect_query (mrb_state *const mrb, const mrb_value self)
+{
+  const mrb_uriparser_data *const data = DATA_PTR (self);
   UriQueryListA *query_list;
   int item_count;
-  if (uriDissectQueryMallocA(&query_list, &item_count, data->uri->query.first,
-                             data->uri->query.afterLast) != URI_SUCCESS)
-    MRB_URIPARSER_RAISE(mrb, "failed to dissect query");
-  mrb_value ary = mrb_ary_new(mrb);
-  while (query_list) {
-    mrb_value entry = mrb_ary_new(mrb);
-    mrb_ary_push(mrb, entry, mrb_str_new_cstr(mrb, query_list->key));
-    mrb_ary_push(mrb, entry,
-                 query_list->value ? mrb_str_new_cstr(mrb, query_list->value)
-                                   : mrb_nil_value());
-    mrb_ary_push(mrb, ary, entry);
-    query_list = query_list->next;
-  }
-  uriFreeQueryListA(query_list);
+  if (uriDissectQueryMallocA (&query_list, &item_count, data->uri->query.first,
+                              data->uri->query.afterLast)
+      != URI_SUCCESS)
+    MRB_URIPARSER_RAISE (mrb, "failed to dissect query");
+  mrb_value ary = mrb_ary_new (mrb);
+  while (query_list)
+    {
+      mrb_value entry = mrb_ary_new (mrb);
+      mrb_ary_push (mrb, entry, mrb_str_new_cstr (mrb, query_list->key));
+      mrb_ary_push (mrb, entry,
+                    query_list->value
+                        ? mrb_str_new_cstr (mrb, query_list->value)
+                        : mrb_nil_value ());
+      mrb_ary_push (mrb, ary, entry);
+      query_list = query_list->next;
+    }
+  uriFreeQueryListA (query_list);
   return ary;
 }
 
-void mrb_mruby_uriparser_gem_init(mrb_state *const mrb) {
+void
+mrb_mruby_uriparser_gem_init (mrb_state *const mrb)
+{
   /* C have to define classes here before Ruby does. */
-  struct RClass *const uriparser =
-      mrb_define_module(mrb, MRB_URIPARSER_MODULE_NAME);
-  mrb_define_module_function(mrb, uriparser, "parse", mrb_uriparser_parse,
-                             MRB_ARGS_REQ(1));
-  mrb_define_module_function(mrb, uriparser, "filename_to_uri_string",
-                             mrb_uriparser_filename_to_uri_string,
-                             MRB_ARGS_ANY());
-  mrb_define_module_function(mrb, uriparser, "uri_string_to_filename",
-                             mrb_uriparser_uri_string_to_filename,
-                             MRB_ARGS_ANY());
-  mrb_define_module_function(mrb, uriparser, "encode_www_form",
-                             mrb_uriparser_compose_query, MRB_ARGS_REQ(1));
-  struct RClass *const uri = mrb_define_class_under(
+  struct RClass *const uriparser
+      = mrb_define_module (mrb, MRB_URIPARSER_MODULE_NAME);
+  mrb_define_module_function (mrb, uriparser, "parse", mrb_uriparser_parse,
+                              MRB_ARGS_REQ (1));
+  mrb_define_module_function (mrb, uriparser, "filename_to_uri_string",
+                              mrb_uriparser_filename_to_uri_string,
+                              MRB_ARGS_ANY ());
+  mrb_define_module_function (mrb, uriparser, "uri_string_to_filename",
+                              mrb_uriparser_uri_string_to_filename,
+                              MRB_ARGS_ANY ());
+  mrb_define_module_function (mrb, uriparser, "encode_www_form",
+                              mrb_uriparser_compose_query, MRB_ARGS_REQ (1));
+  struct RClass *const uri = mrb_define_class_under (
       mrb, uriparser, MRB_URIPARSER_URI_MODULE_NAME, mrb->object_class);
-  mrb_define_method(mrb, uri, "initialize_copy", mrb_uriparser_initialize_copy,
-                    MRB_ARGS_REQ(1));
-  mrb_define_method(mrb, uri, "==", mrb_uriparser_equals, MRB_ARGS_REQ(1));
-  mrb_define_method(mrb, uri, "scheme", mrb_uriparser_scheme, MRB_ARGS_NONE());
-  mrb_define_method(mrb, uri, "scheme=", mrb_uriparser_set_Scheme,
-                    MRB_ARGS_REQ(1));
-  mrb_define_method(mrb, uri, "userinfo", mrb_uriparser_userInfo,
-                    MRB_ARGS_NONE());
-  mrb_define_method(mrb, uri, "userinfo=", mrb_uriparser_set_UserInfo,
-                    MRB_ARGS_REQ(1));
-  mrb_define_method(mrb, uri, "hostname", mrb_uriparser_hostText,
-                    MRB_ARGS_NONE());
-  mrb_define_method(mrb, uri, "host=", mrb_uriparser_set_HostAuto,
-                    MRB_ARGS_REQ(1));
-  mrb_define_method(mrb, uri, "host?", mrb_uriparser_has_host, MRB_ARGS_NONE());
-  mrb_define_method(mrb, uri, "port", mrb_uriparser_portText, MRB_ARGS_NONE());
-  mrb_define_method(mrb, uri, "port=", mrb_uriparser_set_PortText,
-                    MRB_ARGS_REQ(1));
-  mrb_define_method(mrb, uri, "path_segments", mrb_uriparser_path_segments,
-                    MRB_ARGS_NONE());
-  mrb_define_method(mrb, uri, "path=", mrb_uriparser_set_Path, MRB_ARGS_REQ(1));
-  mrb_define_method(mrb, uri, "query", mrb_uriparser_query, MRB_ARGS_NONE());
-  mrb_define_method(mrb, uri, "query=", mrb_uriparser_set_Query,
-                    MRB_ARGS_REQ(1));
-  mrb_define_method(mrb, uri, "fragment", mrb_uriparser_fragment,
-                    MRB_ARGS_NONE());
-  mrb_define_method(mrb, uri, "fragment=", mrb_uriparser_set_Fragment,
-                    MRB_ARGS_REQ(1));
-  mrb_define_method(mrb, uri, "absolute_path?", mrb_uriparser_absolute_path,
-                    MRB_ARGS_NONE());
-  mrb_define_method(mrb, uri, "to_s", mrb_uriparser_recompose, MRB_ARGS_NONE());
-  mrb_define_method(mrb, uri, "merge!", mrb_uriparser_merge_mutably,
-                    MRB_ARGS_REQ(1));
-  mrb_define_method(mrb, uri, "merge", mrb_uriparser_merge, MRB_ARGS_REQ(1));
-  mrb_define_method(mrb, uri, "route_from", mrb_uriparser_create_reference,
-                    MRB_ARGS_REQ(1));
-  mrb_define_method(mrb, uri, "normalize!", mrb_uriparser_normalize,
-                    MRB_ARGS_KEY(6, 0));
-  mrb_define_method(mrb, uri, "decode_www_form", mrb_uriparser_dissect_query,
-                    MRB_ARGS_NONE());
+  mrb_define_method (mrb, uri, "initialize_copy",
+                     mrb_uriparser_initialize_copy, MRB_ARGS_REQ (1));
+  mrb_define_method (mrb, uri, "==", mrb_uriparser_equals, MRB_ARGS_REQ (1));
+  mrb_define_method (mrb, uri, "scheme", mrb_uriparser_scheme,
+                     MRB_ARGS_NONE ());
+  mrb_define_method (mrb, uri, "scheme=", mrb_uriparser_set_Scheme,
+                     MRB_ARGS_REQ (1));
+  mrb_define_method (mrb, uri, "userinfo", mrb_uriparser_userInfo,
+                     MRB_ARGS_NONE ());
+  mrb_define_method (mrb, uri, "userinfo=", mrb_uriparser_set_UserInfo,
+                     MRB_ARGS_REQ (1));
+  mrb_define_method (mrb, uri, "hostname", mrb_uriparser_hostText,
+                     MRB_ARGS_NONE ());
+  mrb_define_method (mrb, uri, "host=", mrb_uriparser_set_HostAuto,
+                     MRB_ARGS_REQ (1));
+  mrb_define_method (mrb, uri, "host?", mrb_uriparser_has_host,
+                     MRB_ARGS_NONE ());
+  mrb_define_method (mrb, uri, "port", mrb_uriparser_portText,
+                     MRB_ARGS_NONE ());
+  mrb_define_method (mrb, uri, "port=", mrb_uriparser_set_PortText,
+                     MRB_ARGS_REQ (1));
+  mrb_define_method (mrb, uri, "path_segments", mrb_uriparser_path_segments,
+                     MRB_ARGS_NONE ());
+  mrb_define_method (mrb, uri, "path=", mrb_uriparser_set_Path,
+                     MRB_ARGS_REQ (1));
+  mrb_define_method (mrb, uri, "query", mrb_uriparser_query, MRB_ARGS_NONE ());
+  mrb_define_method (mrb, uri, "query=", mrb_uriparser_set_Query,
+                     MRB_ARGS_REQ (1));
+  mrb_define_method (mrb, uri, "fragment", mrb_uriparser_fragment,
+                     MRB_ARGS_NONE ());
+  mrb_define_method (mrb, uri, "fragment=", mrb_uriparser_set_Fragment,
+                     MRB_ARGS_REQ (1));
+  mrb_define_method (mrb, uri, "absolute_path?", mrb_uriparser_absolute_path,
+                     MRB_ARGS_NONE ());
+  mrb_define_method (mrb, uri, "to_s", mrb_uriparser_recompose,
+                     MRB_ARGS_NONE ());
+  mrb_define_method (mrb, uri, "merge!", mrb_uriparser_merge_mutably,
+                     MRB_ARGS_REQ (1));
+  mrb_define_method (mrb, uri, "merge", mrb_uriparser_merge, MRB_ARGS_REQ (1));
+  mrb_define_method (mrb, uri, "route_from", mrb_uriparser_create_reference,
+                     MRB_ARGS_REQ (1));
+  mrb_define_method (mrb, uri, "normalize!", mrb_uriparser_normalize,
+                     MRB_ARGS_KEY (6, 0));
+  mrb_define_method (mrb, uri, "decode_www_form", mrb_uriparser_dissect_query,
+                     MRB_ARGS_NONE ());
   DONE;
 }
 
-void mrb_mruby_uriparser_gem_final(const mrb_state *const mrb) {}
+void
+mrb_mruby_uriparser_gem_final (const mrb_state *const mrb)
+{
+}
