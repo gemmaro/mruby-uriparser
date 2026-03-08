@@ -1,5 +1,9 @@
 # Change Log of mruby uriparser
 
+## 0.2.2 - 2026-03-08
+
+- Fix `route_from` method argument spec.
+
 ## 0.2.1 - 2026-03-02
 
 - Fill some fields in `mrbgem.rake`.
