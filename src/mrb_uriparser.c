@@ -814,7 +814,7 @@ mrb_mruby_uriparser_gem_init (mrb_state *const mrb)
                      MRB_ARGS_REQ (1));
   mrb_define_method (mrb, uri, "merge", mrb_uriparser_merge, MRB_ARGS_REQ (1));
   mrb_define_method (mrb, uri, "route_from", mrb_uriparser_create_reference,
-                     MRB_ARGS_REQ (1));
+                     MRB_ARGS_ANY ());
   mrb_define_method (mrb, uri, "normalize!", mrb_uriparser_normalize,
                      MRB_ARGS_KEY (6, 0));
   mrb_define_method (mrb, uri, "decode_www_form", mrb_uriparser_dissect_query,
