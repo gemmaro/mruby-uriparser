@@ -54,6 +54,7 @@
 #include <mruby/boxing_word.h>
 #include <mruby/data.h>
 #include <mruby/hash.h>
+#include <mruby/presym.h>
 #include <mruby/string.h>
 #include <mruby/value.h>
 #include <mruby/variable.h>
@@ -262,7 +263,7 @@ mrb_uriparser_filename_to_uri_string (mrb_state *const mrb,
 {
   const char *abs_filename = NULL;
   const mrb_int kw_num = 1;
-  const mrb_sym windows_key = mrb_intern_lit (mrb, "windows");
+  const mrb_sym windows_key = MRB_SYM (windows);
   mrb_value kw_values[kw_num];
   const mrb_kwargs kwargs = { .num = kw_num,
                               .required = 0,
@@ -313,7 +314,7 @@ mrb_uriparser_uri_string_to_filename (mrb_state *const mrb,
 {
   const char *abs_uri = NULL;
   const mrb_int kw_num = 1;
-  const mrb_sym windows_key = mrb_intern_lit (mrb, "windows");
+  const mrb_sym windows_key = MRB_SYM (windows);
   mrb_value kw_values[kw_num];
   const mrb_kwargs kwargs = { .num = kw_num,
                               .required = 0,
@@ -640,7 +641,7 @@ mrb_uriparser_create_reference (mrb_state *const mrb, const mrb_value self)
 {
   mrb_value base;
   const mrb_int num = 1;
-  const mrb_sym domain_root_key = mrb_intern_lit (mrb, "domain_root");
+  const mrb_sym domain_root_key = MRB_SYM (domain_root);
   mrb_value values[num];
   const mrb_kwargs kwargs = { .num = num,
                               .required = 0,
@@ -688,9 +689,8 @@ mrb_uriparser_normalize (mrb_state *const mrb, const mrb_value self)
 {
   const mrb_int kw_num = 6;
   const mrb_sym kw_table[]
-      = { mrb_intern_lit (mrb, "scheme"), mrb_intern_lit (mrb, "userinfo"),
-          mrb_intern_lit (mrb, "host"),   mrb_intern_lit (mrb, "path"),
-          mrb_intern_lit (mrb, "query"),  mrb_intern_lit (mrb, "fragment") };
+      = { MRB_SYM (scheme), MRB_SYM (userinfo), MRB_SYM (host),
+          MRB_SYM (path),   MRB_SYM (query),    MRB_SYM (fragment) };
   mrb_value kw_values[kw_num];
   const mrb_kwargs kwargs = { .num = kw_num,
                               .required = 0,
