@@ -13,5 +13,6 @@ MRuby::Build.new do |conf|
 
   if ENV['ENABLE_TESTS'] == 'true'
     conf.gem core: 'mruby-io'
+    conf.gem core: 'hal-posix-io'
   end
 end
