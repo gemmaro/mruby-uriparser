@@ -110,11 +110,10 @@
 #define MRB_URIPARSER_NEW(mrb, uri_val)                                       \
   const mrb_value value                                                       \
       = mrb_obj_new (mrb, MRB_URIPARSER_URI_CLASS (mrb), 0, NULL);            \
-  DATA_TYPE (value) = &mrb_uriparser_data_type;                               \
   mrb_uriparser_data *const data                                              \
       = mrb_malloc (mrb, sizeof (mrb_uriparser_data));                        \
   data->uri = uri_val;                                                        \
-  DATA_PTR (value) = data;                                                    \
+  mrb_data_init (value, data, &mrb_uriparser_data_type);                      \
   return value;
 
 /**
@@ -409,11 +408,9 @@ mrb_uriparser_initialize_copy (mrb_state *const mrb, const mrb_value self)
   UriUriA *const new_uri = mrb_malloc (mrb, sizeof (UriUriA));
   if (uriCopyUriA (new_uri, MRB_URIPARSER_URI (original)))
     MRB_URIPARSER_RAISE (mrb, "failed to copy URI");
-  DATA_TYPE (self) = &mrb_uriparser_data_type;
-  mrb_uriparser_data *const data
-      = mrb_malloc (mrb, sizeof (mrb_uriparser_data));
+  mrb_uriparser_data *data = mrb_malloc (mrb, sizeof (mrb_uriparser_data));
   data->uri = new_uri;
-  DATA_PTR (self) = data;
+  mrb_data_init (self, data, &mrb_uriparser_data_type);
   return self;
 }
 
