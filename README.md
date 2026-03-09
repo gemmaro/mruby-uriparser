@@ -54,11 +54,11 @@ To run tests:
 rake --directory /path/to/mruby all test MRUBY_CONFIG=$PWD/build_config.rb
 ```
 
-Alternatively, use the `test/run` script with `MRUBY_SRC` set in your `.env` file.
+Alternatively, use the `bin/test` script with `MRUBY_SRC` set in your `.env` file.
 
 ## License
 
-Copyright (C) 2025  gemmaro
+Copyright (C) 2025, 2026  gemmaro
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
