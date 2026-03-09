@@ -70,12 +70,9 @@
 
 #define DONE mrb_gc_arena_restore (mrb, 0);
 
-#define MRB_URIPARSER_MODULE_NAME "URIParser"
-#define MRB_URIPARSER_URI_MODULE_NAME "URI"
-
-#define MRB_URIPARSER(mrb) mrb_module_get (mrb, MRB_URIPARSER_MODULE_NAME)
+#define MRB_URIPARSER(mrb) mrb_module_get_id (mrb, MRB_SYM (URIParser))
 #define MRB_URIPARSER_URI_CLASS(mrb)                                          \
-  mrb_class_get_under (mrb, MRB_URIPARSER (mrb), MRB_URIPARSER_URI_MODULE_NAME)
+  mrb_class_get_under_id (mrb, MRB_URIPARSER (mrb), MRB_SYM (URI))
 
 /** @brief Error class.
  *
@@ -84,7 +81,7 @@
  * ```
  */
 #define MRB_URIPARSER_ERROR(mrb)                                              \
-  mrb_class_get_under (mrb, MRB_URIPARSER (mrb), "Error")
+  mrb_class_get_under_id (mrb, MRB_URIPARSER (mrb), MRB_SYM (Error))
 
 /** @brief No memory error class.
  *
@@ -92,7 +89,8 @@
  * URIParser::NoMemoryError
  * ```
  */
-#define MRB_URIPARSER_NOMEM(mrb) mrb_class_get (mrb, "NoMemoryError")
+#define MRB_URIPARSER_NOMEM(mrb)                                              \
+  mrb_class_get_id (mrb, MRB_SYM (NoMemoryError))
 
 #define MRB_URIPARSER_RAISE(mrb, message)                                     \
   mrb_raise (mrb, MRB_URIPARSER_ERROR (mrb), message)
@@ -761,64 +759,68 @@ mrb_mruby_uriparser_gem_init (mrb_state *const mrb)
 {
   /* C have to define classes here before Ruby does. */
   struct RClass *const uriparser
-      = mrb_define_module (mrb, MRB_URIPARSER_MODULE_NAME);
-  mrb_define_module_function (mrb, uriparser, "parse", mrb_uriparser_parse,
-                              MRB_ARGS_REQ (1));
-  mrb_define_module_function (mrb, uriparser, "filename_to_uri_string",
-                              mrb_uriparser_filename_to_uri_string,
-                              MRB_ARGS_ANY ());
-  mrb_define_module_function (mrb, uriparser, "uri_string_to_filename",
-                              mrb_uriparser_uri_string_to_filename,
-                              MRB_ARGS_ANY ());
-  mrb_define_module_function (mrb, uriparser, "encode_www_form",
-                              mrb_uriparser_compose_query, MRB_ARGS_REQ (1));
-  struct RClass *const uri = mrb_define_class_under (
-      mrb, uriparser, MRB_URIPARSER_URI_MODULE_NAME, mrb->object_class);
-  mrb_define_method (mrb, uri, "initialize_copy",
-                     mrb_uriparser_initialize_copy, MRB_ARGS_REQ (1));
-  mrb_define_method (mrb, uri, "==", mrb_uriparser_equals, MRB_ARGS_REQ (1));
-  mrb_define_method (mrb, uri, "scheme", mrb_uriparser_scheme,
-                     MRB_ARGS_NONE ());
-  mrb_define_method (mrb, uri, "scheme=", mrb_uriparser_set_Scheme,
-                     MRB_ARGS_REQ (1));
-  mrb_define_method (mrb, uri, "userinfo", mrb_uriparser_userInfo,
-                     MRB_ARGS_NONE ());
-  mrb_define_method (mrb, uri, "userinfo=", mrb_uriparser_set_UserInfo,
-                     MRB_ARGS_REQ (1));
-  mrb_define_method (mrb, uri, "hostname", mrb_uriparser_hostText,
-                     MRB_ARGS_NONE ());
-  mrb_define_method (mrb, uri, "host=", mrb_uriparser_set_HostAuto,
-                     MRB_ARGS_REQ (1));
-  mrb_define_method (mrb, uri, "host?", mrb_uriparser_has_host,
-                     MRB_ARGS_NONE ());
-  mrb_define_method (mrb, uri, "port", mrb_uriparser_portText,
-                     MRB_ARGS_NONE ());
-  mrb_define_method (mrb, uri, "port=", mrb_uriparser_set_PortText,
-                     MRB_ARGS_REQ (1));
-  mrb_define_method (mrb, uri, "path_segments", mrb_uriparser_path_segments,
-                     MRB_ARGS_NONE ());
-  mrb_define_method (mrb, uri, "path=", mrb_uriparser_set_Path,
-                     MRB_ARGS_REQ (1));
-  mrb_define_method (mrb, uri, "query", mrb_uriparser_query, MRB_ARGS_NONE ());
-  mrb_define_method (mrb, uri, "query=", mrb_uriparser_set_Query,
-                     MRB_ARGS_REQ (1));
-  mrb_define_method (mrb, uri, "fragment", mrb_uriparser_fragment,
-                     MRB_ARGS_NONE ());
-  mrb_define_method (mrb, uri, "fragment=", mrb_uriparser_set_Fragment,
-                     MRB_ARGS_REQ (1));
-  mrb_define_method (mrb, uri, "absolute_path?", mrb_uriparser_absolute_path,
-                     MRB_ARGS_NONE ());
-  mrb_define_method (mrb, uri, "to_s", mrb_uriparser_recompose,
-                     MRB_ARGS_NONE ());
-  mrb_define_method (mrb, uri, "merge!", mrb_uriparser_merge_mutably,
-                     MRB_ARGS_REQ (1));
-  mrb_define_method (mrb, uri, "merge", mrb_uriparser_merge, MRB_ARGS_REQ (1));
-  mrb_define_method (mrb, uri, "route_from", mrb_uriparser_create_reference,
-                     MRB_ARGS_ANY ());
-  mrb_define_method (mrb, uri, "normalize!", mrb_uriparser_normalize,
-                     MRB_ARGS_KEY (6, 0));
-  mrb_define_method (mrb, uri, "decode_www_form", mrb_uriparser_dissect_query,
-                     MRB_ARGS_NONE ());
+      = mrb_define_module_id (mrb, MRB_SYM (URIParser));
+  mrb_define_module_function_id (mrb, uriparser, MRB_SYM (parse),
+                                 mrb_uriparser_parse, MRB_ARGS_REQ (1));
+  mrb_define_module_function_id (
+      mrb, uriparser, MRB_SYM (filename_to_uri_string),
+      mrb_uriparser_filename_to_uri_string, MRB_ARGS_ANY ());
+  mrb_define_module_function_id (
+      mrb, uriparser, MRB_SYM (uri_string_to_filename),
+      mrb_uriparser_uri_string_to_filename, MRB_ARGS_ANY ());
+  mrb_define_module_function_id (mrb, uriparser, MRB_SYM (encode_www_form),
+                                 mrb_uriparser_compose_query,
+                                 MRB_ARGS_REQ (1));
+  struct RClass *const uri = mrb_define_class_under_id (
+      mrb, uriparser, MRB_SYM (URI), mrb->object_class);
+  mrb_define_method_id (mrb, uri, MRB_SYM (initialize_copy),
+                        mrb_uriparser_initialize_copy, MRB_ARGS_REQ (1));
+  mrb_define_method_id (mrb, uri, MRB_OPSYM (eq), mrb_uriparser_equals,
+                        MRB_ARGS_REQ (1));
+  mrb_define_method_id (mrb, uri, MRB_SYM (scheme), mrb_uriparser_scheme,
+                        MRB_ARGS_NONE ());
+  mrb_define_method_id (mrb, uri, MRB_SYM_E (scheme), mrb_uriparser_set_Scheme,
+                        MRB_ARGS_REQ (1));
+  mrb_define_method_id (mrb, uri, MRB_SYM (userinfo), mrb_uriparser_userInfo,
+                        MRB_ARGS_NONE ());
+  mrb_define_method_id (mrb, uri, MRB_SYM_E (userinfo),
+                        mrb_uriparser_set_UserInfo, MRB_ARGS_REQ (1));
+  mrb_define_method_id (mrb, uri, MRB_SYM (hostname), mrb_uriparser_hostText,
+                        MRB_ARGS_NONE ());
+  mrb_define_method_id (mrb, uri, MRB_SYM_E (host), mrb_uriparser_set_HostAuto,
+                        MRB_ARGS_REQ (1));
+  mrb_define_method_id (mrb, uri, MRB_SYM_Q (host), mrb_uriparser_has_host,
+                        MRB_ARGS_NONE ());
+  mrb_define_method_id (mrb, uri, MRB_SYM (port), mrb_uriparser_portText,
+                        MRB_ARGS_NONE ());
+  mrb_define_method_id (mrb, uri, MRB_SYM_E (port), mrb_uriparser_set_PortText,
+                        MRB_ARGS_REQ (1));
+  mrb_define_method_id (mrb, uri, MRB_SYM (path_segments),
+                        mrb_uriparser_path_segments, MRB_ARGS_NONE ());
+  mrb_define_method_id (mrb, uri, MRB_SYM_E (path), mrb_uriparser_set_Path,
+                        MRB_ARGS_REQ (1));
+  mrb_define_method_id (mrb, uri, MRB_SYM (query), mrb_uriparser_query,
+                        MRB_ARGS_NONE ());
+  mrb_define_method_id (mrb, uri, MRB_SYM_E (query), mrb_uriparser_set_Query,
+                        MRB_ARGS_REQ (1));
+  mrb_define_method_id (mrb, uri, MRB_SYM (fragment), mrb_uriparser_fragment,
+                        MRB_ARGS_NONE ());
+  mrb_define_method_id (mrb, uri, MRB_SYM_E (fragment),
+                        mrb_uriparser_set_Fragment, MRB_ARGS_REQ (1));
+  mrb_define_method_id (mrb, uri, MRB_SYM_Q (absolute_path),
+                        mrb_uriparser_absolute_path, MRB_ARGS_NONE ());
+  mrb_define_method_id (mrb, uri, MRB_SYM (to_s), mrb_uriparser_recompose,
+                        MRB_ARGS_NONE ());
+  mrb_define_method_id (mrb, uri, MRB_SYM_B (merge),
+                        mrb_uriparser_merge_mutably, MRB_ARGS_REQ (1));
+  mrb_define_method_id (mrb, uri, MRB_SYM (merge), mrb_uriparser_merge,
+                        MRB_ARGS_REQ (1));
+  mrb_define_method_id (mrb, uri, MRB_SYM (route_from),
+                        mrb_uriparser_create_reference, MRB_ARGS_ANY ());
+  mrb_define_method_id (mrb, uri, MRB_SYM_B (normalize),
+                        mrb_uriparser_normalize, MRB_ARGS_KEY (6, 0));
+  mrb_define_method_id (mrb, uri, MRB_SYM (decode_www_form),
+                        mrb_uriparser_dissect_query, MRB_ARGS_NONE ());
   DONE;
 }
 
