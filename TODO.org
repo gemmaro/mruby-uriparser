@@ -22,6 +22,7 @@
         path ? true : false
       end
 #+end_src
+* TODO MRB_SET_INSTANCE_TTを使う必要があるか、Valgrindによるメモリリークの検査
 * Guixパッケージ
 #+begin_src scheme
   (define-public ruby-yard-mruby
