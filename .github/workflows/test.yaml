@@ -1,0 +1,74 @@
+name: Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        mruby-version: ["4.0.0", "3.4.0", "3.3.0", "3.2.0"]
+        uriparser-version: ["1.0.2"]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Cache mruby
+        uses: actions/cache@v5
+        id: cache-mruby
+        with:
+          path: mruby
+          key: mruby-${{ matrix.os }}-${{ matrix.mruby-version }}
+
+      - name: Install build dependencies (Ubuntu)
+        if: runner.os == 'Linux'
+        run: sudo apt-get install -y cmake
+
+      - name: Install build dependencies (macOS)
+        if: runner.os == 'macOS'
+        run: brew install cmake
+
+      - name: Cache uriparser
+        uses: actions/cache@v5
+        id: cache-uriparser
+        with:
+          path: uriparser-install
+          key: uriparser-${{ matrix.os }}-${{ matrix.uriparser-version }}
+
+      - name: Build uriparser from source
+        if: steps.cache-uriparser.outputs.cache-hit != 'true'
+        run: |
+          curl -fsSL "https://github.com/uriparser/uriparser/releases/download/uriparser-${{ matrix.uriparser-version }}/uriparser-${{ matrix.uriparser-version }}.tar.gz" \
+            | tar xz
+          cmake -S "uriparser-${{ matrix.uriparser-version }}" -B uriparser-build \
+            -DCMAKE_INSTALL_PREFIX="${GITHUB_WORKSPACE}/uriparser-install" \
+            -DURIPARSER_BUILD_TESTS=OFF \
+            -DURIPARSER_BUILD_DOCS=OFF \
+            -DBUILD_SHARED_LIBS=OFF
+          cmake --build uriparser-build --parallel
+          cmake --install uriparser-build
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '4.0'
+
+      - name: Download and build mruby
+        if: steps.cache-mruby.outputs.cache-hit != 'true'
+        run: |
+          curl -fsSL "https://github.com/mruby/mruby/archive/refs/tags/${{ matrix.mruby-version }}.tar.gz" \
+            | tar xz
+          mv "mruby-${{ matrix.mruby-version }}" mruby
+
+      - name: Build and run tests
+        run: |
+          export MRUBY_CONFIG="$PWD/build_config.rb"
+          uriparser_prefix="${GITHUB_WORKSPACE}/uriparser-install"
+          export C_INCLUDE_PATH="${uriparser_prefix}/include:${C_INCLUDE_PATH:-}"
+          export LIBRARY_PATH="${uriparser_prefix}/lib:${LIBRARY_PATH:-}"
+          rake --directory "$PWD/mruby" all test
