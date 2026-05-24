@@ -59,8 +59,6 @@
 #include <mruby/value.h>
 #include <mruby/variable.h>
 
-#include <string.h>
-
 /* https://uriparser.github.io/doc/api/latest/ */
 #include <uriparser/Uri.h>
 
@@ -163,9 +161,10 @@
                                                        const mrb_value self)  \
   {                                                                           \
     const char *component;                                                    \
-    mrb_get_args (mrb, "z", &component);                                      \
+    mrb_int component_len = 0;                                                \
+    mrb_get_args (mrb, "s", &component, &component_len);                      \
     if (uriSet##component_name##A (MRB_URIPARSER_URI (self), component,       \
-                                   component + strlen (component)))           \
+                                   component + component_len))                \
       MRB_URIPARSER_RAISE (mrb, "failed to set " #component_name);            \
     return mrb_nil_value ();                                                  \
   }
@@ -258,12 +257,13 @@ mrb_uriparser_filename_to_uri_string (mrb_state *const mrb,
                               .rest = NULL,
                               .table = &windows_key,
                               .values = kw_values };
-  mrb_get_args (mrb, "z:", &abs_filename, &kwargs);
+  mrb_int abs_filename_len = 0;
+  mrb_get_args (mrb, "s:", &abs_filename, &abs_filename_len, &kwargs);
   if (mrb_undef_p (kw_values[0]))
     kw_values[0] = mrb_false_value ();
   const mrb_bool windows = mrb_test (kw_values[0]);
   char *const abs_uri = mrb_malloc (
-      mrb, ((windows ? 8 : 7 /* Unix */) + 3 * strlen (abs_filename) + 1)
+      mrb, ((windows ? 8 : 7 /* Unix */) + 3 * abs_filename_len + 1)
                * sizeof (char));
   if ((windows ? uriWindowsFilenameToUriStringA (abs_filename, abs_uri)
                : uriUnixFilenameToUriStringA (abs_filename, abs_uri))
@@ -309,13 +309,13 @@ mrb_uriparser_uri_string_to_filename (mrb_state *const mrb,
                               .rest = NULL,
                               .table = &windows_key,
                               .values = kw_values };
-  mrb_get_args (mrb, "z:", &abs_uri, &kwargs);
+  mrb_int abs_uri_len = 0;
+  mrb_get_args (mrb, "s:", &abs_uri, &abs_uri_len, &kwargs);
   if (mrb_undef_p (kw_values[0]))
     kw_values[0] = mrb_false_value ();
   const mrb_bool windows = mrb_test (kw_values[0]);
-  char *const abs_filename
-      = mrb_malloc (mrb, (strlen (abs_uri) + 1 - (windows ? 8 : 7 /* Unix */))
-                             * sizeof (char));
+  char *const abs_filename = mrb_malloc (
+      mrb, (abs_uri_len + 1 - (windows ? 8 : 7 /* Unix */)) * sizeof (char));
   if ((windows ? uriUriStringToWindowsFilenameA (abs_uri, abs_filename)
                : uriUriStringToUnixFilenameA (abs_uri, abs_filename))
       != URI_SUCCESS)
