@@ -59,7 +59,6 @@
 #include <mruby/value.h>
 #include <mruby/variable.h>
 
-#include <stdlib.h>
 #include <string.h>
 
 /* https://uriparser.github.io/doc/api/latest/ */
@@ -263,18 +262,18 @@ mrb_uriparser_filename_to_uri_string (mrb_state *const mrb,
   if (mrb_undef_p (kw_values[0]))
     kw_values[0] = mrb_false_value ();
   const mrb_bool windows = mrb_test (kw_values[0]);
-  char *const abs_uri
-      = malloc (((windows ? 8 : 7 /* Unix */) + 3 * strlen (abs_filename) + 1)
-                * sizeof (char));
+  char *const abs_uri = mrb_malloc (
+      mrb, ((windows ? 8 : 7 /* Unix */) + 3 * strlen (abs_filename) + 1)
+               * sizeof (char));
   if ((windows ? uriWindowsFilenameToUriStringA (abs_filename, abs_uri)
                : uriUnixFilenameToUriStringA (abs_filename, abs_uri))
       != URI_SUCCESS)
     {
-      free (abs_uri);
+      mrb_free (mrb, abs_uri);
       MRB_URIPARSER_RAISE (mrb, "failed to convert to URI");
     }
   const mrb_value uri = mrb_str_new_cstr (mrb, abs_uri);
-  free (abs_uri);
+  mrb_free (mrb, abs_uri);
   return uri;
 }
 
@@ -314,17 +313,18 @@ mrb_uriparser_uri_string_to_filename (mrb_state *const mrb,
   if (mrb_undef_p (kw_values[0]))
     kw_values[0] = mrb_false_value ();
   const mrb_bool windows = mrb_test (kw_values[0]);
-  char *const abs_filename = malloc (
-      (strlen (abs_uri) + 1 - (windows ? 8 : 7 /* Unix */)) * sizeof (char));
+  char *const abs_filename
+      = mrb_malloc (mrb, (strlen (abs_uri) + 1 - (windows ? 8 : 7 /* Unix */))
+                             * sizeof (char));
   if ((windows ? uriUriStringToWindowsFilenameA (abs_uri, abs_filename)
                : uriUriStringToUnixFilenameA (abs_uri, abs_filename))
       != URI_SUCCESS)
     {
-      free (abs_filename);
+      mrb_free (mrb, abs_filename);
       MRB_URIPARSER_RAISE (mrb, "failed to convert to filename");
     }
   const mrb_value filename = mrb_str_new_cstr (mrb, abs_filename);
-  free (abs_filename);
+  mrb_free (mrb, abs_filename);
   return filename;
 }
 
@@ -351,7 +351,7 @@ mrb_uriparser_compose_query (mrb_state *const mrb, const mrb_value self)
   mrb_get_args (mrb, "A", &ary);
   for (mrb_int index = RARRAY_LEN (ary) - 1; index >= 0; index--)
     {
-      UriQueryListA *current = malloc (sizeof (UriQueryListA));
+      UriQueryListA *current = mrb_malloc (mrb, sizeof (UriQueryListA));
       current->next = query_list;
       mrb_value entry = mrb_ary_ref (mrb, ary, index);
       current->key = mrb_str_to_cstr (mrb, mrb_ary_ref (mrb, entry, 0));
@@ -367,16 +367,14 @@ mrb_uriparser_compose_query (mrb_state *const mrb, const mrb_value self)
       != URI_SUCCESS)
     MRB_URIPARSER_RAISE (
         mrb, "failed to calculate characters required to compose query");
-  query_string = malloc ((chars_required + 1) * sizeof (char));
-  if (!query_string)
-    MRB_URIPARSER_RAISE_NOMEM (mrb, "no space for query string");
+  query_string = mrb_malloc (mrb, (chars_required + 1) * sizeof (char));
   int chars_written;
   if (uriComposeQueryA (query_string, query_list, chars_required + 1,
                         &chars_written)
       != URI_SUCCESS)
     MRB_URIPARSER_RAISE (mrb, "failed to compose query");
   mrb_value str = mrb_str_new (mrb, query_string, chars_written - 1);
-  free (query_string);
+  mrb_free (mrb, query_string);
   return str;
 }
 
@@ -532,9 +530,7 @@ mrb_uriparser_recompose (mrb_state *const mrb, const mrb_value self)
   if (uriToStringCharsRequiredA (data->uri, &chars_required) != URI_SUCCESS)
     MRB_URIPARSER_RAISE (mrb, "could not calculate chars required");
   chars_required++; /* zero terminator */
-  char *const uri_string = malloc (chars_required * sizeof (char));
-  if (!uri_string)
-    MRB_URIPARSER_RAISE_NOMEM (mrb, "no space for URI string");
+  char *const uri_string = mrb_malloc (mrb, chars_required * sizeof (char));
   if (uriToStringA (uri_string, data->uri, chars_required, NULL)
       != URI_SUCCESS)
     MRB_URIPARSER_RAISE (mrb, "URI recomposing failed");
