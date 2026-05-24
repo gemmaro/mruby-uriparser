@@ -59,9 +59,6 @@
 #include <mruby/value.h>
 #include <mruby/variable.h>
 
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -228,14 +225,9 @@ mrb_uriparser_parse (mrb_state *const mrb, const mrb_value self)
   const char *error_pos;
   if (uriParseSingleUriA (uri, str, &error_pos) != URI_SUCCESS)
     {
-      char *const message
-          = malloc ((strlen (MRB_URIPARSER_PARSE_FAILED) + strlen (error_pos)
-                     + 5 /* for punctuations and null */)
-                    * sizeof (char));
-      if (!message)
-        MRB_URIPARSER_RAISE_NOMEM (mrb, "no space for error message");
-      sprintf (message, "%s: `%s'", MRB_URIPARSER_PARSE_FAILED, error_pos);
-      MRB_URIPARSER_RAISE (mrb, message);
+      mrb_value msg = mrb_format (mrb, "%s: `%s'", MRB_URIPARSER_PARSE_FAILED,
+                                  error_pos);
+      MRB_URIPARSER_RAISE (mrb, RSTRING_PTR (msg));
     }
   MRB_URIPARSER_NEW (mrb, uri);
 }
