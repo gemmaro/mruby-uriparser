@@ -1,5 +1,11 @@
 # Change Log of mruby uriparser
 
+## 0.2.3 - 2026-05-24
+
+- No API changes.
+- Now libc free.
+- Setup GitHub Actions.
+
 ## 0.2.2 - 2026-03-08
 
 - Fix `route_from` method argument spec.
