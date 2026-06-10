@@ -749,10 +749,10 @@ mrb_mruby_uriparser_gem_init (mrb_state *const mrb)
                                  mrb_uriparser_parse, MRB_ARGS_REQ (1));
   mrb_define_module_function_id (
       mrb, uriparser, MRB_SYM (filename_to_uri_string),
-      mrb_uriparser_filename_to_uri_string, MRB_ARGS_ANY ());
+      mrb_uriparser_filename_to_uri_string, MRB_ARGS_REQ(1) | MRB_ARGS_KEY(1, 0));
   mrb_define_module_function_id (
       mrb, uriparser, MRB_SYM (uri_string_to_filename),
-      mrb_uriparser_uri_string_to_filename, MRB_ARGS_ANY ());
+      mrb_uriparser_uri_string_to_filename, MRB_ARGS_REQ(1) | MRB_ARGS_KEY(1, 0));
   mrb_define_module_function_id (mrb, uriparser, MRB_SYM (encode_www_form),
                                  mrb_uriparser_compose_query,
                                  MRB_ARGS_REQ (1));
@@ -801,7 +801,7 @@ mrb_mruby_uriparser_gem_init (mrb_state *const mrb)
   mrb_define_method_id (mrb, uri, MRB_SYM (merge), mrb_uriparser_merge,
                         MRB_ARGS_REQ (1));
   mrb_define_method_id (mrb, uri, MRB_SYM (route_from),
-                        mrb_uriparser_create_reference, MRB_ARGS_ANY ());
+                        mrb_uriparser_create_reference, MRB_ARGS_REQ(1) | MRB_ARGS_KEY(1, 0));
   mrb_define_method_id (mrb, uri, MRB_SYM_B (normalize),
                         mrb_uriparser_normalize, MRB_ARGS_KEY (6, 0));
   mrb_define_method_id (mrb, uri, MRB_SYM (decode_www_form),
